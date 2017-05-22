@@ -1,5 +1,5 @@
-var uquest=angular.module('uquest',['ngRoute']);
-uquest.config(function($routeProvider){
+var index=angular.module('index',['ngRoute']);
+index.config(function($routeProvider){
   $routeProvider
             .when("/", {
                 controller: "uquestCtrl",
@@ -77,30 +77,30 @@ uquest.config(function($routeProvider){
                 templateUrl: "questcena.html"
             });
 });
-uquest.controller("navuquest", function($location){
+index.controller("navindex", function($location){
         var map = this;
         map.estoy = function(ruta){
             return $location.path() == ruta;
         }
 })
-uquest.controller("uquestCtrl",function(uquestFactory, $http){
+index.controller("indexCtrl",function(indexFactory, $http){
   var uq=this;
-  uq.preguntas=uquestFactory.getPreguntas();
-  uq.pass=uquestFactory.pass;
-  uq.pregunta=uquestFactory.preguntaTemp;
+  uq.preguntas=indexFactory.getPreguntas();
+  uq.pass=indexFactory.pass;
+  uq.pregunta=indexFactory.preguntaTemp;
   uq.opcion="";
   uq.opciones=[];
-  uq.fecha=uquestFactory.fecha;
+  uq.fecha=indexFactory.fecha;
   uq.encu="";
-  uq.fecha1=uquestFactory.fecha1;
-  uq.fecha2=uquestFactory.fecha2;
+  uq.fecha1=indexFactory.fecha1;
+  uq.fecha2=indexFactory.fecha2;
   uq.multipleSwitch=function(valor)
   {
-    uquestFactory.multiple=valor;
+    indexFactory.multiple=valor;
   }
   uq.consultaSwitch=function()
   {
-    return uquestFactory.multiple;
+    return indexFactory.multiple;
   }
   uq.validarPass=function()
   {
@@ -108,8 +108,8 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
     {
       Materialize.toast('Contrase&ntilde;a inexistente', 5000, 'rounded');
     }else{
-      uquestFactory.pass=uq.pass;
-      switch(uquestFactory.multiple)
+      indexFactory.pass=uq.pass;
+      switch(indexFactory.multiple)
       {
         case 1:window.location="#/elegirtipo";
               break;
@@ -132,7 +132,7 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
     {
       Materialize.toast('Sin preguntas', 5000, 'rounded');
     }else{
-      uquestFactory.setPreguntas(uq.preguntas);
+      indexFactory.setPreguntas(uq.preguntas);
       window.location="#/fecha";
     }
   }
@@ -143,13 +143,13 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
       if(uq.pregunta=="")
       {
         Materialize.toast('Debes rellenar la pregunta', 5000, 'rounded');
-      }else if(uquestFactory.getOpciones().length==0)
+      }else if(indexFactory.getOpciones().length==0)
       {
         Materialize.toast('Necesitas m&aacute;s opciones', 5000, 'rounded');
       }else{
-        uq.opciones=uquestFactory.getOpciones();
+        uq.opciones=indexFactory.getOpciones();
         uq.preguntas.push([uq.pregunta,"Lista",uq.opciones]);
-        if(uquestFactory.multiple==5)
+        if(indexFactory.multiple==5)
         {
           window.location="#/crear";
         }else{
@@ -162,7 +162,7 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
         Materialize.toast('Debes rellenar la pregunta', 5000, 'rounded');
       }else{
         uq.preguntas.push([uq.pregunta,"Breve"]);
-        if(uquestFactory.multiple==5)
+        if(indexFactory.multiple==5)
         {
           window.location="#/crear";
         }else{
@@ -172,8 +172,8 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
     }else{
         Materialize.toast('Error desconocido', 5000, 'rounded');
     }
-    uquestFactory.preguntaTemp="";
-    uquestFactory.borraTodasOpc();
+    indexFactory.preguntaTemp="";
+    indexFactory.borraTodasOpc();
   }
   uq.revisaPreguntas=function(tipo)
   {
@@ -195,13 +195,13 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
   }
   uq.opci=function()
   {
-    return uquestFactory.getOpciones();
+    return indexFactory.getOpciones();
   }
   uq.revisaOpciones=function()
   {
     if(uq.opciones.length<10)
     {
-      uquestFactory.preguntaTemp=uq.pregunta;
+      indexFactory.preguntaTemp=uq.pregunta;
       window.location="#/opcion";
     }else{
       Materialize.toast('Diez opciones es suficiente', 5000, 'rounded');
@@ -213,7 +213,7 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
     {
       Materialize.toast('Debes rellenar la opci&oacute;n', 5000, 'rounded');
     }else{
-      if(uquestFactory.anadirOpcion(uq.opcion))
+      if(indexFactory.anadirOpcion(uq.opcion))
       {
         window.location="#/nuevalista";
       }else{
@@ -228,21 +228,21 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
     {
       Materialize.toast('Debes elegir alguna fecha', 5000, 'rounded');
     }else{
-      uquestFactory.fecha=document.getElementsByClassName("datepicker")[0].value;
+      indexFactory.fecha=document.getElementsByClassName("datepicker")[0].value;
       window.location="#/finalizar";
     }
   }
   uq.guardarFechaCena=function()
   {
-    uquestFactory.fecha1=document.getElementById("d1").value;
-    uquestFactory.fecha2=document.getElementById("d2").value;
-    uq.fecha1=uquestFactory.fecha1;
-    uq.fecha2=uquestFactory.fecha2;
+    indexFactory.fecha1=document.getElementById("d1").value;
+    indexFactory.fecha2=document.getElementById("d2").value;
+    uq.fecha1=indexFactory.fecha1;
+    uq.fecha2=indexFactory.fecha2;
   }
   uq.enviarEncuesta=function()
   {
 
-    $http.post("enviarencuesta.php", {pass: uquestFactory.pass, fecha:uquestFactory.fecha, preguntas: uquestFactory.preguntas})
+    $http.post("enviarencuesta.php", {pass: indexFactory.pass, fecha:indexFactory.fecha, preguntas: indexFactory.preguntas})
             .success(function(respuesta){
                 console.log("Conectado con éxito");
                 window.location="#/compartir";
@@ -254,13 +254,13 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
   }
   uq.borraOpcion=function(num)
   {
-    uquestFactory.borraOpcion(num);
+    indexFactory.borraOpcion(num);
   }
   uq.borraTodo=function()
   {
-    uquestFactory.borraTodo();
-    uquestFactory.pass="";
-    uquestFactory.fecha="";
+    indexFactory.borraTodo();
+    indexFactory.pass="";
+    indexFactory.fecha="";
   }
   uq.buscarEncuesta=function()
   {
@@ -298,7 +298,7 @@ uquest.controller("uquestCtrl",function(uquestFactory, $http){
     window.location="#/";
   }
 });
-uquest.factory("uquestFactory", function(){
+index.factory("indexFactory", function(){
     var preguntas=[];
     var opciones=[];
     var adminencu=[];

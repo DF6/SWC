@@ -1,0 +1,57 @@
+.nav-wrapper{background-color:#3498db;}
+.row{font-size: 110%;}
+.progress{margin-right: 0.5%;}
+#portada{font-size: 250%;}
+.exp1,.equipo{text-align:center;}
+.exp1 .col{font-size: 120%;}
+i{margin:2%;}
+h5{color:#bdbdbd;}
+.responsive-img{width:30%;}
+#imagenportada{width: 70%;}
+.equipo{border-radius: 75%;}
+.btn-large{font-size:120%;}
+.card-paragraph{font-size: 2000%;}
+.input-field input[type=text]:focus + label {color: #3498db;}
+.input-field input[type=text]:focus {
+  border-bottom: 1px solid #3498db;
+  box-shadow: 0 1px 0 0 #3498db;
+}
+body{
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -webkit-overflow-scrolling: touch;
+}
+h2{
+  font-family: 'Lato',sans-serif;
+  font-weight: 300;
+  font-size: 170%;
+}
+.waves-effect{
+  font-family: 'Lato', sans-serif;
+  font-weight: 300;
+  font-size: 30%;
+  border-radius: 5pt;
+}
+.col p{
+  font-size:22%;
+  margin-top: 0;
+  margin-left: 1%;
+}
+.intro{
+    color:#fff;
+    background-color: #2196f3;
+    padding-top:10%;
+}
+#estu{
+  font-size: 100%;
+  margin: 0;
+}
+.botonu{
+  font-size: 90%;
+  margin-left: 0%;
+}
+.pregunta{
+  color:#000;
+  font-size: 100%;
+}
