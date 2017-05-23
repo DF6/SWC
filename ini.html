@@ -6,10 +6,26 @@
   <div class="col s4" id="portada">
     <div class="row">
       <div>
-        Spanish World Cup Liga FIFA 18
+        <span style="font-size:100%">Spanish World Cup Liga FIFA 18</span>
         <div class="row">
           <div class="col s12">
-            <a class="waves-effect waves-light btn" href="uquest.html" style="background-color:#f9a825">¡Crea una uQuest en segundos!</a>
+            <div class="form-group">
+              <label for="user" style="color:white; font-size:30%">Usuario</label>
+              <input type="text" ng-model="uq.userSession.username" class="form-control" id="user">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <label for="pass" style="color:white; font-size:30%">Contraseña</label>
+              <input type="password" ng-model="uq.userSession.password" class="form-control" id="pass">
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <a class="waves-effect waves-light btn" ng-click="uq.login()" style="background-color:#f9a825">Iniciar sesión</a>
           </div>
         </div>
       </div>
@@ -18,53 +34,53 @@
   <div class="col s6">
     <h2>Mi equipo</h2>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/plantilla" style="background-color:#f9a825">Plantilla</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/plantilla" style="font-size:100%;background-color:#f9a825">Plantilla</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/pendientes" style="background-color:#f9a825">Partidos pendientes</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/pendientes" style="font-size:100%;background-color:#f9a825">Partidos pendientes</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/primera" style="background-color:#f9a825">Liga</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/primera" style="font-size:100%;background-color:#f9a825">Liga</button>
       </div>
     </div>
      <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/segunda" style="background-color:#f9a825">Liga</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/segunda" style="font-size:100%;background-color:#f9a825">Liga</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/copa" style="background-color:#f9a825">Copa</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/copa" style="font-size:100%;background-color:#f9a825">Copa</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/champions" style="background-color:#f9a825">Champions</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/champions" style="font-size:100%;background-color:#f9a825">Champions</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/europaleague" style="background-color:#f9a825">Europa League</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/europaleague" style="font-size:100%;background-color:#f9a825">Europa League</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/intertoto" style="background-color:#f9a825">Intertoto</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/intertoto" style="font-size:100%;background-color:#f9a825">Intertoto</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/supercopaclubes" style="background-color:#f9a825">Supercopa Clubes</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/supercopaclubes" style="font-size:100%;background-color:#f9a825">Supercopa Clubes</button>
       </div>
     </div>
     <div class="row">
-      <div class="col s2" style="height:2%">
-          <a class="waves-effect waves-light btn" href="#/supercopaeuropa" style="background-color:#f9a825">Supercopa Europa</a>
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.userSession.valid" href="#/supercopaeuropa" style="font-size:100%;background-color:#f9a825">Supercopa Europa</button>
       </div>
     </div>
   </div>

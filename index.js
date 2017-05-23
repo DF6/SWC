@@ -2,77 +2,77 @@ var index=angular.module('index',['ngRoute']);
 index.config(function($routeProvider){
   $routeProvider
             .when("/", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "ini.html"
             })
             .when("/primera", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "primera.html"
             })
             .when("/copa", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "copa.html"
             })
             .when("/champions", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "champions.html"
             })
             .when("/segunda", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "segunda.html"
             })
             .when("/europaleague", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "europaleague.html"
             })
             .when("/intertoto", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "intertoto.html"
             })
             .when("/plantilla", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "plantilla.html"
             })
             .when("/supercopaeuropa", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "supercopaeuropa.html"
             })
             .when("/supercopaclubes", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "supercopaclubes.html"
             })
             .when("/pendientes", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "pendientes.html"
             })
             .when("/resumenpartido", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "resumenpartido.html"
             })
             .when("/introducirresultado", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "introducirresultado.html"
             })
             .when("/elegirtipo", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "eleccionquest.html"
             })
             .when("/questcena", {
-                controller: "uquestCtrl",
+                controller: "indexCtrl",
                 controllerAs: "vm",
                 templateUrl: "questcena.html"
             });
