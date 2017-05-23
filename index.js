@@ -4,67 +4,67 @@ index.config(function($routeProvider){
             .when("/", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "portada.html"
+                templateUrl: "ini.html"
             })
-            .when("/admincreacion", {
+            .when("/primera", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "admincreacion.html"
+                templateUrl: "primera.html"
             })
-            .when("/crear", {
+            .when("/copa", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "crearencuesta.html"
+                templateUrl: "copa.html"
             })
-            .when("/fecha", {
+            .when("/champions", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "fecha.html"
+                templateUrl: "champions.html"
             })
-            .when("/compartir", {
+            .when("/segunda", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "compartir.html"
+                templateUrl: "segunda.html"
             })
-            .when("/finalizar", {
+            .when("/europaleague", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "finalizarencuesta.html"
+                templateUrl: "europaleague.html"
             })
-            .when("/nuevalista", {
+            .when("/intertoto", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "preguntalista.html"
+                templateUrl: "intertoto.html"
             })
-            .when("/opcion", {
+            .when("/plantilla", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "opcion.html"
+                templateUrl: "plantilla.html"
             })
-            .when("/nuevarespbreve", {
+            .when("/supercopaeuropa", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "preguntarespbreve.html"
+                templateUrl: "supercopaeuropa.html"
             })
-            .when("/adminport", {
+            .when("/supercopaclubes", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "adminport.html"
+                templateUrl: "supercopaclubes.html"
             })
-            .when("/admin", {
+            .when("/pendientes", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "administracion.html"
+                templateUrl: "pendientes.html"
             })
-            .when("/votarport", {
+            .when("/resumenpartido", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "votarport.html"
+                templateUrl: "resumenpartido.html"
             })
-            .when("/votar", {
+            .when("/introducirresultado", {
                 controller: "uquestCtrl",
                 controllerAs: "vm",
-                templateUrl: "votar.html"
+                templateUrl: "introducirresultado.html"
             })
             .when("/elegirtipo", {
                 controller: "uquestCtrl",
