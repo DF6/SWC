@@ -27,9 +27,24 @@ index.controller("indexCtrl",function(indexFactory, $http){
   var uq=this;
   uq.preguntas=indexFactory.getPreguntas();
   uq.user=indexFactory.user;
+
+  uq.login = function(){
+    angular.forEach(uq.usuarios, function(value, key){
+      if(value.user == uq.user.user)
+      {
+        if(value.pass == uq.user.pass)
+        {
+          uq.user.valido = true;
+          uq.user.idEquipo = value.id;
+          uq.user.nombreEquipo = uq.getEquipoById(value.id);
+        }
+      }
+    });
+    return uq.user.valido;
+  }
 });
 index.factory("indexFactory", function(){
-    var user={id:-1, user: '', pass: ''};
+    var user={id:-1, user: '', pass: '', valido: false, nombreEquipo: '', idEquipo: -1};
     var interfaz = {
         pass:"",
         getUser: function(){

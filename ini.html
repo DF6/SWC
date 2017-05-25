@@ -3,7 +3,7 @@
   <div class="col s2" style="color:#2196f3">
     uQuest
   </div>
-  <div class="col s4" id="portada">
+  <div class="col s4" id="portada" ng-show="!uq.user.valido">
     <div class="row">
       <div>
         <span style="font-size:100%"><!--Spanish World Cup Liga FIFA 18-->SWC018</span>
@@ -26,6 +26,27 @@
         <div class="row">
           <div class="col s12">
             <a class="waves-effect waves-light btn" ng-click="uq.login()" style="background-color:#f9a825">Iniciar sesión</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col s4" id="portadalogin" ng-show="uq.user.valido">
+    <div class="row">
+      <div>
+        <span style="font-size:100%"><!--Spanish World Cup Liga FIFA 18-->SWC018</span>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <span style="font-size:70%">{{uq.user.nombreEquipo}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <img ng-src="{{uq.getEquipoById(uq.user.idEquipo).rutaImagen}}"/>
+            </div>
           </div>
         </div>
       </div>
