@@ -2,20 +2,18 @@ var appIni=angular.module('appIni',['ngRoute']);
 appIni.config(function($routeProvider){
   $routeProvider
             .when("/", {controller: "appCtrl",controllerAs: "vm",templateUrl: "ini.html"})
-            .when("/primera", {controller: "appCtrl",controllerAs: "vm",templateUrl: "primera.html"})
-            .when("/copa", {controller: "appCtrl",controllerAs: "vm",templateUrl: "copa.html"})
+            .when("/premier", {controller: "appCtrl",controllerAs: "vm",templateUrl: "premier.html"})
+            .when("/cup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "cup.html"})
             .when("/champions", {controller: "appCtrl",controllerAs: "vm",templateUrl: "champions.html"})
-            .when("/segunda", {controller: "appCtrl",controllerAs: "vm",templateUrl: "segunda.html"})
+            .when("/second", {controller: "appCtrl",controllerAs: "vm",templateUrl: "second.html"})
             .when("/europaleague", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europaleague.html"})
             .when("/intertoto", {controller: "appCtrl",controllerAs: "vm",templateUrl: "intertoto.html"})
-            .when("/plantilla", {controller: "appCtrl",controllerAs: "vm",templateUrl: "plantilla.html"})
-            .when("/supercopaeuropa", {controller: "appCtrl",controllerAs: "vm",templateUrl: "supercopaeuropa.html"})
-            .when("/supercopaclubes", {controller: "appCtrl",controllerAs: "vm",templateUrl: "supercopaclubes.html"})
-            .when("/pendientes", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pendientes.html"})
-            .when("/resumenpartido", {controller: "appCtrl",controllerAs: "vm",templateUrl: "resumenpartido.html"})
-            .when("/introducirresultado", {controller: "appCtrl",controllerAs: "vm",templateUrl: "introducirresultado.html"})
-            .when("/elegirtipo", {controller: "appCtrl",controllerAs: "vm",templateUrl: "eleccionquest.html"})
-            .when("/questcena", {controller: "appCtrl",controllerAs: "vm",templateUrl: "questcena.html"});
+            .when("/myteam", {controller: "appCtrl",controllerAs: "vm",templateUrl: "myteam.html"})
+            .when("/europesupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europesupercup.html"})
+            .when("/clubsupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "clubsupercup.html"})
+            .when("/pending", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pending.html"})
+            .when("/matchlog", {controller: "appCtrl",controllerAs: "vm",templateUrl: "matchlog.html"})
+            .when("/resultinput", {controller: "appCtrl",controllerAs: "vm",templateUrl: "resultinput.html"});
 });
 appIni.controller("navCtrl", function($location){
         var map = this;
@@ -24,8 +22,9 @@ appIni.controller("navCtrl", function($location){
         }
     })
 appIni.controller("appCtrl",function(indexFactory,$http){
-  var uq=this;
-  uq.user=indexFactory.getUser();
+  var uq = this;
+  uq.user = indexFactory.getUser();
+  obtainData();
 
   uq.login = function(){
     angular.forEach(uq.users, function(value, key){
@@ -45,6 +44,28 @@ appIni.controller("appCtrl",function(indexFactory,$http){
       Materialize.toast('Usuario o contraseña inválida');
     }
     return uq.user.valido;
+  }
+
+  function obtainData(){
+    $http.post("SWCDataRequesting.php", { type: "recDat" })
+          .success(function(data) {
+            console.log(data);
+            uq.users = data.users;
+            indexFactory.users = uq.users;
+            uq.teams = data.teams;
+            indexFactory.teams = uq.teams;
+            uq.matches = data.matches;
+            indexFactory.matches = uq.matches;
+            uq.goals = data.goals;
+            indexFactory.goals = uq.goals;
+            /*for (var v = 0; v < uq.vehiculos.length; v++) {
+              if (uq.vehiculos[v].activo == 1) { uq.vehiculos[v].activo = true; } else { uq.vehiculos[v].activo = false; }
+            }*/
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se han podido recoger los datos en la base de datos', 5000, 'rounded');
+          });
   }
 });
 appIni.factory("indexFactory", function(){
