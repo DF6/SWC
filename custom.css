@@ -1,7 +1,7 @@
 .nav-wrapper{background-color:#3498db;}
 .row{font-size: 110%;}
 .progress{margin-right: 0.5%;}
-#portada{font-size: 250%;}
+#portada, #portadalogin{font-size: 250%;}
 .exp1,.equipo{text-align:center;}
 .exp1 .col{font-size: 120%;}
 i{margin:2%;}
