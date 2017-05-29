@@ -46,18 +46,38 @@ appIni.controller("appCtrl",function(indexFactory,$http){
     return uq.user.valido;
   }
 
-  function obtainData(){
-    $http.post("SWCDataRequesting.php", { type: "recDat" })
+  function obtainData(dataType){
+    $http.post("SWCDataRequesting.php", { type: "recDat", type: dataType })
           .success(function(data) {
             console.log(data);
-            uq.users = data.users;
-            indexFactory.users = uq.users;
-            uq.teams = data.teams;
-            indexFactory.teams = uq.teams;
-            uq.matches = data.matches;
-            indexFactory.matches = uq.matches;
-            uq.goals = data.goals;
-            indexFactory.goals = uq.goals;
+            switch (dataType)
+            {
+                case "U":
+                    uq.users = data.users;
+                    indexFactory.users = uq.users;
+                    break;
+                case "T":
+                    uq.teams = data.teams;
+                    indexFactory.teams = uq.teams;
+                    break;
+                case "M":
+                    uq.matches = data.matches;
+                    indexFactory.matches = uq.matches;
+                    break;
+                case "A":
+                    uq.actions = data.actions;
+                    indexFactory.actions = uq.actions;
+                    break;
+                case "P":
+                    uq.players = data.players;
+                    indexFactory.players = uq.players;
+                    break;
+                case "S":
+                    uq.signins = data.signins;
+                    indexFactory.signins = uq.signins;
+                    break;
+            }
+            
             /*for (var v = 0; v < uq.vehiculos.length; v++) {
               if (uq.vehiculos[v].activo == 1) { uq.vehiculos[v].activo = true; } else { uq.vehiculos[v].activo = false; }
             }*/
