@@ -33,7 +33,7 @@ appIni.controller("appCtrl",function(indexFactory,$http){
         if(value.pass == uq.user.pass)
         {
           uq.user.valid = true;
-          uq.user.teamID = value.id;
+          uq.user.teamID = value.teamID;
           uq.user.teamName = uq.getTeamById(value.id);
         }
       }
