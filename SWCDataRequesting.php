@@ -39,6 +39,15 @@
     case "S":
       obtainSignins($link);
       break;
+    case "PCS":
+      obtainPlayerChangeSignins($link);
+      break;
+    case "TO":
+      obtainTournaments($link);
+      break;
+    case "ST":
+      obtainStandings($link);
+      break;
   	default:
   		invalidRequest();
 	   }
@@ -112,6 +121,186 @@
   	$data['message'] = "Datos recogidos";
 	  echo json_encode($data);
   	exit;
+  }
+
+  function obtainTeams($con)
+  {
+    $data = array();
+    $query="SELECT * from teams";
+    $resultado=mysql_query($query) or die("Error recuperando equipos");
+  
+    $teams=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $id=$row['id'];
+        $name=utf8_decode($row['name']);
+        $budget=$row['budget'];
+        $teams[] = array('id'=> $id, 'name'=> $name, 'budget'=> $budget);
+    }
+    $data['teams']=$teams;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainPlayers($con)
+  {
+    $data = array();
+    $query="SELECT * from players";
+    $resultado=mysql_query($query) or die("Error recuperando jugadores");
+  
+    $players=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $id=$row['id'];
+        $name=utf8_decode($row['name']);
+        $salary=$row['salary'];
+        $teamID=$row['team_id'];
+        $players[] = array('id'=> $id, 'teamID'=> $teamID, 'name'=> $name, 'salary'=> $salary);
+    }
+    $data['players']=$players;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainMatches($con)
+  {
+    $data = array();
+    $query="SELECT * from matches";
+    $resultado=mysql_query($query) or die("Error recuperando partidos");
+  
+    $matches=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $id=$row['id'];
+        $local=$row['user'];
+        $away=$row['away'];
+        $tournament=$row['tournament'];
+        $localGoals=$row['local_goals'];
+        $awayGoals=$row['away_goals'];
+        $limitDate=$row['limit_date']
+        $matches[] = array('id'=> $id, 'tournament'=> $tournament, 'local'=> $local, 'away'=> $away, 'localGoals'=> $localGoals, 'awayGoals'=> $awayGoals, 'limitDate'=> $limitDate);
+    }
+    $data['matches']=$matches;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainActions($con)
+  {
+    $data = array();
+    $query="SELECT * from actions";
+    $resultado=mysql_query($query) or die("Error recuperando acciones");
+  
+    $actions=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $matchID=$row['match_id'];
+        $type=utf8_decode($row['type']);
+        $player=$row['player'];
+        $actions[] = array('matchID'=> $matchID, 'type'=> $type, 'player'=> $player);
+    }
+    $data['actions']=$actions;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainSignins($con)
+  {
+    $data = array();
+    $query="SELECT * from signins";
+    $resultado=mysql_query($query) or die("Error recuperando fichajes");
+  
+    $signins=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $id=$row['id'];
+        $player=$row['player'];
+        $buyerTeam=$row['buyer_team'];
+        $amount=$row['amount'];
+        $signins[] = array('id'=> $id, 'amount'=> $amount, 'player'=> $player, 'buyerTeam'=> $buyerTeam);
+    }
+    $data['signins']=$signins;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainPlayerChangeSignins($con)
+  {
+    $data = array();
+    $query="SELECT * from player_change_signins";
+    $resultado=mysql_query($query) or die("Error recuperando intercambios de jugadores en fichajes");
+  
+    $playerChangeSignins=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $signinID=$row['signin_id'];
+        $player=$row['player'];
+        $originTeam=$row['origin_team'];
+        $newTeam=$row['new_team'];
+        $playerChangeSignins[] = array('signinID'=> $signinID, 'newTeam'=> $newTeam, 'player'=> $player, 'originTeam'=> $originTeam);
+    }
+    $data['playerChangeSignins']=$playerChangeSignins;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainTournaments($con)
+  {
+    $data = array();
+    $query="SELECT * from tournaments";
+    $resultado=mysql_query($query) or die("Error recuperando torneos");
+  
+    $tournaments=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $name=utf8_decode($row['name']);
+        $edition=$row['edition'];
+        $tournaments[] = array('name'=> $name, 'edition'=> $edition);
+    }
+    $data['tournaments']=$tournaments;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainStandings($con)
+  {
+    $data = array();
+    $query="SELECT * from standings";
+    $resultado=mysql_query($query) or die("Error recuperando clasificaciones");
+  
+    $standings=array();
+    while($row = mysql_fetch_array($resultado))
+    {
+        $tournamentID=$row['tournament_id'];
+        $team=$row['team'];
+        $round=$row['round'];
+        $points=$row['points'];
+        $won=$row['won'];
+        $draw=$row['draw'];
+        $lost=$row['lost'];
+        $goalsFor=$row['goals_for'];
+        $goalsAgainst=$row['goals_against'];
+        $standings[] = array('tournamentID'=> $tournamentID, 'round'=> $round, 'team'=> $team, 'points'=> $points, 'round'=> $round, 'won'=> $won, 'draw'=> $draw, 'lost'=> $lost, 'goalsFor'=> $goalsFor, 'goalsAgainst'=> $goalsAgainst);
+    }
+    $data['standings']=$standings;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
   }
 
   function invalidRequest()

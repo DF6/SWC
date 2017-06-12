@@ -21,10 +21,17 @@ appIni.controller("navCtrl", function($location){
             return $location.path() == ruta;
         }
     })
-appIni.controller("appCtrl",function(indexFactory,$http){
+appIni.controller("appCtrl",function(indexFactory, $http, $location){
   var uq = this;
   uq.user = indexFactory.getUser();
-  obtainData();
+  switch($location.path())
+  {
+    case "/":
+        obtainData("U");
+        obtainData("T");
+        break;
+    
+  }
 
   uq.login = function(){
     angular.forEach(uq.users, function(value, key){
@@ -49,7 +56,6 @@ appIni.controller("appCtrl",function(indexFactory,$http){
   function obtainData(dataType){
     $http.post("SWCDataRequesting.php", { type: "recDat", type: dataType })
           .success(function(data) {
-            console.log(data);
             switch (dataType)
             {
                 case "U":
@@ -76,6 +82,18 @@ appIni.controller("appCtrl",function(indexFactory,$http){
                     uq.signins = data.signins;
                     indexFactory.signins = uq.signins;
                     break;
+                case "PCS":
+                    uq.playerChangeSignins = data.playerChangeSignins;
+                    indexFactory.playerChangeSignins = uq.playerChangeSignins;
+                    break;
+                case "TO":
+                    uq.tournaments = data.tournaments;
+                    indexFactory.tournaments = uq.tournaments;
+                    break;
+                case "ST":
+                    uq.standings = data.standings;
+                    indexFactory.standings = uq.standings;
+                    break;
             }
             
             /*for (var v = 0; v < uq.vehiculos.length; v++) {
@@ -84,7 +102,7 @@ appIni.controller("appCtrl",function(indexFactory,$http){
           })
           .error(function(error) {
             console.log(error);
-            Materialize.toast('No se han podido recoger los datos en la base de datos', 5000, 'rounded');
+            Materialize.toast('No se han podido recoger los datos', 5000, 'rounded');
           });
   }
 });
