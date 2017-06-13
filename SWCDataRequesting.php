@@ -7,13 +7,13 @@
   ini_set('post_max_size', '10M');
   ini_set('max_execution_time', 300);
   session_start();
-	$db_host="";
-	$db_name="";
-	$db_user="";
-	$db_pass="";
+	$db_host="localhost";
+	$db_name="id1956157_swc";
+	$db_user="id1956157_swcadmin";
+	$db_pass="swc2017swc2017";
 
-	$link=mysql_connect($db_host, $db_user, $db_pass) or die ("Error conectando a la base de datos - " . mysql_error());
-	mysql_select_db($db_name ,$link) or die("Error seleccionando la base de datos.");
+	$link=mysqli_connect($db_host, $db_user, $db_pass) or die ("Error conectando a la base de datos - " . mysql_error());
+	mysqli_select_db($link, $db_name) or die("Error seleccionando la base de datos.");
 	$params = json_decode(file_get_contents("php://input"));
 	
   if(isset($params->type) && !empty($params->type))
@@ -59,7 +59,7 @@
   {
     $data = array();
     $query="INSERT INTO users (team_id,user,pass) values (".$params->teamID.",'".$params->user."','".$params->pass."')";
-    $resultado=mysql_query($query) or die("Error insertando usuario");
+    $resultado=mysqli_query($con, $query) or die("Error insertando usuario");
     $data['success'] = true;
   	$data['message'] = "Usuario insertado";
     echo json_encode($data);
@@ -70,7 +70,7 @@
   {
     $data = array();
     $query="UPDATE users SET team_id=".$params->teamID.",user='".$params->user."',pass='".$params->pass."' where id=".$params->id."";
-    $resultado=mysql_query($query) or die("Error actualizando usuario");
+    $resultado=mysqli_query($con, $query) or die("Error actualizando usuario");
     $data['success'] = true;
   	$data['message'] = "Usuario actualizado";
     echo json_encode($data);
@@ -90,7 +90,7 @@
         $destino = 'docspdf/ID'.$_POST['id'].'-'.$_POST['usuario'].'-'.$_POST['documento'].".pdf";
         move_uploaded_file($origen, $destino);
 		$query="UPDATE documentosfra SET modificado=1,enlace='".$destino."', fecha_caducidad='".$cadu."' where id=".$_POST['id']."";
-		$resultado=mysql_query($query) or die("Error en la base de datos" . mysql_error());
+		$resultado=mysqli_query($con, $query) or die("Error en la base de datos" . mysql_error());
     }
 	echo "<script language='javascript'>window.location='index.html'</script>;";
   }*/
@@ -105,10 +105,10 @@
   {
     $data = array();
     $query="SELECT * from users";
-    $resultado=mysql_query($query) or die("Error recuperando usuarios");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando usuarios");
 	
     $users=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $id=$row['id'];
         $user=utf8_decode($row['user']);
@@ -127,10 +127,10 @@
   {
     $data = array();
     $query="SELECT * from teams";
-    $resultado=mysql_query($query) or die("Error recuperando equipos");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando equipos");
   
     $teams=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $id=$row['id'];
         $name=utf8_decode($row['name']);
@@ -148,10 +148,10 @@
   {
     $data = array();
     $query="SELECT * from players";
-    $resultado=mysql_query($query) or die("Error recuperando jugadores");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando jugadores");
   
     $players=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $id=$row['id'];
         $name=utf8_decode($row['name']);
@@ -170,10 +170,10 @@
   {
     $data = array();
     $query="SELECT * from matches";
-    $resultado=mysql_query($query) or die("Error recuperando partidos");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando partidos");
   
     $matches=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $id=$row['id'];
         $local=$row['user'];
@@ -181,7 +181,7 @@
         $tournament=$row['tournament'];
         $localGoals=$row['local_goals'];
         $awayGoals=$row['away_goals'];
-        $limitDate=$row['limit_date']
+        $limitDate=$row['limit_date'];
         $matches[] = array('id'=> $id, 'tournament'=> $tournament, 'local'=> $local, 'away'=> $away, 'localGoals'=> $localGoals, 'awayGoals'=> $awayGoals, 'limitDate'=> $limitDate);
     }
     $data['matches']=$matches;
@@ -195,10 +195,10 @@
   {
     $data = array();
     $query="SELECT * from actions";
-    $resultado=mysql_query($query) or die("Error recuperando acciones");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando acciones");
   
     $actions=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $matchID=$row['match_id'];
         $type=utf8_decode($row['type']);
@@ -216,10 +216,10 @@
   {
     $data = array();
     $query="SELECT * from signins";
-    $resultado=mysql_query($query) or die("Error recuperando fichajes");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando fichajes");
   
     $signins=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $id=$row['id'];
         $player=$row['player'];
@@ -238,10 +238,10 @@
   {
     $data = array();
     $query="SELECT * from player_change_signins";
-    $resultado=mysql_query($query) or die("Error recuperando intercambios de jugadores en fichajes");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando intercambios de jugadores en fichajes");
   
     $playerChangeSignins=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $signinID=$row['signin_id'];
         $player=$row['player'];
@@ -260,11 +260,12 @@
   {
     $data = array();
     $query="SELECT * from tournaments";
-    $resultado=mysql_query($query) or die("Error recuperando torneos");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando torneos");
   
     $tournaments=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
+        $id=$row['id'];
         $name=utf8_decode($row['name']);
         $edition=$row['edition'];
         $tournaments[] = array('name'=> $name, 'edition'=> $edition);
@@ -280,10 +281,10 @@
   {
     $data = array();
     $query="SELECT * from standings";
-    $resultado=mysql_query($query) or die("Error recuperando clasificaciones");
+    $resultado=mysqli_query($con, $query) or die("Error recuperando clasificaciones");
   
     $standings=array();
-    while($row = mysql_fetch_array($resultado))
+    while($row = mysqli_fetch_array($resultado))
     {
         $tournamentID=$row['tournament_id'];
         $team=$row['team'];

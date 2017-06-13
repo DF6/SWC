@@ -13,7 +13,9 @@ appIni.config(function($routeProvider){
             .when("/clubsupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "clubsupercup.html"})
             .when("/pending", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pending.html"})
             .when("/matchlog", {controller: "appCtrl",controllerAs: "vm",templateUrl: "matchlog.html"})
-            .when("/resultinput", {controller: "appCtrl",controllerAs: "vm",templateUrl: "resultinput.html"});
+            .when("/resultinput", {controller: "appCtrl",controllerAs: "vm",templateUrl: "resultinput.html"})
+            .when("/register", {controller: "appCtrl",controllerAs: "vm",templateUrl: "register.html"})
+            .when("/assignteam", {controller: "appCtrl",controllerAs: "vm",templateUrl: "assignteam.html"});
 });
 appIni.controller("navCtrl", function($location){
         var map = this;
@@ -39,6 +41,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
       {
         if(value.pass == uq.user.pass)
         {
+          uq.user.id = value.id;
           uq.user.valid = true;
           uq.user.teamID = value.teamID;
           uq.user.teamName = uq.getTeamById(value.id);
@@ -48,9 +51,65 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     if(!uq.user.valid){
       uq.user.user = '';
       uq.user.pass = '';
-      Materialize.toast('Usuario o contraseña inválida');
+      Materialize.toast('Usuario o contraseña inválida', 5000, 'rounded');
     }
     return uq.user.valido;
+  }
+
+  uq.getUserById = function(id)
+  {
+    angular.forEach(uq.users, function(value, index){
+        if(value.id == id)
+        {
+            return value;
+        }
+    });
+    Materialize.toast('No existe el usuario', 5000, 'rounded');
+  }
+
+  uq.getTeamById = function(id)
+  {
+    angular.forEach(uq.teams, function(value, index){
+        if(value.id == id)
+        {
+            return value;
+        }
+    });
+    Materialize.toast('No existe el equipo', 5000, 'rounded');
+  }
+
+  uq.getMatchById = function(id)
+  {
+    angular.forEach(uq.matches, function(value, index){
+        if(value.id == id)
+        {
+            return value;
+        }
+    });
+    Materialize.toast('No existe el partido', 5000, 'rounded');
+  }
+
+  uq.getPlayerById = function(id)
+  {
+    angular.forEach(uq.players, function(value, index){
+        if(value.id == id)
+        {
+            return value;
+        }
+    });
+    Materialize.toast('No existe el jugador', 5000, 'rounded');
+  }
+
+  uq.getActionsByMatch = function(matchID)
+  {
+    var matchActions = [];
+    angular.forEach(uq.actions, function(value, index){
+        if(value.matchID == matchID)
+        {
+            matchActions.push(value);
+        }
+    });
+    return matchActions;
   }
 
   function obtainData(dataType){
@@ -61,6 +120,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                 case "U":
                     uq.users = data.users;
                     indexFactory.users = uq.users;
+                    for (var v = 0; v < uq.users.length; v++) {
+                      uq.users[v].id = parseInt(uq.users[v].id);
+                      uq.users[v].teamID = parseInt(uq.users[v].teamID);
+                    }
                     break;
                 case "T":
                     uq.teams = data.teams;
@@ -96,9 +159,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     break;
             }
             
-            /*for (var v = 0; v < uq.vehiculos.length; v++) {
-              if (uq.vehiculos[v].activo == 1) { uq.vehiculos[v].activo = true; } else { uq.vehiculos[v].activo = false; }
-            }*/
+            
           })
           .error(function(error) {
             console.log(error);
