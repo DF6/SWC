@@ -64,7 +64,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
             return value;
         }
     });
-    Materialize.toast('No existe el usuario', 5000, 'rounded');
+    if(id!=-1){
+        Materialize.toast('No existe el usuario', 5000, 'rounded');
+    }
   }
 
   uq.getTeamById = function(id)
@@ -75,7 +77,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
             return value;
         }
     });
-    Materialize.toast('No existe el equipo', 5000, 'rounded');
+    if(id!=-1){
+      Materialize.toast('No existe el equipo', 5000, 'rounded');
+    }
   }
 
   uq.getMatchById = function(id)
@@ -86,7 +90,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
             return value;
         }
     });
-    Materialize.toast('No existe el partido', 5000, 'rounded');
+    if(id!=-1){
+      Materialize.toast('No existe el partido', 5000, 'rounded');
+    }
   }
 
   uq.getPlayerById = function(id)
@@ -97,7 +103,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
             return value;
         }
     });
-    Materialize.toast('No existe el jugador', 5000, 'rounded');
+    if(id!=-1){
+      Materialize.toast('No existe el jugador', 5000, 'rounded');
+    }
   }
 
   uq.getActionsByMatch = function(matchID)
