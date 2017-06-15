@@ -19,43 +19,69 @@
   if(isset($params->type) && !empty($params->type))
   {
     $type=$params->type;
-
-    switch ($type) {
-		case "U":
-			obtainUsers($link);
-  			break;
-		case "T":
-			obtainTeams($link);
-			break;
-		case "M":
-			obtainMatches($link);
-			break;
-    case "A":
-      obtainActions($link);
-      break;
-    case "P":
-      obtainPlayers($link);
-      break;
-    case "S":
-      obtainSignins($link);
-      break;
-    case "PCS":
-      obtainPlayerChangeSignins($link);
-      break;
-    case "TO":
-      obtainTournaments($link);
-      break;
-    case "ST":
-      obtainStandings($link);
-      break;
-  	default:
-  		invalidRequest();
-	   }
+    if(strcmp($type, "recDat") == 0)
+    {
+      $datatype=$params->dataType;
+      switch ($datatype) {
+        case "U":
+          obtainUsers($link);
+            break;
+        case "T":
+          obtainTeams($link);
+          break;
+        case "M":
+          obtainMatches($link);
+          break;
+        case "A":
+          obtainActions($link);
+          break;
+        case "P":
+          obtainPlayers($link);
+          break;
+        case "S":
+          obtainSignins($link);
+          break;
+        case "PCS":
+          obtainPlayerChangeSignins($link);
+          break;
+        case "TO":
+          obtainTournaments($link);
+          break;
+        case "ST":
+          obtainStandings($link);
+          break;
+        case "RT":
+          obtainTeamRequests($link);
+          break;
+        default:
+          invalidRequest();
+     }
+   }else{
+    switch($type)
+    {
+       case "solEqu":
+          requestTeam($link, $params);
+            break;
+        default:
+          invalidRequest();
+    }
+   }
   }else{
     invalidRequest();
   }
 
-  function saveUser($con,$params)
+  function requestTeam($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO team_requests (user) values (".$params->user.")";
+    $resultado=mysqli_query($con, $query) or die("Error solicitando equipo");
+    $data['success'] = true;
+    $data['message'] = "Equipo solicitado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function saveUser($con, $params)
   {
     $data = array();
     $query="INSERT INTO users (team_id,user,pass) values (".$params->teamID.",'".$params->user."','".$params->pass."')";
@@ -66,7 +92,7 @@
   	exit;
   }
 
-  function updateUser($con,$params)
+  function updateUser($con, $params)
   {
     $data = array();
     $query="UPDATE users SET team_id=".$params->teamID.",user='".$params->user."',pass='".$params->pass."' where id=".$params->id."";
@@ -113,8 +139,9 @@
         $id=$row['id'];
         $user=utf8_decode($row['user']);
         $pass=utf8_decode($row['pass']);
+        $email=utf8_decode($row['email']);
         $teamID=$row['team_id'];
-        $users[] = array('id'=> $id, 'teamID'=> $teamID, 'user'=> $user, 'pass'=> $pass);
+        $users[] = array('id'=> $id, 'teamID'=> $teamID, 'user'=> $user, 'pass'=> $pass, 'email'=> $email);
     }
     $data['users']=$users;
     $data['success'] = true;
@@ -298,6 +325,26 @@
         $standings[] = array('tournamentID'=> $tournamentID, 'round'=> $round, 'team'=> $team, 'points'=> $points, 'round'=> $round, 'won'=> $won, 'draw'=> $draw, 'lost'=> $lost, 'goalsFor'=> $goalsFor, 'goalsAgainst'=> $goalsAgainst);
     }
     $data['standings']=$standings;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainTeamRequests($con)
+  {
+    $data = array();
+    $query="SELECT * from team_requests";
+    $resultado=mysqli_query($con, $query) or die("Error recuperando solicitudes de equipo");
+  
+    $teamRequests=array();
+    while($row = mysqli_fetch_array($resultado))
+    {
+        $user=$row['user'];
+        $requestDate=$row['request_date'];
+        $teamRequests[] = array('user'=> $user, 'requestDate'=> $requestDate);
+    }
+    $data['teamRequests']=$teamRequests;
     $data['success'] = true;
     $data['message'] = "Datos recogidos";
     echo json_encode($data);

@@ -1,4 +1,3 @@
-
 <div class="row intro z-depth-2" ng-controller="appCtrl as uq">
   <div class="col s12 m2" style="color:#2196f3">
     uQuest
@@ -6,7 +5,7 @@
   <div class="col s12 m4" id="portada" ng-show="!uq.user.valid">
     <div class="row">
       <div>
-        <span style="font-size:100%">Spanish World Cup Liga FIFA 18</span>
+        <span style="font-size:100%">Spanish World Cup Liga<br/>FIFA 18</span>
         <div class="row">
           <div class="col s12">
             <div class="form-group">
@@ -34,18 +33,18 @@
   <div class="col s12 m4" id="portadalogin" ng-show="uq.user.valid && uq.user.teamID>0">
     <div class="row">
       <div>
-        <span style="font-size:100%">Spanish World Cup Liga FIFA 18</span>
+        <span style="font-size:100%">Spanish World Cup Liga<br/>FIFA 18</span>
         <div class="row">
           <div class="col s12">
             <div class="form-group">
-              <span style="font-size:50%"><b>{{uq.user.teamName}}</b></span>
+              <span style="font-size:50%"><b>{{uq.getTeamById(uq.user.teamID).name}}</b></span>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col s12">
             <div class="form-group">
-              <img ng-src="{{uq.getTeamById(uq.user.teamID).imageRoute}}"/>
+              <img ng-src="{{uq.user.teamImage}}"/>
             </div>
           </div>
         </div>
@@ -105,10 +104,13 @@
       </div>
     </div>
   </div>
-  <div class="col s12 m10 offset-m1" style="margin-bottom:2%"; ng-show="uq.user.valid && uq.user.teamID==0">
+  <div class="col s12 m8" ng-show="uq.user.valid && uq.user.user=='admin'">
+  <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('teamrequests')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Solicitudes</button>
+  </div>
+  <div class="col s12 m10 offset-m1" style="margin-bottom:2%"; ng-show="uq.user.valid && uq.user.teamID==0 && uq.user.user!='admin'">
     <h2>Sin equipo asignado</h2>
     Tu usuario no tiene equipo asignado 
-    <button class="col s12 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825">Solicitar</button>
+    <button class="col s12 waves-effect waves-light btn" ng-click="uq.requestTeam()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Solicitar</button>
   </div>
 </div>
 <!--
@@ -158,7 +160,6 @@
     <a class="waves-effect waves-light btn-large botonu" href="uquest.html" style="background-color:#f9a825">Quiero hacer mi uQuest</a>
   </div>
 </div>
--->
 <div>
   <div class="equipo" style="font-size:120%;">
     <div class="row">
@@ -189,3 +190,4 @@
     </div>
   </div>
 </div>
+-->
