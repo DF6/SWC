@@ -16,10 +16,7 @@
         </div>
         <div class="card-action">
           <a class="col s0 m3">#{{uq.getUserById(tr.user).user}}</a>
-          <select ng-model="uq.teamSuggested">
-            <option ng-repeat="at in uq.availableTeams" ng-value="at">{{uq.getTeamById(at).name}}</option>
-          </select>
-          <button class="col s12 m6 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.giveTeamToRequester(tr.user)">Otorgar</button>
+          <button class="col s12 m6 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.giveTeamToRequester(tr.user)">Sortear</button>
         </div>
       </div>
     </div>

@@ -27,7 +27,6 @@ appIni.controller("navCtrl", function($location){
 appIni.controller("appCtrl",function(indexFactory, $http, $location){
   var uq = this;
   uq.user = indexFactory.getUser();
-  uq.teamSuggested = 0;
   switch($location.path())
   {
     case "/":
@@ -38,7 +37,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         obtainData("U");
         obtainData("T");
         obtainData("RT");
-        setAvailableTeams();
         break;
   }
 
@@ -75,6 +73,24 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   {
     if(number<10){number="0"+number;}
     return number;
+  }
+
+  uq.giveTeamToRequester = function(requester)
+  {
+    if(setAvailableTeams().length!=0)
+    {
+        var chosenTeam = Math.floor(Math.random()*setAvailableTeams().length);
+        $http.post("SWCDataRequesting.php", { type: "givTea", user: requester, team: chosenTeam})
+              .success(function(data) {
+                Materialize.toast(uq.getTeamById(chosenTeam).name + ' asignado a ' + uq.getUserById(requester).user, 5000, 'rounded');
+              })
+              .error(function(error) {
+                console.log(error);
+                Materialize.toast('No se ha podido asignar el equipo', 5000, 'rounded');
+              });
+    }else{
+        Materialize.toast('No hay equipos para asignar', 5000, 'rounded');
+    }
   }
 
   uq.getUserById = function(id)

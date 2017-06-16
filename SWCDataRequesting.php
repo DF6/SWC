@@ -62,6 +62,9 @@
        case "solEqu":
           requestTeam($link, $params);
             break;
+       case "givTea":
+          giveTeamToRequester($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -75,6 +78,17 @@
     $data = array();
     $query="INSERT INTO team_requests (user) values (".$params->user.")";
     $resultado=mysqli_query($con, $query) or die("Error solicitando equipo");
+    $data['success'] = true;
+    $data['message'] = "Equipo solicitado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function giveTeamToRequester($con, $params)
+  {
+    $data = array();
+    $query="UPDATE users SET team_id=" . $params->team . " where id=" . $params->user;
+    $resultado=mysqli_query($con, $query) or die("Error asignando equipo");
     $data['success'] = true;
     $data['message'] = "Equipo solicitado";
     echo json_encode($data);
