@@ -37,14 +37,21 @@
         <div class="row">
           <div class="col s12">
             <div class="form-group">
-              <span style="font-size:50%"><b>{{uq.getTeamById(uq.user.teamID).name}}</b></span>
+              <span style="font-size:50%"><b>{{uq.user.user.toUpperCase()}} - {{uq.getTeamById(uq.user.teamID).name}}</b></span>
             </div>
           </div>
         </div>
         <div class="row">
           <div class="col s12">
             <div class="form-group">
-              <img ng-src="{{uq.user.teamImage}}"/>
+              <img ng-src="{{uq.getTeamById(uq.user.teamID).teamImage}}" style="width:30%;height:20%;" />
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <span style="font-size:50%"><b>{{uq.getTeamById(uq.user.teamID).budget}}M€</b></span>
             </div>
           </div>
         </div>
@@ -55,7 +62,7 @@
     <h2>Mi equipo</h2>
     <div class="row">
       <div class="col s10" style="height:4%">
-          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.user.valid" href="#/myteam" style="font-size:100%;background-color:#f9a825">Plantilla</button>
+          <button class="col s12 waves-effect waves-light btn" ng-disabled="!uq.user.valid" ng-click="uq.redirEditar('myteam')" style="font-size:100%;background-color:#f9a825">Plantilla</button>
       </div>
     </div>
     <div class="row">

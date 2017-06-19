@@ -1,0 +1,33 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Mi plantilla</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row" ng-repeat="tr in uq.getPlayersByTeam(uq.user.teamID)">
+    <div class="col m3 s12">
+      <div class="card" style="background-color:#3498db">
+        <div class="card-content white-text">
+          <span class="card-title">{{uq.getPlayerById(tr.id).name}}</span>
+          <br/><span><b>Cláusula - {{uq.getPlayerById(tr.id).salary*10}}</b><br/>
+          Salario - {{uq.getPlayerById(tr.id).salary}}</span><br/>
+        </div>
+        <div class="card-action">
+          <button class="col s12 m6 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.redirEditarConDatos('salary', tr.id)">Sueldo</button>
+          <button class="col s12 m6 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.discardPlayer(tr.id)">Despedir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

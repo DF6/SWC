@@ -65,6 +65,9 @@
        case "givTea":
           giveTeamToRequester($link, $params);
             break;
+       case "disPla":
+          discardPlayer($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -90,7 +93,18 @@
     $query="UPDATE users SET team_id=" . $params->team . " where id=" . $params->user;
     $resultado=mysqli_query($con, $query) or die("Error asignando equipo");
     $data['success'] = true;
-    $data['message'] = "Equipo solicitado";
+    $data['message'] = "Equipo otorgado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function discardPlayer($con, $params)
+  {
+    $data = array();
+    $query="UPDATE players SET team_id=0 where id=" . $params->player;
+    $resultado=mysqli_query($con, $query) or die("Error liberando jugador");
+    $data['success'] = true;
+    $data['message'] = "Jugador liberado";
     echo json_encode($data);
     exit;
   }
@@ -176,7 +190,8 @@
         $id=$row['id'];
         $name=utf8_decode($row['name']);
         $budget=$row['budget'];
-        $teams[] = array('id'=> $id, 'name'=> $name, 'budget'=> $budget);
+        $teamImage=$row['image_route'];
+        $teams[] = array('id'=> $id, 'name'=> $name, 'budget'=> $budget, 'teamImage'=> $teamImage);
     }
     $data['teams']=$teams;
     $data['success'] = true;

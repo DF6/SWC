@@ -26,6 +26,7 @@ appIni.controller("navCtrl", function($location){
     })
 appIni.controller("appCtrl",function(indexFactory, $http, $location){
   var uq = this;
+  uq.datoViajero = indexFactory.datoViajero;
   uq.user = indexFactory.getUser();
   switch($location.path())
   {
@@ -69,6 +70,12 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     location.href="#/" + ruta;
   }
 
+  uq.redirEditarConDatos=function(ruta, dato)
+  {
+    indexFactory.datoViajero = dato;
+    uq.redirEditar(ruta);
+  }
+
   uq.addZero = function(number)
   {
     if(number<10){number="0"+number;}
@@ -79,7 +86,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   {
     if(setAvailableTeams().length!=0)
     {
-        var chosenTeam = Math.floor(Math.random()*setAvailableTeams().length);
+        var chosenTeam = 1 + Math.floor(Math.random()*setAvailableTeams().length);
         $http.post("SWCDataRequesting.php", { type: "givTea", user: requester, team: chosenTeam})
               .success(function(data) {
                 Materialize.toast(uq.getTeamById(chosenTeam).name + ' asignado a ' + uq.getUserById(requester).user, 5000, 'rounded');
@@ -90,6 +97,21 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
               });
     }else{
         Materialize.toast('No hay equipos para asignar', 5000, 'rounded');
+    }
+  }
+
+  uq.discardPlayer = function(player)
+  {
+    if(confirm('¿Seguro?'))
+    {
+        $http.post("SWCDataRequesting.php", { type: "disPla", player: player})
+              .success(function(data) {
+                Materialize.toast(uq.getPlayerById(player).name + ' ahora es libre', 5000, 'rounded');
+              })
+              .error(function(error) {
+                console.log(error);
+                Materialize.toast('No se ha podido descartar el jugador', 5000, 'rounded');
+              });
     }
   }
 
@@ -268,7 +290,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
 appIni.factory("indexFactory", function(){
     var user={id:-1, user: '', pass: '', email:'', valid: false, teamName: '', teamID: -1, teamImage: ''};
     var interfaz = {
-        pass:"",
+        datoViajero:-1,
         getUser: function(){
             return user;
         },
