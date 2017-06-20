@@ -28,6 +28,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   var uq = this;
   uq.datoViajero = indexFactory.datoViajero;
   uq.user = indexFactory.getUser();
+  uq.teamPlayers = [];
   switch($location.path())
   {
     case "/":
@@ -38,6 +39,23 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         obtainData("U");
         obtainData("T");
         obtainData("RT");
+        break;
+    case "/myteam":
+        obtainData("U");
+        obtainData("T");
+        obtainData("P");
+        break;
+    default:
+        obtainData("U");
+        obtainData("T");
+        obtainData("P");
+        obtainData("RT");
+        obtainData("M");
+        obtainData("A");
+        obtainData("S");
+        obtainData("TO");
+        obtainData("ST");
+        obtainData("PCS");
         break;
   }
 
@@ -259,6 +277,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                       uq.players[v].id = parseInt(uq.players[v].id);
                       uq.players[v].teamID = parseInt(uq.players[v].teamID);
                       uq.players[v].salary = parseFloat(uq.players[v].salary);
+                    }
+                    if($location.path()=="/myteam")
+                    {
+                        uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
                     }
                     break;
                 case "S":

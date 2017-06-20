@@ -7,13 +7,11 @@
   </div>
   </div>
   <div class="col s12 m10 offset-m1">
-    <div class="row" ng-repeat="tr in uq.getPlayersByTeam(uq.user.teamID)">
-    <div class="col m3 s12">
+    <div class="row" ng-repeat="tr in uq.teamPlayers">
+    <div class="col m10 s12">
       <div class="card" style="background-color:#3498db">
         <div class="card-content white-text">
-          <span class="card-title">{{uq.getPlayerById(tr.id).name}}</span>
-          <br/><span><b>Cláusula - {{uq.getPlayerById(tr.id).salary*10}}</b><br/>
-          Salario - {{uq.getPlayerById(tr.id).salary}}</span><br/>
+         
         </div>
         <div class="card-action">
           <button class="col s12 m6 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.redirEditarConDatos('salary', tr.id)">Sueldo</button>
