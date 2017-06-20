@@ -89,6 +89,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         var chosenTeam = 1 + Math.floor(Math.random()*setAvailableTeams().length);
         $http.post("SWCDataRequesting.php", { type: "givTea", user: requester, team: chosenTeam})
               .success(function(data) {
+
                 Materialize.toast(uq.getTeamById(chosenTeam).name + ' asignado a ' + uq.getUserById(requester).user, 5000, 'rounded');
               })
               .error(function(error) {
@@ -163,6 +164,18 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     return response;
   }
 
+  uq.getPlayersByTeam = function(team)
+  {
+    var teamPlayers = [];
+    angular.forEach(uq.players, function(value, index){
+        if(value.teamID == team)
+        {
+            teamPlayers.push(value);
+        }
+    });
+    return teamPlayers;
+  }
+
   uq.getActionsByMatch = function(matchID)
   {
     var matchActions = [];
@@ -179,6 +192,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   {
     $http.post("SWCDataRequesting.php", { type: "solEqu", user: uq.user.id})
           .success(function(data) {
+            uq.teamRequests = [];
+            obtainData("RT");
             Materialize.toast('Equipo solicitado. Espera respuesta de un administrador', 5000, 'rounded');
           })
           .error(function(error) {
@@ -242,6 +257,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     indexFactory.players = uq.players;
                     for (var v = 0; v < uq.players.length; v++) {
                       uq.players[v].id = parseInt(uq.players[v].id);
+                      uq.players[v].teamID = parseInt(uq.players[v].teamID);
+                      uq.players[v].salary = parseFloat(uq.players[v].salary);
                     }
                     break;
                 case "S":

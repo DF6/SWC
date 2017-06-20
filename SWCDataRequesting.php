@@ -92,6 +92,8 @@
     $data = array();
     $query="UPDATE users SET team_id=" . $params->team . " where id=" . $params->user;
     $resultado=mysqli_query($con, $query) or die("Error asignando equipo");
+    $query2="DELETE FROM team_requests where user=" . $params->user;
+    $resultado2=mysqli_query($con, $query2) or die ("Error borrando solicitudes");
     $data['success'] = true;
     $data['message'] = "Equipo otorgado";
     echo json_encode($data);
