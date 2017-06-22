@@ -23,7 +23,7 @@ appIni.controller("navCtrl", function($location){
         map.estoy = function(ruta){
             return $location.path() == ruta;
         }
-    })
+    });
 appIni.controller("appCtrl",function(indexFactory, $http, $location){
   var uq = this;
   uq.datoViajero = indexFactory.datoViajero;

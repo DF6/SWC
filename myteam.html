@@ -7,15 +7,17 @@
   </div>
   </div>
   <div class="col s12 m10 offset-m1">
-    <div class="row" ng-repeat="tr in uq.teamPlayers">
-    <div class="col m10 s12">
+    <div class="row">
+    <div class="col m4 s12" ng-repeat="tp in uq.teamPlayers">
       <div class="card" style="background-color:#3498db">
         <div class="card-content white-text">
-         
+         <h5 style="color:white;">{{tp.name}} - {{tp.position}}</h5>
+         Cláusula - <b ng-if="tp.salary!=10">{{tp.salary*10}}</b><b ng-if="tp.salary==10">INTOCABLE</b><br/>
+         Salario - {{tp.salary}}
         </div>
         <div class="card-action">
-          <button class="col s12 m6 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.redirEditarConDatos('salary', tr.id)">Sueldo</button>
-          <button class="col s12 m6 waves-effect waves-light btn" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.discardPlayer(tr.id)">Despedir</button>
+          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.redirEditarConDatos('salary', tp.id)">Sueldo</button>
+          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.discardPlayer(tp.id)">Despedir</button>
         </div>
       </div>
     </div>

@@ -215,7 +215,8 @@
         $name=utf8_decode($row['name']);
         $salary=$row['salary'];
         $teamID=$row['team_id'];
-        $players[] = array('id'=> $id, 'teamID'=> $teamID, 'name'=> $name, 'salary'=> $salary);
+        $position=utf8_decode($row['position']);
+        $players[] = array('id'=> $id, 'teamID'=> $teamID, 'name'=> $name, 'salary'=> $salary, 'position'=> $position);
     }
     $data['players']=$players;
     $data['success'] = true;
