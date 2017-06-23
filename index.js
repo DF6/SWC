@@ -9,6 +9,7 @@ appIni.config(function($routeProvider){
             .when("/europaleague", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europaleague.html"})
             .when("/intertoto", {controller: "appCtrl",controllerAs: "vm",templateUrl: "intertoto.html"})
             .when("/myteam", {controller: "appCtrl",controllerAs: "vm",templateUrl: "myteam.html"})
+            .when("/salary", {controller: "appCtrl",controllerAs: "vm",templateUrl: "salary.html"})
             .when("/europesupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europesupercup.html"})
             .when("/clubsupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "clubsupercup.html"})
             .when("/pending", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pending.html"})
