@@ -26,10 +26,13 @@ appIni.controller("navCtrl", function($location){
         }
     });
 appIni.controller("appCtrl",function(indexFactory, $http, $location){
+  const INTOCABLES = 2;
   var uq = this;
   uq.datoViajero = indexFactory.datoViajero;
   uq.user = indexFactory.getUser();
   uq.teamPlayers = [];
+  uq.salaryLimit = 0;
+  uq.salaryRange = 0;
   switch($location.path())
   {
     case "/":
@@ -43,6 +46,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         break;
     case "/myteam":
         obtainData("U");
+        obtainData("T");
+        obtainData("P");
+        break;
+    case "/salary":
         obtainData("T");
         obtainData("P");
         break;
@@ -108,7 +115,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         var chosenTeam = 1 + Math.floor(Math.random()*setAvailableTeams().length);
         $http.post("SWCDataRequesting.php", { type: "givTea", user: requester, team: chosenTeam})
               .success(function(data) {
-
+                uq.teamRequests = [];
+                obtainData("RT");
                 Materialize.toast(uq.getTeamById(chosenTeam).name + ' asignado a ' + uq.getUserById(requester).user, 5000, 'rounded');
               })
               .error(function(error) {
@@ -240,6 +248,35 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     return availableTeams;
   }
 
+  function setSalaryLimit()
+  {
+     var intoc = 0;
+     var salarios = 0;
+     angular.forEach(uq.teamPlayers, function(value, key){
+        if(value.salary == 10)
+        {
+            intoc++;
+        }
+        salarios += value.salary;
+     });
+     if(salarios>=uq.getTeamById(uq.user.teamID).budget)
+     {
+        uq.salaryLimit = 0;
+     }else if(salarios>(uq.getTeamById(uq.user.teamID).budget)-10 && salarios<uq.getTeamById(uq.user.teamID).budget){
+        uq.salaryLimit=(uq.getTeamById(uq.user.teamID).budget-salarios)*10;
+     }else if(salarios<(uq.getTeamById(uq.user.teamID).budget)-10){
+        uq.salaryLimit=100;
+     }
+     if(intoc>=INTOCABLES && uq.salaryLimit==100)
+     {
+        uq.salaryLimit--;
+     }
+     console.log("Intocables - " + intoc);
+     console.log("Límite de salario - " + uq.salaryLimit);
+     console.log("Presupuesto - " + uq.getTeamById(uq.user.teamID).budget);
+     console.log("Salarios - " + salarios);
+  }
+
   function obtainData(dataType){
     $http.post("SWCDataRequesting.php", { type: "recDat", dataType: dataType })
           .success(function(data) {
@@ -282,6 +319,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     if($location.path()=="/myteam")
                     {
                         uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
+                    }else if($location.path()=="/salary"){
+                        uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
+                        uq.salaryLimit = setSalaryLimit();
                     }
                     break;
                 case "S":

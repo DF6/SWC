@@ -13,9 +13,10 @@
     <div class="row">
       <form action="#">
         <p class="range-field">
-          <input type="range" id="salaryrange" min="1" max="uq.setSalaryLimit()" />
+          <input type="range" id="salaryrange" min="0" max="uq.salaryLimit" ng-model="uq.salaryRange"/>
         </p>
       </form>
+      {{uq.salaryRange}}
     </div>
   </div>
   <div class="col s12 m10 offset-m1">
