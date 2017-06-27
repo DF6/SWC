@@ -143,6 +143,19 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     }
   }
 
+  uq.saveSalary = function(player, newSalary)
+  {
+    $http.post("SWCDataRequesting.php", { type: "guaSal", player: player, salary: newSalary/10})
+          .success(function(data) {
+            Materialize.toast('Salario cambiado', 5000, 'rounded');
+            uq.redirEditar('myteam');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido solicitar el equipo', 5000, 'rounded');
+          });
+  }
+
   uq.getUserById = function(id)
   {
     var response = {};
@@ -203,6 +216,16 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     return teamPlayers;
   }
 
+  uq.getTotalSalariesByTeam = function(team)
+  {
+    var teamPlayers = uq.getPlayersByTeam(team);
+    var salarios = 0;
+    angular.forEach(teamPlayers, function(value, index){
+        salarios += value.salary;
+    });
+    return salarios;
+  }
+
   uq.getActionsByMatch = function(matchID)
   {
     var matchActions = [];
@@ -213,6 +236,43 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         }
     });
     return matchActions;
+  }
+
+  uq.getMatchesByTeam = function(team)
+  {
+    var matches = [];
+    angular.forEach(uq.matches, function(value, index){
+        if(value.local == team || value.away == team)
+        {
+            matches.push(value);
+        }
+    });
+    return matches;
+  }
+
+  uq.getMatchesByTournament = function(tournament)
+  {
+    var matches = [];
+    angular.forEach(uq.matches, function(value, index){
+        if(value.tournament == tournament)
+        {
+            matches.push(value);
+        }
+    });
+    return matches;
+  }
+
+  uq.getUntouchablesByTeam = function(team)
+  {
+    var teamPlayers = uq.getPlayersByTeam(team);
+    var intocables = 0;
+    angular.forEach(teamPlayers, function(value, index){
+        if(value.salary==10)
+        {
+            intocables++;
+        }
+    });
+    return intocables;
   }
 
   uq.requestTeam = function()
@@ -259,18 +319,20 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         }
         salarios += value.salary;
      });
-     if(salarios>=uq.getTeamById(uq.user.teamID).budget)
+     var presupuesto = uq.getTeamById(uq.user.teamID).budget;
+     if(salarios>=presupuesto)
      {
         uq.salaryLimit = 0;
-     }else if(salarios>(uq.getTeamById(uq.user.teamID).budget)-10 && salarios<uq.getTeamById(uq.user.teamID).budget){
-        uq.salaryLimit=(uq.getTeamById(uq.user.teamID).budget-salarios)*10;
-     }else if(salarios<(uq.getTeamById(uq.user.teamID).budget)-10){
+     }else if(salarios>presupuesto-10 && salarios<presupuesto){
+        uq.salaryLimit=(presupuesto-salarios)*10;
+     }else if(salarios<presupuesto-10){
         uq.salaryLimit=100;
      }
      if(intoc>=INTOCABLES && uq.salaryLimit==100)
      {
         uq.salaryLimit--;
      }
+     $('#salaryrange').attr('max', uq.salaryLimit);
      console.log("Intocables - " + intoc);
      console.log("Límite de salario - " + uq.salaryLimit);
      console.log("Presupuesto - " + uq.getTeamById(uq.user.teamID).budget);
@@ -295,6 +357,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     indexFactory.teams = uq.teams;
                     for (var v = 0; v < uq.teams.length; v++) {
                       uq.teams[v].id = parseInt(uq.teams[v].id);
+                      uq.teams[v].budget = parseFloat(uq.teams[v].budget);
                     }
                     break;
                 case "M":
@@ -368,7 +431,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   }
 });
 appIni.factory("indexFactory", function(){
-    var user={id:-1, user: '', pass: '', email:'', valid: false, teamName: '', teamID: -1, teamImage: ''};
+    var user={id:-1, user: 'axelldf6', pass: 'infinito6', email:'', valid: false, teamName: '', teamID: -1, teamImage: ''};
     var interfaz = {
         datoViajero:-1,
         getUser: function(){

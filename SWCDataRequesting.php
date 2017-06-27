@@ -68,6 +68,9 @@
        case "disPla":
           discardPlayer($link, $params);
             break;
+       case "guaSal":
+          saveSalary($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -107,6 +110,17 @@
     $resultado=mysqli_query($con, $query) or die("Error liberando jugador");
     $data['success'] = true;
     $data['message'] = "Jugador liberado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function saveSalary($con, $params)
+  {
+    $data = array();
+    $query="UPDATE players SET salary=".$params->salary." where id=".$params->player."";
+    $resultado=mysqli_query($con, $query) or die("Error actualizando salario");
+    $data['success'] = true;
+    $data['message'] = "Salario actualizado";
     echo json_encode($data);
     exit;
   }
