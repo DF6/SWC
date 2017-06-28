@@ -25,6 +25,7 @@
         <div class="row">
           <div class="col s12">
             <a class="waves-effect waves-light btn" ng-click="uq.login()" style="background-color:#f9a825">Iniciar sesión</a>
+            <a class="waves-effect waves-light btn" ng-click="uq.redirEditar('register')" style="background-color:#f9a825">Registrarse</a>
           </div>
         </div>
       </div>
@@ -51,7 +52,7 @@
         <div class="row">
           <div class="col s12">
             <div class="form-group">
-              <span style="font-size:50%"><b>{{uq.getTeamById(uq.user.teamID).budget}}M€</b></span>
+              <span style="font-size:50%"><b>Presupuesto - {{uq.getTeamById(uq.user.teamID).budget}}M€</b></span>
             </div>
           </div>
         </div>

@@ -91,6 +91,37 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     return uq.user.valido;
   }
 
+  uq.register = function(){
+    if(uq.user.pass.length >= 8)
+    {
+      if(uq.user.pass == uq.user2)
+      {
+        var response = userExists(uq.user.user, uq.user.email);
+        if(response=='')
+        {
+          $http.post("SWCDataRequesting.php", { type: "regUsu", user: uq.user.user, pass: uq.user.pass, email: uq.user.email})
+              .success(function(data) {
+                uq.users = [];
+                obtainData("U");
+                Materialize.toast(uq.user.user + ', has sido registrado', 5000, 'rounded');
+                location.href="#/";
+                uq.login();
+              })
+              .error(function(error) {
+                console.log(error);
+                Materialize.toast('No se ha podido registrar el usuario', 5000, 'rounded');
+              });
+        }else{
+          Materialize.toast('El ' + response + ' ya existe', 5000, 'rounded');
+        }
+      }else{
+        Materialize.toast('Las contraseñas no coinciden', 5000, 'rounded');
+      }
+    }else{
+      Materialize.toast('La contraseña debe contener 8 caracteres', 5000, 'rounded');
+    }
+  }
+
   uq.redirEditar=function(ruta)
   {
     location.href="#/" + ruta;
@@ -320,11 +351,12 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         salarios += value.salary;
      });
      var presupuesto = uq.getTeamById(uq.user.teamID).budget;
-     if(salarios>=presupuesto)
-     {
-        uq.salaryLimit = 0;
+     if(salarios>=presupuesto || salarios>=100){
+        uq.salaryLimit = 1;
      }else if(salarios>presupuesto-10 && salarios<presupuesto){
         uq.salaryLimit=(presupuesto-salarios)*10;
+     }else if(salarios>90 && salarios<100){
+        uq.salaryLimit=((100-salarios+uq.getPlayerById(uq.datoViajero).salary)*10).toFixed();
      }else if(salarios<presupuesto-10){
         uq.salaryLimit=100;
      }
@@ -337,6 +369,19 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
      console.log("Límite de salario - " + uq.salaryLimit);
      console.log("Presupuesto - " + uq.getTeamById(uq.user.teamID).budget);
      console.log("Salarios - " + salarios);
+  }
+
+  function userExists(user, email){
+    var exists = '';
+    angular.forEach(uq.users, function(value, key){
+      if(value.email == email)
+      {
+        exists = 'email';
+      }else if(value.user == user){
+        exists = 'usuario';
+      }
+    });
+    return exists;
   }
 
   function obtainData(dataType){
@@ -365,6 +410,12 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     indexFactory.matches = uq.matches;
                     for (var v = 0; v < uq.matches.length; v++) {
                       uq.matches[v].id = parseInt(uq.matches[v].id);
+                      uq.matches[v].local = parseInt(uq.matches[v].local);
+                      uq.matches[v].away = parseInt(uq.matches[v].away);
+                      uq.matches[v].localGoals = parseInt(uq.matches[v].localGoals);
+                      uq.matches[v].awayGoals = parseInt(uq.matches[v].awayGoals);
+                      uq.matches[v].tournament = parseInt(uq.matches[v].tournament);
+                      uq.matches[v].round = parseInt(uq.matches[v].round);
                     }
                     break;
                 case "A":

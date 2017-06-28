@@ -71,6 +71,9 @@
        case "guaSal":
           saveSalary($link, $params);
             break;
+       case "regUsu":
+          saveUser($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -128,7 +131,7 @@
   function saveUser($con, $params)
   {
     $data = array();
-    $query="INSERT INTO users (team_id,user,pass) values (".$params->teamID.",'".$params->user."','".$params->pass."')";
+    $query="INSERT INTO users (email,user,pass) values ('".$params->email."','".$params->user."','".$params->pass."')";
     $resultado=mysqli_query($con, $query) or die("Error insertando usuario");
     $data['success'] = true;
   	$data['message'] = "Usuario insertado";
@@ -252,10 +255,11 @@
         $local=$row['user'];
         $away=$row['away'];
         $tournament=$row['tournament'];
+        $round=$row['round'];
         $localGoals=$row['local_goals'];
         $awayGoals=$row['away_goals'];
         $limitDate=$row['limit_date'];
-        $matches[] = array('id'=> $id, 'tournament'=> $tournament, 'local'=> $local, 'away'=> $away, 'localGoals'=> $localGoals, 'awayGoals'=> $awayGoals, 'limitDate'=> $limitDate);
+        $matches[] = array('id'=> $id, 'tournament'=> $tournament, 'round'=> $round, 'local'=> $local, 'away'=> $away, 'localGoals'=> $localGoals, 'awayGoals'=> $awayGoals, 'limitDate'=> $limitDate);
     }
     $data['matches']=$matches;
     $data['success'] = true;
