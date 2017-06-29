@@ -1,0 +1,53 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Plantillas</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m4 offset-m4">
+        <label style="color:white;">Equipo</label>
+			  <select style="color:black;" ng-change="uq.putPlayersInTable()" class="browser-default" ng-model="uq.teamSelected">
+			    <option value="" disabled selected>Elegir equipo...</option>
+			    <option ng-repeat="te in uq.teams | orderBy: name" ng-if="uq.user.teamID!=te.id" ng-value="te.id">{{te.name}}</option>
+			  </select>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+	      <table style="color:white;" class="highlight responsive-table">
+	        <thead>
+	          <tr>
+	              <th>Jugador</th>
+	              <th>Posición</th>
+	              <th>Cláusula</th>
+	              <th>Comprar</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="pl in uq.teamPlayers">
+	            <td>{{pl.name}}</td>
+	            <td>{{pl.position}}</td>
+	            <td ng-if="pl.salary!=10">{{(pl.salary*10).toFixed()}}</td>
+	            <td ng-if="pl.salary==10">INTOCABLE</td>
+	            <td>
+	            	<button ng-if="pl.salary!=10 || !uq.isPlayerSignedYetOnThisMarket(pl.id)" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.forceSign(pl.id, uq.user.teamID)" style="font-size:100%;background-color:#f9a825">Cláusula</button>
+	            	<button ng-if="!uq.isPlayerSignedYetOnThisMarket(pl.id)" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('makeoffer', pl.id)" style="font-size:100%;background-color:#f9a825">Oferta</button>
+	            </td>
+	          </tr>
+	        </tbody>
+	      </table>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('myteam')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

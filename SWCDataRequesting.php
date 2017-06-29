@@ -302,7 +302,9 @@
         $player=$row['player'];
         $buyerTeam=$row['buyer_team'];
         $amount=$row['amount'];
-        $signins[] = array('id'=> $id, 'amount'=> $amount, 'player'=> $player, 'buyerTeam'=> $buyerTeam);
+        $type=utf8_decode($row['type']);
+        $market=$row['market'];
+        $signins[] = array('id'=> $id, 'amount'=> $amount, 'player'=> $player, 'buyerTeam'=> $buyerTeam, 'type'=> $type, 'market'=> $market);
     }
     $data['signins']=$signins;
     $data['success'] = true;

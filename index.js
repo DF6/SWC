@@ -10,6 +10,8 @@ appIni.config(function($routeProvider){
             .when("/intertoto", {controller: "appCtrl",controllerAs: "vm",templateUrl: "intertoto.html"})
             .when("/myteam", {controller: "appCtrl",controllerAs: "vm",templateUrl: "myteam.html"})
             .when("/salary", {controller: "appCtrl",controllerAs: "vm",templateUrl: "salary.html"})
+            .when("/otherteams", {controller: "appCtrl",controllerAs: "vm",templateUrl: "otherteams.html"})
+            .when("/makeoffer", {controller: "appCtrl",controllerAs: "vm",templateUrl: "makeoffer.html"})
             .when("/europesupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europesupercup.html"})
             .when("/clubsupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "clubsupercup.html"})
             .when("/pending", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pending.html"})
@@ -27,12 +29,15 @@ appIni.controller("navCtrl", function($location){
     });
 appIni.controller("appCtrl",function(indexFactory, $http, $location){
   const INTOCABLES = 2;
+  const CLAUSULAS = 3;
+  const MARKET_EDITION = 1;
   var uq = this;
   uq.datoViajero = indexFactory.datoViajero;
   uq.user = indexFactory.getUser();
   uq.teamPlayers = [];
   uq.salaryLimit = 0;
   uq.salaryRange = 0;
+  uq.teamSelected = '';
   switch($location.path())
   {
     case "/":
@@ -45,6 +50,11 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         obtainData("RT");
         break;
     case "/myteam":
+        obtainData("U");
+        obtainData("T");
+        obtainData("P");
+        break;
+    case "/otherteams":
         obtainData("U");
         obtainData("T");
         obtainData("P");
@@ -187,6 +197,54 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
           });
   }
 
+  uq.putPlayersInTable = function()
+  {
+    uq.teamPlayers=uq.getPlayersByTeam(uq.teamSelected);
+  }
+
+  uq.canForce = function()
+  {
+    var actualSignins = uq.getSigninsByMarketEdition();
+    var forcedCount = 0;
+    angular.forEach(actualSignins, function(value, key){
+      if(value.transferType=="C")
+      {
+        forcedCount++;
+      }
+    });
+    return forcedCount<CLAUSULAS;
+  }
+
+  uq.forceSign = function(player, forcerTeam)
+  {
+    if(uq.canForce(forcerTeam))
+    {
+      $http.post("SWCDataRequesting.php", { type: "claJug", player: player, amount: (uq.getPlayerById(player).salary*10).toFixed(), buyerTeam: forcerTeam, signinType: "C", market: MARKET_EDITION})
+          .success(function(data) {
+            Materialize.toast('Cláusula realizada', 5000, 'rounded');
+            uq.redirEditar('myteam');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
+          });
+    }else{
+      Materialize.toast('No te quedan cláusulas', 5000, 'rounded');
+    }
+  }
+
+  uq.isPlayerSignedYetOnThisMarket = function(player)
+  {
+    var signed = false;
+    angular.forEach(uq.getSigninsByMarketEdition(MARKET_EDITION), function(value,key){
+      if(value.player == player)
+      {
+        signed = true;
+      }
+    });
+    return signed;
+  }
+
   uq.getUserById = function(id)
   {
     var response = {};
@@ -304,6 +362,18 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         }
     });
     return intocables;
+  }
+
+  uq.getSigninsByMarketEdition = function(market)
+  {
+    var transfers = [];
+    angular.forEach(uq.signins, function(value, index){
+        if(value.market == market)
+        {
+            transfers.push(value);
+        }
+    });
+    return transfers;
   }
 
   uq.requestTeam = function()
@@ -444,6 +514,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     for (var v = 0; v < uq.signins.length; v++) {
                       uq.signins[v].id = parseInt(uq.signins[v].id);
                       uq.signins[v].player = parseInt(uq.signins[v].player);
+                      uq.signins[v].buyerTeam = parseInt(uq.signins[v].buyerTeam);
+                      uq.signins[v].amount = parseFloat(uq.signins[v].amount);
+                      uq.signins[v].market = parseInt(uq.signins[v].market);
                     }
                     break;
                 case "PCS":
