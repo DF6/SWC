@@ -16,11 +16,11 @@
     <div class="row">
       <form action="#">
         <p class="range-field">
-          <input type="range" id="salaryrange" min="0" max="100" ng-model="uq.salaryRange"/>
+          <input type="range" id="salaryrange" min="0" max="10" ng-model="uq.salaryRange" step="0.1"/>
         </p>
       </form>
-      Salario - {{uq.salaryRange/10}}<br/>
-      Cláusula - {{uq.salaryRange}}
+      Salario - {{uq.salaryRange}}<br/>
+      Cláusula - {{uq.salaryRange*10}}
     </div>
   </div>
   <div class="col s12 m10 offset-m1">

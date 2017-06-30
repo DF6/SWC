@@ -74,6 +74,12 @@
        case "regUsu":
           saveUser($link, $params);
             break;
+       case "claJug":
+          forceSign($link, $params);
+            break;
+       case "hacOfe":
+          doOffer($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -124,6 +130,30 @@
     $resultado=mysqli_query($con, $query) or die("Error actualizando salario");
     $data['success'] = true;
     $data['message'] = "Salario actualizado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function forceSign($con, $params)
+  {
+    $data = array();
+    $query="UPDATE players SET team_id=".$params->buyerTeam." where id=".$params->player."";
+    $resultado=mysqli_query($con, $query) or die("Error realizando cláusula");
+    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->buyerTeam.",".$params->amount.", 'C', ".$params->market.", true)";
+    $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
+    $data['success'] = true;
+    $data['message'] = "Cláusula realizada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function doOffer($con, $params)
+  {
+    $data = array();
+    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->offerTeam.",".$params->amount.", 'F', ".$params->market.", false)";
+    $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
+    $data['success'] = true;
+    $data['message'] = "Cláusula realizada";
     echo json_encode($data);
     exit;
   }
@@ -304,7 +334,8 @@
         $amount=$row['amount'];
         $type=utf8_decode($row['type']);
         $market=$row['market'];
-        $signins[] = array('id'=> $id, 'amount'=> $amount, 'player'=> $player, 'buyerTeam'=> $buyerTeam, 'type'=> $type, 'market'=> $market);
+        $accepted=$row['accepted'];
+        $signins[] = array('id'=> $id, 'amount'=> $amount, 'player'=> $player, 'buyerTeam'=> $buyerTeam, 'type'=> $type, 'market'=> $market, 'accepted'=> $accepted);
     }
     $data['signins']=$signins;
     $data['success'] = true;

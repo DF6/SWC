@@ -37,6 +37,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.teamPlayers = [];
   uq.salaryLimit = 0;
   uq.salaryRange = 0;
+  uq.offerLimit = 0;
+  uq.offerRange = 0;
   uq.teamSelected = '';
   switch($location.path())
   {
@@ -186,7 +188,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
 
   uq.saveSalary = function(player, newSalary)
   {
-    $http.post("SWCDataRequesting.php", { type: "guaSal", player: player, salary: newSalary/10})
+    $http.post("SWCDataRequesting.php", { type: "guaSal", player: player, salary: newSalary})
           .success(function(data) {
             Materialize.toast('Salario cambiado', 5000, 'rounded');
             uq.redirEditar('myteam');
@@ -230,6 +232,24 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
           });
     }else{
       Materialize.toast('No te quedan cláusulas', 5000, 'rounded');
+    }
+  }
+
+  uq.setOffer = function(player, offerTeam)
+  {
+    if(!uq.isPlayerSignedYetOnThisMarket(player))
+    {
+      $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, amount: uq.offerRange, offerTeam: offerTeam, signinType: "F", market: MARKET_EDITION})
+          .success(function(data) {
+            Materialize.toast('Oferta realizada', 5000, 'rounded');
+            uq.redirEditar('marketresume');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
+          });
+    }else{
+      Materialize.toast('El jugador ya ha sido vendido en este mercado', 5000, 'rounded');
     }
   }
 
@@ -434,11 +454,13 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
      {
         uq.salaryLimit--;
      }
-     $('#salaryrange').attr('max', uq.salaryLimit);
-     console.log("Intocables - " + intoc);
-     console.log("Límite de salario - " + uq.salaryLimit);
-     console.log("Presupuesto - " + uq.getTeamById(uq.user.teamID).budget);
-     console.log("Salarios - " + salarios);
+     $('#salaryrange').attr('max', (uq.salaryLimit/10).toFixed(1));
+  }
+
+  function setOfferLimit()
+  {
+    uq.offerLimit = uq.getTeamById(uq.user.teamID).budget;
+    $('#offerrange').attr('max', uq.offerLimit);
   }
 
   function userExists(user, email){
@@ -506,6 +528,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     }else if($location.path()=="/salary"){
                         uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
                         uq.salaryLimit = setSalaryLimit();
+                    }else if($location.path()=="/makeoffer"){
+                        uq.offerLimit = setOfferLimit();
                     }
                     break;
                 case "S":
@@ -517,6 +541,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                       uq.signins[v].buyerTeam = parseInt(uq.signins[v].buyerTeam);
                       uq.signins[v].amount = parseFloat(uq.signins[v].amount);
                       uq.signins[v].market = parseInt(uq.signins[v].market);
+                      if(uq.signins[v].accepted==1){uq.signins[v].accepted=true;}else{uq.signins[v].accepted=false;}
                     }
                     break;
                 case "PCS":
