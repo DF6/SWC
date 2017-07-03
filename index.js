@@ -40,6 +40,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.offerLimit = 0;
   uq.offerRange = 0;
   uq.teamSelected = '';
+  uq.playerSelected = '';
+  uq.playersOffered = [];
   switch($location.path())
   {
     case "/":
@@ -62,6 +64,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         obtainData("P");
         break;
     case "/salary":
+        obtainData("T");
+        obtainData("P");
+        break;
+    case "/makeoffer":
         obtainData("T");
         obtainData("P");
         break;
@@ -202,6 +208,23 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.putPlayersInTable = function()
   {
     uq.teamPlayers=uq.getPlayersByTeam(uq.teamSelected);
+  }
+
+  uq.putPlayerInOffer = function()
+  {
+    uq.playersOffered.push(uq.getPlayerById(uq.playerSelected));
+    uq.playerSelected='';
+  }
+
+  uq.quitPlayerFromOffer = function(player)
+  {
+    for(var i=0;i<uq.playersOffered.length;i++)
+    {
+      if(uq.playersOffered[i].id==player)
+      {
+        uq.playersOffered.splice(i, 1);
+      }
+    }
   }
 
   uq.canForce = function()
@@ -530,6 +553,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                         uq.salaryLimit = setSalaryLimit();
                     }else if($location.path()=="/makeoffer"){
                         uq.offerLimit = setOfferLimit();
+                        uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
                     }
                     break;
                 case "S":
