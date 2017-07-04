@@ -5,7 +5,7 @@
       <h1>Salario de {{uq.getPlayerById(uq.datoViajero).name}}</h1>
       Presupuesto actual - <span ng-if="uq.getTeamById(uq.user.teamID).budget>=0">{{uq.getTeamById(uq.user.teamID).budget}}</span><span ng-if="uq.getTeamById(uq.user.teamID).budget<0" style="color:red;">{{uq.getTeamById(uq.user.teamID).budget}}</span><br/>
       Presupuesto actual de salarios - <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)==100">{{(uq.getTotalSalariesByTeam(uq.user.teamID)+(uq.salaryRange)).toFixed(1)}}</span>
-      <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)!=100">{{(uq.getTotalSalariesByTeam(uq.user.teamID)+(uq.salaryRange/10)-uq.getPlayerById(uq.datoViajero).salary).toFixed(1)}}</span><br/>
+      <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)!=100">{{(uq.getTotalSalariesByTeam(uq.user.teamID)+(uq.salaryRange)-uq.getPlayerById(uq.datoViajero).salary).toFixed(1)}}</span><br/>
       Dinero restante para salarios - <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)==100">{{(100-uq.getTotalSalariesByTeam(uq.user.teamID)-(uq.salaryRange)).toFixed(1)}}</span>
       <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)!=100">{{(100-uq.getTotalSalariesByTeam(uq.user.teamID)-(uq.salaryRange)+uq.getPlayerById(uq.datoViajero).salary).toFixed(1)}}<br/>
       Intocables actuales - {{uq.getUntouchablesByTeam(uq.user.teamID)}} - <span style="color:red" ng-if="uq.getUntouchablesByTeam(uq.user.teamID)==2">¡MÁXIMO!</span>

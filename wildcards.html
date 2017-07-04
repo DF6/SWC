@@ -1,0 +1,40 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Jugadores libres</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+	      <table style="color:white;" class="responsive-table">
+	        <thead>
+	          <tr>
+	              <th>Jugador</th>
+	              <th>Posición</th>
+	              <th>Contratar</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="pl in uq.players" ng-if="pl.teamID==0">
+	            <td>{{pl.name}}</td>
+	            <td>{{pl.position}}</td>
+	            <td>
+	            	<button class="col m6 s12 waves-effect waves-light btn" ng-click="uq.signWildCard(pl.id, uq.user.teamID)" style="font-size:100%;background-color:#f9a825">Contratar</button>
+	            </td>
+	          </tr>
+	        </tbody>
+	      </table>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

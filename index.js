@@ -1,3 +1,4 @@
+// offers.html, makeoffer.html, index.js, SWCDataRequesting.php incluir jugadores ofrecidos
 var appIni=angular.module('appIni',['ngRoute']);
 appIni.config(function($routeProvider){
   $routeProvider
@@ -12,6 +13,9 @@ appIni.config(function($routeProvider){
             .when("/salary", {controller: "appCtrl",controllerAs: "vm",templateUrl: "salary.html"})
             .when("/otherteams", {controller: "appCtrl",controllerAs: "vm",templateUrl: "otherteams.html"})
             .when("/makeoffer", {controller: "appCtrl",controllerAs: "vm",templateUrl: "makeoffer.html"})
+            .when("/marketresume", {controller: "appCtrl",controllerAs: "vm",templateUrl: "marketresume.html"})
+            .when("/wildcards", {controller: "appCtrl",controllerAs: "vm",templateUrl: "wildcards.html"})
+            .when("/offers", {controller: "appCtrl",controllerAs: "vm",templateUrl: "offers.html"})
             .when("/europesupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europesupercup.html"})
             .when("/clubsupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "clubsupercup.html"})
             .when("/pending", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pending.html"})
@@ -183,11 +187,29 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     {
         $http.post("SWCDataRequesting.php", { type: "disPla", player: player})
               .success(function(data) {
+                uq.teamPlayers = [];
+                uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
                 Materialize.toast(uq.getPlayerById(player).name + ' ahora es libre', 5000, 'rounded');
               })
               .error(function(error) {
                 console.log(error);
                 Materialize.toast('No se ha podido descartar el jugador', 5000, 'rounded');
+              });
+    }
+  }
+
+  uq.signWildCard = function(player, team)
+  {
+    if(confirm('¿Seguro?'))
+    {
+        $http.post("SWCDataRequesting.php", { type: "conLib", player: player, team: team})
+              .success(function(data) {
+                Materialize.toast(uq.getPlayerById(player).name + ' contratado', 5000, 'rounded');
+                uq.redirEditar('myteam');
+              })
+              .error(function(error) {
+                console.log(error);
+                Materialize.toast('No se ha podido contratar el jugador', 5000, 'rounded');
               });
     }
   }
@@ -208,6 +230,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.putPlayersInTable = function()
   {
     uq.teamPlayers=uq.getPlayersByTeam(uq.teamSelected);
+    $('#collectPlayers').attr('ng-show', 'true');
   }
 
   uq.putPlayerInOffer = function()
@@ -224,6 +247,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
       {
         uq.playersOffered.splice(i, 1);
       }
+    }
+    if(uq.playersOffered.length==0)
+    {
+      $('#collectPlayers').attr('ng-show', 'false');
     }
   }
 
@@ -260,10 +287,22 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
 
   uq.setOffer = function(player, offerTeam)
   {
-    if(!uq.isPlayerSignedYetOnThisMarket(player))
+    var availablePlayers = true;
+    angular.forEach(uq.playersOffered, function(value, key){
+      if(uq.isPlayerSignedYetOnThisMarket(value.id)) {
+        availablePlayers = false;
+        Materialize.toast(value.name + ' no se puede ofrecer porque es una incorporación', 5000, 'rounded');
+      }
+    });
+    if(!uq.isPlayerSignedYetOnThisMarket(player) && availablePlayers)
     {
+      
       $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, amount: uq.offerRange, offerTeam: offerTeam, signinType: "F", market: MARKET_EDITION})
           .success(function(data) {
+            /*if(uq.playersOffered.length!=0)
+            {
+              uq.offerPlayer(data.signinID);
+            }*/
             Materialize.toast('Oferta realizada', 5000, 'rounded');
             uq.redirEditar('marketresume');
           })
@@ -272,7 +311,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
             Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
           });
     }else{
-      Materialize.toast('El jugador ya ha sido vendido en este mercado', 5000, 'rounded');
+      if(uq.isPlayerSignedYetOnThisMarket(player) && availablePlayers){
+        Materialize.toast('El jugador ya ha sido vendido en este mercado', 5000, 'rounded');
+      }
     }
   }
 
@@ -417,6 +458,20 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         }
     });
     return transfers;
+  }
+
+  uq.getPreviousSignin = function(signin)
+  {
+    var lastSignin = {};
+    var market = -1;
+    var player = uq.getSigninById(signin).player;
+    angular.forEach(uq.signins, function(value,index){
+      if(value.player == player && market<value.market && market<uq.getSigninById.market)
+      {
+        lastSignin = value;
+      }
+    });
+    return lastSignin;
   }
 
   uq.requestTeam = function()

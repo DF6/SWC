@@ -80,6 +80,9 @@
        case "hacOfe":
           doOffer($link, $params);
             break;
+       case "conLib":
+          signWildCard($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -115,10 +118,25 @@
   function discardPlayer($con, $params)
   {
     $data = array();
-    $query="UPDATE players SET team_id=0 where id=" . $params->player;
+    $query="UPDATE players SET team_id=0, salary=0.1 where id=" . $params->player;
     $resultado=mysqli_query($con, $query) or die("Error liberando jugador");
+    //$query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.", 0, 0, 'D', ".$params->market.", true)";
+    $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
     $data['message'] = "Jugador liberado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function signWildCard($con, $params)
+  {
+    $data = array();
+    $query="UPDATE players SET team_id=". $params->team ." where id=" . $params->player;
+    $resultado=mysqli_query($con, $query) or die("Error contratando jugador");
+    //$query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->team.", 0, 'W', ".$params->market.", true)";
+    $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
+    $data['success'] = true;
+    $data['message'] = "Jugador contratado";
     echo json_encode($data);
     exit;
   }
@@ -141,6 +159,7 @@
     $resultado=mysqli_query($con, $query) or die("Error realizando cláusula");
     $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->buyerTeam.",".$params->amount.", 'C', ".$params->market.", true)";
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
+    $query3="UPDATE teams SET budget-=" . $params->amount . " where id=". $params->buyerTeam."";
     $data['success'] = true;
     $data['message'] = "Cláusula realizada";
     echo json_encode($data);
