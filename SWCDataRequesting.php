@@ -83,6 +83,12 @@
        case "conLib":
           signWildCard($link, $params);
             break;
+       case "aceOfe":
+          acceptOffer($link, $params);
+            break;
+       case "recOfer":
+          rejectOffer($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -120,7 +126,7 @@
     $data = array();
     $query="UPDATE players SET team_id=0, salary=0.1 where id=" . $params->player;
     $resultado=mysqli_query($con, $query) or die("Error liberando jugador");
-    //$query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.", 0, 0, 'D', ".$params->market.", true)";
+    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.", 0, 0, 'D', ".$params->market.", true)";
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
     $data['message'] = "Jugador liberado";
@@ -133,7 +139,7 @@
     $data = array();
     $query="UPDATE players SET team_id=". $params->team ." where id=" . $params->player;
     $resultado=mysqli_query($con, $query) or die("Error contratando jugador");
-    //$query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->team.", 0, 'W', ".$params->market.", true)";
+    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->team.", 0, 'W', ".$params->market.", true)";
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
     $data['message'] = "Jugador contratado";
@@ -160,6 +166,9 @@
     $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->buyerTeam.",".$params->amount.", 'C', ".$params->market.", true)";
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $query3="UPDATE teams SET budget-=" . $params->amount . " where id=". $params->buyerTeam."";
+    $resultado3=mysqli_query($con, $query3) or die("Error actualizando presupuesto1");
+    $query4="UPDATE teams SET budget+=" . $params->amount . " where id=". $params->oldTeam."";
+    $resultado4=mysqli_query($con, $query4) or die("Error actualizando presupuesto2");
     $data['success'] = true;
     $data['message'] = "Cláusula realizada";
     echo json_encode($data);
@@ -173,6 +182,47 @@
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
     $data['message'] = "Cláusula realizada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function acceptOffer($con, $params)
+  {
+    $data = array();
+    $query="UPDATE players SET team_id=".$params->newTeam." where id=".$params->player."";
+    $resultado=mysqli_query($con, $query) or die("Error realizando fichaje");
+    $query2="UPDATE signins SET accepted=1 where id=". $params->id."";
+    $resultado2=mysqli_query($con, $query2) or die("Error actualizando fichaje");
+    $query3="UPDATE teams SET budget-=" . $params->amount . " where id=". $params->newTeam."";
+    $resultado3=mysqli_query($con, $query3) or die("Error actualizando presupuesto1");
+    $query4="UPDATE teams SET budget+=" . $params->amount . " where id=". $params->oldTeam."";
+    $resultado4=mysqli_query($con, $query4) or die("Error actualizando presupuesto2");
+    $data['success'] = true;
+    $data['message'] = "Oferta aceptada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function rejectOffer($con, $params)
+  {
+    $data = array();
+    $query="DELETE FROM signins where id=".$params->id."";
+    $resultado=mysqli_query($con, $query) or die("Error rechazando oferta");
+    $data['success'] = true;
+    $data['message'] = "Oferta rechazada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function signWildCard($con, $params)
+  {
+    $data = array();
+    $query="UPDATE players SET team_id=". $params->newTeam ." where id=" . $params->player;
+    $resultado=mysqli_query($con, $query) or die("Error contratando jugador");
+    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->team.", 0, 'W', ".$params->market.", true)";
+    $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
+    $data['success'] = true;
+    $data['message'] = "Jugador contratado";
     echo json_encode($data);
     exit;
   }

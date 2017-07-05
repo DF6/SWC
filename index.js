@@ -46,6 +46,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.teamSelected = '';
   uq.playerSelected = '';
   uq.playersOffered = [];
+  uq.showMarket=true;
   switch($location.path())
   {
     case "/":
@@ -185,7 +186,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   {
     if(confirm('¿Seguro?'))
     {
-        $http.post("SWCDataRequesting.php", { type: "disPla", player: player})
+        $http.post("SWCDataRequesting.php", { type: "disPla", player: player, market: MARKET_EDITION})
               .success(function(data) {
                 uq.teamPlayers = [];
                 uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
@@ -202,7 +203,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   {
     if(confirm('¿Seguro?'))
     {
-        $http.post("SWCDataRequesting.php", { type: "conLib", player: player, team: team})
+        $http.post("SWCDataRequesting.php", { type: "conLib", player: player, team: team, market: MARKET_EDITION})
               .success(function(data) {
                 Materialize.toast(uq.getPlayerById(player).name + ' contratado', 5000, 'rounded');
                 uq.redirEditar('myteam');
@@ -271,7 +272,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   {
     if(uq.canForce(forcerTeam))
     {
-      $http.post("SWCDataRequesting.php", { type: "claJug", player: player, amount: (uq.getPlayerById(player).salary*10).toFixed(), buyerTeam: forcerTeam, signinType: "C", market: MARKET_EDITION})
+      $http.post("SWCDataRequesting.php", { type: "claJug", oldTeam: uq.getPlayerById(player).teamID, player: player, amount: (uq.getPlayerById(player).salary*10).toFixed(), buyerTeam: forcerTeam, signinType: "C", market: MARKET_EDITION})
           .success(function(data) {
             Materialize.toast('Cláusula realizada', 5000, 'rounded');
             uq.redirEditar('myteam');
@@ -314,6 +315,39 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
       if(uq.isPlayerSignedYetOnThisMarket(player) && availablePlayers){
         Materialize.toast('El jugador ya ha sido vendido en este mercado', 5000, 'rounded');
       }
+    }
+  }
+
+  uq.acceptOffer = function(signin)
+  {
+    if(confirm("Aceptar. ¿Seguro?"))
+    {
+      var offer = uq.getSigninById(signin);
+      $http.post("SWCDataRequesting.php", { type: "aceOfe", player: offer.player, amount: offer.amount, newTeam: offer.buyerTeam, oldTeam: uq.getPlayerById(offer.player).teamID, id: signin})
+          .success(function(data) {
+            Materialize.toast(uq.getPlayerById(offer.player).name + ' ha sido transferido a ' + uq.getTeamById(offer.buyerTeam).name, 5000, 'rounded');
+            uq.redirEditar('marketresume');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido realizar el acuerdo', 5000, 'rounded');
+          });
+    }
+  }
+
+  uq.rejectOffer = function(signin)
+  {
+    if(confirm("Rechazar. ¿Seguro?"))
+    {
+      $http.post("SWCDataRequesting.php", { type: "recOfe", id: signin})
+          .success(function(data) {
+            Materialize.toast('Oferta rechazada', 5000, 'rounded');
+            uq.redirEditar('myteam');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido rechazar la oferta', 5000, 'rounded');
+          });
     }
   }
 
@@ -369,6 +403,18 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   {
     var response = {};
     angular.forEach(uq.players, function(value, index){
+        if(value.id == id)
+        {
+            response = value;
+        }
+    });
+    return response;
+  }
+
+  uq.getSigninById = function(id)
+  {
+    var response = {};
+    angular.forEach(uq.signins, function(value, index){
         if(value.id == id)
         {
             response = value;
@@ -466,7 +512,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     var market = -1;
     var player = uq.getSigninById(signin).player;
     angular.forEach(uq.signins, function(value,index){
-      if(value.player == player && market<value.market && market<uq.getSigninById.market)
+      if(value.player == player && market<value.market && market<uq.getSigninById(signin).market)
       {
         lastSignin = value;
       }
