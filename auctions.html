@@ -1,0 +1,33 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Subastas</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m4 s12" ng-repeat="tp in uq.signins" ng-if="tp.accepted==0 && uq.getPlayerById(tp.player).teamID==uq.user.teamID">
+      <div class="card" style="background-color:#3498db">
+        <div class="card-content white-text">
+         <h5 style="color:white;">{{uq.getPlayerById(tp.player).name}} - {{uq.getPlayerById(tp.player).position}}</h5>
+         Monto - <b>{{tp.amount}}</b><br/>
+         <!--Jugadores ofrecidos-->
+        </div>
+        <div class="card-action">
+          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.acceptOffer(tp.id)">Aceptar</button>
+          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.rejectOffer(tp.id)">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

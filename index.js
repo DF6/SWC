@@ -16,6 +16,7 @@ appIni.config(function($routeProvider){
             .when("/marketresume", {controller: "appCtrl",controllerAs: "vm",templateUrl: "marketresume.html"})
             .when("/wildcards", {controller: "appCtrl",controllerAs: "vm",templateUrl: "wildcards.html"})
             .when("/offers", {controller: "appCtrl",controllerAs: "vm",templateUrl: "offers.html"})
+            .when("/auctions", {controller: "appCtrl",controllerAs: "vm",templateUrl: "auctions.html"})
             .when("/europesupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europesupercup.html"})
             .when("/clubsupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "clubsupercup.html"})
             .when("/pending", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pending.html"})
@@ -512,9 +513,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
     var market = -1;
     var player = uq.getSigninById(signin).player;
     angular.forEach(uq.signins, function(value,index){
-      if(value.player == player && market<value.market && market<uq.getSigninById(signin).market)
+      if(value.player == player && market<value.market && market<uq.getSigninById(signin).market && value.id!=signin)
       {
         lastSignin = value;
+        market = value.market;
       }
     });
     return lastSignin;

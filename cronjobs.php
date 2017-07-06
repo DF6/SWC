@@ -14,111 +14,68 @@
 
 	$link=mysqli_connect($db_host, $db_user, $db_pass) or die ("Error conectando a la base de datos - " . mysql_error());
 	mysqli_select_db($link, $db_name) or die("Error seleccionando la base de datos.");
-	$params = json_decode(file_get_contents("php://input"));
 	
-  if(isset($params->type) && !empty($params->type))
+  refreshCalendar($link);
+  closeMatches($link);
+
+  function refreshCalendar($con)
   {
-    $type=$params->type;
-    if(strcmp($type, "recDat") == 0)
+    $data = array();
+    $query="SELECT * from calendar";
+    $resultado=mysqli_query($con, $query) or die("Error recuperando calendario");
+    while($row = mysqli_fetch_array($resultado))
     {
-      $datatype=$params->dataType;
-      switch ($datatype) {
-        case "U":
-          obtainUsers($link);
+      $date = new DateTime();
+      $limitDate=$row['limit_date'];
+      if(var_dump($date->format('Y-m-d H:i') == $limitDate->format('Y-m-d H:i'))) {
+        switch($row['type']){
+          case "A":
+            closeAuction($con, $row['affected_id']);
             break;
-        case "T":
-          obtainTeams($link);
-          break;
-        case "M":
-          obtainMatches($link);
-          break;
-        case "A":
-          obtainActions($link);
-          break;
-        case "P":
-          obtainPlayers($link);
-          break;
-        case "S":
-          obtainSignins($link);
-          break;
-        case "PCS":
-          obtainPlayerChangeSignins($link);
-          break;
-        case "TO":
-          obtainTournaments($link);
-          break;
-        case "ST":
-          obtainStandings($link);
-          break;
-        case "RT":
-          obtainTeamRequests($link);
-          break;
-        default:
-          invalidRequest();
-     }
-   }else{
-    switch($type)
-    {
-       case "solEqu":
-          requestTeam($link, $params);
+          case "C":
+            closeForcedSigns($con);
             break;
-       case "givTea":
-          giveTeamToRequester($link, $params);
+          case "M":
+            closeMarket($con);
             break;
-       case "disPla":
-          discardPlayer($link, $params);
+          case "O":
+            openMarket($con);
             break;
-       case "guaSal":
-          saveSalary($link, $params);
+          case "S":
+            discountSalaries($con);
             break;
-       case "regUsu":
-          saveUser($link, $params);
+          case "T":
+            openTournament($con);
             break;
-       case "claJug":
-          forceSign($link, $params);
-            break;
-       case "hacOfe":
-          doOffer($link, $params);
-            break;
-       case "conLib":
-          signWildCard($link, $params);
-            break;
-       case "aceOfe":
-          acceptOffer($link, $params);
-            break;
-       case "recOfer":
-          rejectOffer($link, $params);
-            break;
-        default:
-          invalidRequest();
+        }
+      }
     }
-   }
-  }else{
-    invalidRequest();
   }
 
-  function requestTeam($con, $params)
+  function closeAuction($con, $id)
   {
     $data = array();
-    $query="INSERT INTO team_requests (user) values (".$params->user.")";
-    $resultado=mysqli_query($con, $query) or die("Error solicitando equipo");
-    $data['success'] = true;
-    $data['message'] = "Equipo solicitado";
-    echo json_encode($data);
-    exit;
-  }
-
-  function giveTeamToRequester($con, $params)
-  {
-    $data = array();
-    $query="UPDATE users SET team_id=" . $params->team . " where id=" . $params->user;
-    $resultado=mysqli_query($con, $query) or die("Error asignando equipo");
-    $query2="DELETE FROM team_requests where user=" . $params->user;
-    $resultado2=mysqli_query($con, $query2) or die ("Error borrando solicitudes");
-    $data['success'] = true;
-    $data['message'] = "Equipo otorgado";
-    echo json_encode($data);
-    exit;
+    $query="UPDATE signins SET accepted=1 where id=" . $id;
+    $resultado=mysqli_query($con, $query) or die("Error cerrando subasta");
+    $query4="SELECT * from signins";
+    $resultado4=mysqli_query($con, $query4) or die("Error recuperando subasta");
+    $player=-1;
+    $teamID=-1;
+    $amount=0;
+    while($row = mysqli_fetch_array($resultado4))
+    {
+        $idSignin=$row['id'];
+        if($id==$idSignin)
+        {
+          $player=$row['player'];
+          $teamID=$row['buyer_team'];
+          $amount=$row['amount'];
+        }
+    }
+    $query2="UPDATE players SET team_id=".$teamID.", salary=0.1 where id=" . $player;
+    $resultado2=mysqli_query($con, $query2) or die("Error traspasando jugador");
+    $query3="UPDATE teams SET budget=budget-".$amount." where id=" . $teamID;
+    $resultado3=mysqli_query($con, $query3) or die("Error actualizando presupuesto");
   }
 
   function discardPlayer($con, $params)
@@ -258,29 +215,6 @@
   {
     if($number<10){$number="0"+$number;}
     return $number;
-  }
-  
-  function obtainUsers($con)
-  {
-    $data = array();
-    $query="SELECT * from users";
-    $resultado=mysqli_query($con, $query) or die("Error recuperando usuarios");
-	
-    $users=array();
-    while($row = mysqli_fetch_array($resultado))
-    {
-        $id=$row['id'];
-        $user=utf8_decode($row['user']);
-        $pass=utf8_decode($row['pass']);
-        $email=utf8_decode($row['email']);
-        $teamID=$row['team_id'];
-        $users[] = array('id'=> $id, 'teamID'=> $teamID, 'user'=> $user, 'pass'=> $pass, 'email'=> $email);
-    }
-    $data['users']=$users;
-    $data['success'] = true;
-  	$data['message'] = "Datos recogidos";
-	  echo json_encode($data);
-  	exit;
   }
 
   function obtainTeams($con)

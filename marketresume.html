@@ -40,41 +40,13 @@
 	          </tr>
 	        </tbody>
 	      </table>
-        <!--<table style="color:white;" class="responsive-table" ng-show="!uq.showMarket">
-          <thead>
-            <tr>
-                <th>Jugador</th>
-                <th>Tipo</th>
-                <th>Cantidad</th>
-                <th>Traspasado desde</th>
-                <th>Traspasado a</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr ng-repeat="pl in uq.signins" ng-if="pl.accepted==1 && (uq.getPreviousSignin(pl.id).buyerTeam==uq.user.teamID || pl.buyerTeam==uq.user.teamID)">
-              <td>{{uq.getPlayerById(pl.player).name}}</td>
-              <td ng-if="pl.type=='C'">Cláusula</td>
-              <td ng-if="pl.type=='W'">Contratación libre</td>
-              <td ng-if="pl.type=='S'">Subasta</td>
-              <td ng-if="pl.type=='D'">Descarte</td>
-              <td ng-if="pl.type=='F'">Acuerdo</td>
-              <td>{{pl.amount}}M€</td>
-              <td ng-if="pl.type=='C' || pl.type=='F' || pl.type=='D'">{{uq.getTeamById(uq.getPreviousSignin(pl.id).buyerTeam).name}}</td>
-              <td ng-if="pl.type=='W'">LIBRE</td>
-              <td ng-if="pl.type=='S'">SUBASTA</td>
-              <td ng-if="pl.type!='D'">{{uq.getTeamById(pl.buyerTeam).name}}</td>
-              <td ng-if="pl.type=='D'">LIBRE</td>
-            </tr>
-          </tbody>
-        </table>-->
-        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
       </div>
     </div>
   </div>
   <div class="col s12 m10 offset-m1">
     <div class="row">
       <div class="col m10 offset-m1 s12">
-        
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
       </div>
     </div>
   </div>
