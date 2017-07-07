@@ -45,7 +45,7 @@
             discountSalaries($con);
             break;
           case "T":
-            openTournament($con);
+            openTournament($con, $row['affected_id']);
             break;
         }
       }

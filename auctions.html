@@ -8,16 +8,17 @@
   </div>
   <div class="col s12 m10 offset-m1">
     <div class="row">
-    <div class="col m4 s12" ng-repeat="tp in uq.signins" ng-if="tp.accepted==0 && uq.getPlayerById(tp.player).teamID==uq.user.teamID">
+    <div class="col m4 s12" ng-repeat="tp in uq.signins" ng-if="tp.accepted==0 && tp.type=='S'">
       <div class="card" style="background-color:#3498db">
         <div class="card-content white-text">
          <h5 style="color:white;">{{uq.getPlayerById(tp.player).name}} - {{uq.getPlayerById(tp.player).position}}</h5>
-         Monto - <b>{{tp.amount}}</b><br/>
-         <!--Jugadores ofrecidos-->
+         Subasta actual - <b>{{tp.amount}}</b> realizada por <b>{{uq.getTeamById(tp.buyerTeam).name}}</b><br/>
+         Tiempo restante - {{uq.auctionCounters[$index]}}
         </div>
         <div class="card-action">
-          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.acceptOffer(tp.id)">Aceptar</button>
-          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.rejectOffer(tp.id)">Cancelar</button>
+          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,0.5)">+0.5M€</button>
+          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,1)">+1M€</button>
+          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,5)">+5M€</button>
         </div>
       </div>
     </div>

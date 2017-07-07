@@ -53,6 +53,9 @@
         case "RT":
           obtainTeamRequests($link);
           break;
+        case "RT":
+          obtainCalendar($link);
+          break;
         default:
           invalidRequest();
      }
@@ -475,6 +478,26 @@
     $data = array();
     $query="SELECT * from team_requests";
     $resultado=mysqli_query($con, $query) or die("Error recuperando solicitudes de equipo");
+  
+    $teamRequests=array();
+    while($row = mysqli_fetch_array($resultado))
+    {
+        $user=$row['user'];
+        $requestDate=$row['request_date'];
+        $teamRequests[] = array('user'=> $user, 'requestDate'=> $requestDate);
+    }
+    $data['teamRequests']=$teamRequests;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainCalendar($con)
+  {
+    $data = array();
+    $query="SELECT * from calendar";
+    $resultado=mysqli_query($con, $query) or die("Error recuperando calendario");
   
     $teamRequests=array();
     while($row = mysqli_fetch_array($resultado))

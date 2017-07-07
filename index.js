@@ -48,38 +48,61 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.playerSelected = '';
   uq.playersOffered = [];
   uq.showMarket=true;
+  uq.counters = [];
+  uq.auctionDates = [];
+  obtainData("T");
   switch($location.path())
   {
     case "/":
-        obtainData("U");
-        obtainData("T");
+        obtainData("U");        
         break;
     case "/teamrequests":
-        obtainData("U");
-        obtainData("T");
+        obtainData("U");        
         obtainData("RT");
         break;
     case "/myteam":
-        obtainData("U");
-        obtainData("T");
+        obtainData("U");        
         obtainData("P");
         break;
     case "/otherteams":
-        obtainData("U");
-        obtainData("T");
+        obtainData("U");        
         obtainData("P");
         break;
-    case "/salary":
-        obtainData("T");
+    case "/salary":        
         obtainData("P");
         break;
-    case "/makeoffer":
-        obtainData("T");
+    case "/makeoffer":        
         obtainData("P");
+        break;
+    case "/offers":        
+        obtainData("P");
+        obtainData("S");
+        obtainData("PCS");
+        break;
+    case "/auctions":        
+        obtainData("P");
+        obtainData("S");
+        obtainData("CAL");
+        /*uq.onTimeout = function(){
+            angular.forEach(uq.counters, function(value, key){
+              value--;
+            });
+            uq.showDateFromCounters();
+            uq.mytimeout = $timeout(uq.onTimeout,1000);
+        }
+        uq.mytimeout = $timeout(uq.onTimeout,1000);*/
+        break;
+    case "/marketresume":        
+        obtainData("P");
+        obtainData("S");
+        obtainData("PCS");
+        break;
+    case "/wildcards":        
+        obtainData("P");
+        obtainData("S");
         break;
     default:
-        obtainData("U");
-        obtainData("T");
+        obtainData("U");        
         obtainData("P");
         obtainData("RT");
         obtainData("M");
@@ -89,6 +112,16 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         obtainData("ST");
         obtainData("PCS");
         break;
+  }
+  
+  uq.showDateFromCounters =function()
+  {
+    angular.forEach(uq.counters, function(value, key){
+      var hours =(value/1000/60/60).toFixed();
+      var minutes = ((value - hours*60*60*1000)/60/60).toFixed();
+      var seconds = ((value - hours*60*60*1000 - minutes*60*60)/60).toFixed();
+      uq.auctionDates[key] = hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
+    });
   }
 
   uq.login = function(){
@@ -696,6 +729,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     for (var v = 0; v < uq.teamRequests.length; v++) {
                       uq.teamRequests[v].user = parseInt(uq.teamRequests[v].user);
                       uq.teamRequests[v].requestDate = new Date(uq.teamRequests[v].requestDate);
+                    }
+                case "CAL":
+                    uq.calendar = data.calendar;
+                    indexFactory.calendar = uq.calendar;
+                    for (var v = 0; v < uq.calendar.length; v++) {
+                      uq.calendar[v].affectedID = parseInt(uq.calendar[v].affectedID);
+                      uq.calendar[v].limitDate = new Date(uq.calendar[v].limitDate);
+                      uq.counters.push({id: uq.calendar[v].affectedID, counter:uq.calendar[v].limitDate.getTime()})
                     }
                     break;
             }
