@@ -13,7 +13,7 @@
         <div class="card-content white-text">
          <h5 style="color:white;">{{uq.getPlayerById(tp.player).name}} - {{uq.getPlayerById(tp.player).position}}</h5>
          Subasta actual - <b>{{tp.amount}}</b> realizada por <b>{{uq.getTeamById(tp.buyerTeam).name}}</b><br/>
-         Tiempo restante - {{uq.auctionCounters[$index]}}
+         Tiempo restante - {{tp.limitDate}}
         </div>
         <div class="card-action">
           <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,0.5)">+0.5M€</button>

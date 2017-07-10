@@ -32,7 +32,7 @@ appIni.controller("navCtrl", function($location){
             return $location.path() == ruta;
         }
     });
-appIni.controller("appCtrl",function(indexFactory, $http, $location){
+appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   const INTOCABLES = 2;
   const CLAUSULAS = 3;
   const MARKET_EDITION = 1;
@@ -49,7 +49,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.playersOffered = [];
   uq.showMarket=true;
   uq.counters = [];
-  uq.auctionDates = [];
   obtainData("T");
   switch($location.path())
   {
@@ -83,14 +82,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
         obtainData("P");
         obtainData("S");
         obtainData("CAL");
-        /*uq.onTimeout = function(){
+        uq.onTimeout = function(){
             angular.forEach(uq.counters, function(value, key){
-              value--;
+              value.counter-=1000;
             });
             uq.showDateFromCounters();
             uq.mytimeout = $timeout(uq.onTimeout,1000);
         }
-        uq.mytimeout = $timeout(uq.onTimeout,1000);*/
+        uq.mytimeout = $timeout(uq.onTimeout,1000);
         break;
     case "/marketresume":        
         obtainData("P");
@@ -117,10 +116,21 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
   uq.showDateFromCounters =function()
   {
     angular.forEach(uq.counters, function(value, key){
-      var hours =(value/1000/60/60).toFixed();
-      var minutes = ((value - hours*60*60*1000)/60/60).toFixed();
-      var seconds = ((value - hours*60*60*1000 - minutes*60*60)/60).toFixed();
-      uq.auctionDates[key] = hours.toString() + ":" + minutes.toString() + ":" + seconds.toString();
+      var hours =(value.counter/1000/60/60).toFixed();
+      var minutes = ((value.counter - hours*60*60*1000)/60/60).toFixed();
+      while(minutes>59)
+      {
+        hours++;
+        minutes-=60;
+      }
+      var seconds = ((value.counter - hours*60*60*1000 - minutes*60*60)/60).toFixed();
+      while(seconds>59)
+      {
+        minutes++;
+        seconds-=60;
+      }
+      console.log(hours + ":" + minutes + ":" + seconds);
+      uq.getSigninById(value.id).limitDate = hours + ":" + minutes + ":" + seconds;
     });
   }
 
@@ -736,7 +746,15 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location){
                     for (var v = 0; v < uq.calendar.length; v++) {
                       uq.calendar[v].affectedID = parseInt(uq.calendar[v].affectedID);
                       uq.calendar[v].limitDate = new Date(uq.calendar[v].limitDate);
-                      uq.counters.push({id: uq.calendar[v].affectedID, counter:uq.calendar[v].limitDate.getTime()})
+                      var actualDate = new Date();
+                      var difference = uq.calendar[v].limitDate.getTime()-actualDate.getTime();
+                      console.log("Limit Date - " + uq.calendar[v].limitDate.getTime());
+                      console.log("Actual Date - " + actualDate.getTime());
+                      console.log("Resta - " + difference);
+                      if(difference>0)
+                      {
+                        uq.counters.push({id: uq.calendar[v].affectedID, counter:difference})
+                      }
                     }
                     break;
             }

@@ -53,7 +53,7 @@
         case "RT":
           obtainTeamRequests($link);
           break;
-        case "RT":
+        case "CAL":
           obtainCalendar($link);
           break;
         default:
@@ -394,7 +394,8 @@
         $type=utf8_decode($row['type']);
         $market=$row['market'];
         $accepted=$row['accepted'];
-        $signins[] = array('id'=> $id, 'amount'=> $amount, 'player'=> $player, 'buyerTeam'=> $buyerTeam, 'type'=> $type, 'market'=> $market, 'accepted'=> $accepted);
+        $limitDate='';
+        $signins[] = array('id'=> $id, 'amount'=> $amount, 'player'=> $player, 'buyerTeam'=> $buyerTeam, 'type'=> $type, 'market'=> $market, 'accepted'=> $accepted, 'limitDate'=> $limitDate);
     }
     $data['signins']=$signins;
     $data['success'] = true;
@@ -499,14 +500,15 @@
     $query="SELECT * from calendar";
     $resultado=mysqli_query($con, $query) or die("Error recuperando calendario");
   
-    $teamRequests=array();
+    $cal=array();
     while($row = mysqli_fetch_array($resultado))
     {
-        $user=$row['user'];
-        $requestDate=$row['request_date'];
-        $teamRequests[] = array('user'=> $user, 'requestDate'=> $requestDate);
+        $type=$row['type'];
+        $limitDate=$row['limit_date'];
+        $affectedID=$row['affected_id'];
+        $cal[] = array('type'=> $type, 'limitDate'=> $limitDate, 'affectedID'=> $affectedID);
     }
-    $data['teamRequests']=$teamRequests;
+    $data['calendar']=$cal;
     $data['success'] = true;
     $data['message'] = "Datos recogidos";
     echo json_encode($data);
