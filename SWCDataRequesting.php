@@ -89,8 +89,11 @@
        case "aceOfe":
           acceptOffer($link, $params);
             break;
-       case "recOfer":
+       case "recOfe":
           rejectOffer($link, $params);
+            break;
+       case "pujSub":
+          raiseAuction($link, $params);
             break;
         default:
           invalidRequest();
@@ -168,10 +171,15 @@
   function doOffer($con, $params)
   {
     $data = array();
-    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->offerTeam.",".$params->amount.", 'F', ".$params->market.", false)";
+    if(strcmp($params->signinType, 'T')==0)
+    {
+      $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->offerTeam.", 0, 'T', ".$params->market.", false)";
+    }else{
+      $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->offerTeam.",".$params->amount.", 'F', ".$params->market.", false)";
+    }
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
-    $data['message'] = "Cláusula realizada";
+    $data['message'] = "Oferta realizada";
     echo json_encode($data);
     exit;
   }
@@ -213,6 +221,17 @@
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
     $data['message'] = "Jugador contratado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function raiseAuction($con, $params)
+  {
+    $data = array();
+    $query="UPDATE signins SET buyer_team=". $params->newTeam .", amount=amount+".$params->amount." where id=" . $params->id;
+    $resultado=mysqli_query($con, $query) or die("Error incrementando puja");
+    $data['success'] = true;
+    $data['message'] = "Puja incrementada";
     echo json_encode($data);
     exit;
   }

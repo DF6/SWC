@@ -12,7 +12,7 @@
       <div class="card" style="background-color:#3498db">
         <div class="card-content white-text">
          <h5 style="color:white;">{{uq.getPlayerById(tp.player).name}} - {{uq.getPlayerById(tp.player).position}}</h5>
-         Monto - <b>{{tp.amount}}</b><br/>
+         Monto - <b ng-if="pl.type!='T'">{{tp.amount}}</b><b ng-if="pl.type=='T'">CESIÓN</b><br/>
          <!--Jugadores ofrecidos-->
         </div>
         <div class="card-action">

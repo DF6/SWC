@@ -49,6 +49,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.playersOffered = [];
   uq.showMarket=true;
   uq.counters = [];
+  uq.temporary = false;
   obtainData("T");
   switch($location.path())
   {
@@ -111,27 +112,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
         obtainData("ST");
         obtainData("PCS");
         break;
-  }
-  
-  uq.showDateFromCounters =function()
-  {
-    angular.forEach(uq.counters, function(value, key){
-      var hours =(value.counter/1000/60/60).toFixed();
-      var minutes = ((value.counter - hours*60*60*1000)/60/60).toFixed();
-      while(minutes>59)
-      {
-        hours++;
-        minutes-=60;
-      }
-      var seconds = ((value.counter - hours*60*60*1000 - minutes*60*60)/60).toFixed();
-      while(seconds>59)
-      {
-        minutes++;
-        seconds-=60;
-      }
-      console.log(hours + ":" + minutes + ":" + seconds);
-      uq.getSigninById(value.id).limitDate = hours + ":" + minutes + ":" + seconds;
-    });
   }
 
   uq.login = function(){
@@ -341,8 +321,23 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     });
     if(!uq.isPlayerSignedYetOnThisMarket(player) && availablePlayers)
     {
-      
-      $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, amount: uq.offerRange, offerTeam: offerTeam, signinType: "F", market: MARKET_EDITION})
+      if(uq.temporary)
+      {
+        $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, offerTeam: offerTeam, signinType: "T", market: MARKET_EDITION})
+          .success(function(data) {
+            /*if(uq.playersOffered.length!=0)
+            {
+              uq.offerPlayer(data.signinID);
+            }*/
+            Materialize.toast('Oferta de cesión realizada', 5000, 'rounded');
+            uq.redirEditar('marketresume');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
+          });
+      }else{
+        $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, amount: uq.offerRange, offerTeam: offerTeam, signinType: "F", market: MARKET_EDITION})
           .success(function(data) {
             /*if(uq.playersOffered.length!=0)
             {
@@ -355,6 +350,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
             console.log(error);
             Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
           });
+     }      
     }else{
       if(uq.isPlayerSignedYetOnThisMarket(player) && availablePlayers){
         Materialize.toast('El jugador ya ha sido vendido en este mercado', 5000, 'rounded');
@@ -369,7 +365,12 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
       var offer = uq.getSigninById(signin);
       $http.post("SWCDataRequesting.php", { type: "aceOfe", player: offer.player, amount: offer.amount, newTeam: offer.buyerTeam, oldTeam: uq.getPlayerById(offer.player).teamID, id: signin})
           .success(function(data) {
-            Materialize.toast(uq.getPlayerById(offer.player).name + ' ha sido transferido a ' + uq.getTeamById(offer.buyerTeam).name, 5000, 'rounded');
+            if(offer.type=='T')
+            { 
+              Materialize.toast(uq.getPlayerById(offer.player).name + ' ha sido cedido a ' + uq.getTeamById(offer.buyerTeam).name, 5000, 'rounded');
+            }else{
+              Materialize.toast(uq.getPlayerById(offer.player).name + ' ha sido transferido a ' + uq.getTeamById(offer.buyerTeam).name, 5000, 'rounded');
+            }
             uq.redirEditar('marketresume');
           })
           .error(function(error) {
@@ -393,6 +394,39 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
             Materialize.toast('No se ha podido rechazar la oferta', 5000, 'rounded');
           });
     }
+  }
+  
+  uq.showDateFromCounters =function()
+  {
+    angular.forEach(uq.counters, function(value, key){
+      if(value.counter>0)
+      {
+        uq.getSigninById(value.id).limitDate = uq.msToHMS(value.counter);
+      }else{
+        uq.getSigninById(value.id).limitDate = "CERRADA";
+      }
+    });
+  }
+
+  uq.msToHMS = function(ms) {
+    var seconds = ms / 1000;
+    var hours = parseInt( seconds / 3600 );
+    seconds = seconds % 3600;
+    var minutes = parseInt( seconds / 60 );
+    seconds = seconds % 60;
+    return hours + ":" + minutes + ":" + seconds.toFixed();
+  }
+
+  uq.raiseAuction = function(signin, amount) {
+    $http.post("SWCDataRequesting.php", { type: "pujSub", id: signin, amount: amount, newTeam: uq.user.teamID})
+          .success(function(data) {
+            Materialize.toast('Puja subida a ' + (uq.getSigninById(signin).amount+amount), 5000, 'rounded');
+            uq.redirEditar('myteam');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido realizar la puja', 5000, 'rounded');
+          });
   }
 
   uq.isPlayerSignedYetOnThisMarket = function(player)
@@ -556,7 +590,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     var market = -1;
     var player = uq.getSigninById(signin).player;
     angular.forEach(uq.signins, function(value,index){
-      if(value.player == player && market<value.market && market<uq.getSigninById(signin).market && value.id!=signin)
+      if(value.player == player && market<value.market && market<uq.getSigninById(signin).market && value.id!=signin && value.type!='T')
       {
         lastSignin = value;
         market = value.market;
@@ -748,9 +782,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
                       uq.calendar[v].limitDate = new Date(uq.calendar[v].limitDate);
                       var actualDate = new Date();
                       var difference = uq.calendar[v].limitDate.getTime()-actualDate.getTime();
-                      console.log("Limit Date - " + uq.calendar[v].limitDate.getTime());
-                      console.log("Actual Date - " + actualDate.getTime());
-                      console.log("Resta - " + difference);
                       if(difference>0)
                       {
                         uq.counters.push({id: uq.calendar[v].affectedID, counter:difference})

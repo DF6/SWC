@@ -11,10 +11,17 @@
   		<div class="col s12 m10 offset-m1">
   			<form action="#">
 	        <p class="range-field">
-	          <input type="range" id="offerrange" min="0" max="100" ng-model="uq.offerRange" step="0.5"/>
+	          <input ng-disabled="uq.temporary" type="range" id="offerrange" min="0" max="100" ng-model="uq.offerRange" step="0.5"/>
 	        </p>
 	        <h2>OFERTA - {{uq.offerRange}}M€</h2>
 	        <h2>Presupuesto restante - {{(uq.getTeamById(uq.user.teamID).budget-uq.offerRange).toFixed(1)}}</h2>
+          <div class="switch">
+            <label>
+              <input type="checkbox" ng-model="uq.temporary">
+              <span class="lever"></span>
+              <b style="color:white;">Cesión</b>
+            </label>
+          </div>
       </form>
   		</div>
   	</div>

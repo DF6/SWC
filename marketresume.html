@@ -31,8 +31,9 @@
               <td ng-if="pl.type=='S'">Subasta</td>
               <td ng-if="pl.type=='D'">Descarte</td>
               <td ng-if="pl.type=='F'">Acuerdo</td>
+              <td ng-if="pl.type=='T'">Cesión</td>
 	            <td>{{pl.amount}}M€</td>
-              <td ng-if="pl.type=='C' || pl.type=='F' || pl.type=='D'">{{uq.getTeamById(uq.getPreviousSignin(pl.id).buyerTeam).name}}</td>
+              <td ng-if="pl.type=='C' || pl.type=='F' || pl.type=='D' || pl.type=='T'">{{uq.getTeamById(uq.getPreviousSignin(pl.id).buyerTeam).name}}</td>
               <td ng-if="pl.type=='W'">LIBRE</td>
               <td ng-if="pl.type=='S'">SUBASTA</td>
               <td ng-if="pl.type!='D'">{{uq.getTeamById(pl.buyerTeam).name}}</td>
