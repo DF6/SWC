@@ -114,6 +114,18 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
         break;
   }
 
+  uq.execCronJob = function()
+  {
+    $http.post("cronjobs.php", {})
+              .success(function(data) {
+                Materialize.toast('Bien', 5000, 'rounded');
+              })
+              .error(function(error) {
+                console.log(error);
+                Materialize.toast('Mal', 5000, 'rounded');
+              });
+  }
+
   uq.login = function(){
     angular.forEach(uq.users, function(value, key){
       if(value.user == uq.user.user)
@@ -414,11 +426,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     seconds = seconds % 3600;
     var minutes = parseInt( seconds / 60 );
     seconds = seconds % 60;
-    return hours + ":" + minutes + ":" + seconds.toFixed();
+    return uq.addZero(hours) + ":" + uq.addZero(minutes) + ":" + uq.addZero(seconds.toFixed());
   }
 
   uq.raiseAuction = function(signin, amount) {
-    $http.post("SWCDataRequesting.php", { type: "pujSub", id: signin, amount: amount, newTeam: uq.user.teamID})
+    var dd = new Date();
+    if(uq.getCounterById(signin)-dd.getTime()<=0)
+    {
+      $http.post("SWCDataRequesting.php", { type: "pujSub", id: signin, amount: amount, newTeam: uq.user.teamID})
           .success(function(data) {
             Materialize.toast('Puja subida a ' + (uq.getSigninById(signin).amount+amount), 5000, 'rounded');
             uq.redirEditar('myteam');
@@ -427,6 +442,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
             console.log(error);
             Materialize.toast('No se ha podido realizar la puja', 5000, 'rounded');
           });
+    }else{
+      Materialize.toast('La subasta está fuera de tiempo', 5000, 'rounded');
+    }
+    
   }
 
   uq.isPlayerSignedYetOnThisMarket = function(player)
@@ -597,6 +616,18 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
       }
     });
     return lastSignin;
+  }
+
+  uq.getCounterById = function(signin)
+  {
+    var response = {};
+    angular.forEach(uq.counters, function(value, index){
+        if(value.id == signin)
+        {
+            response = value.counter;
+        }
+    });
+    return response;
   }
 
   uq.requestTeam = function()

@@ -13,7 +13,7 @@
 	        <p class="range-field">
 	          <input ng-disabled="uq.temporary" type="range" id="offerrange" min="0" max="100" ng-model="uq.offerRange" step="0.5"/>
 	        </p>
-	        <h2>OFERTA - {{uq.offerRange}}M€</h2>
+	        <h2>OFERTA - <span ng-show="!uq.temporary">{{uq.offerRange}}M€</span><span ng-if="uq.temporary">CESIÓN</span></h2>
 	        <h2>Presupuesto restante - {{(uq.getTeamById(uq.user.teamID).budget-uq.offerRange).toFixed(1)}}</h2>
           <div class="switch">
             <label>
@@ -25,7 +25,7 @@
       </form>
   		</div>
   	</div>
-    <!--<div class="row">
+    <div class="row">
       <div class="col s12 m4 offset-m4">
         <label style="color:white;">Jugador</label>
 			  <select style="color:black;" ng-change="uq.putPlayerInOffer()" class="browser-default" ng-model="uq.playerSelected">
@@ -37,10 +37,10 @@
     <div class="row">
 	    <div class="col s12 m10 offset-m1">
 			  <div class="collection" id="collectPlayers">
-			    <a class="collection-item" ng-repeat="of in uq.playersOffered"><span class="badge" ng-click="uq.quitPlayerFromOffer(of.id)"><b>X</b></span><b style="color:black;">{{of.name}}</b></a>
+			    <a class="collection-item" ng-repeat="of in uq.playersOffered"><span class="badge" ng-click="uq.quitPlayerFromOffer(of.id)"><b>X</b></span><b style="color:#2196f3;">{{of.name}}</b></a>
 			  </div>
 	    </div>
-    </div>-->
+    </div>
   </div>
   <div class="col s12 m10 offset-m1">
     <div class="row">

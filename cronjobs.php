@@ -16,7 +16,7 @@
 	mysqli_select_db($link, $db_name) or die("Error seleccionando la base de datos.");
 	
   refreshCalendar($link);
-  closeMatches($link);
+  //closeMatches($link);
 
   function refreshCalendar($con)
   {
@@ -26,10 +26,12 @@
     while($row = mysqli_fetch_array($resultado))
     {
       $date = new DateTime();
-      $limitDate=$row['limit_date'];
-      if(var_dump($date->format('Y-m-d H:i') == $limitDate->format('Y-m-d H:i'))) {
+      $limitDate=new DateTime($row['limit_date']);
+      date_add($date, date_interval_create_from_date_string('2 hours'));
+      $interval = date_diff($date, $limitDate);
+      if(strcmp($interval->format("%y/%m/%d %h:%i"), "0/0/0 0:0") == 0) {
         switch($row['type']){
-          case "A":
+          case "S":
             closeAuction($con, $row['affected_id']);
             break;
           case "C":
@@ -41,15 +43,21 @@
           case "O":
             openMarket($con);
             break;
-          case "S":
+          case "R":
             discountSalaries($con);
             break;
           case "T":
             openTournament($con, $row['affected_id']);
             break;
+          default:
+            invalidRequest();
         }
       }
     }
+    $data['success'] = true;
+    $data['message'] = "CronJob completado";
+    echo json_encode($data);
+    exit;
   }
 
   function closeAuction($con, $id)
@@ -433,5 +441,5 @@
   	exit;
   }
 
-  mysql_close($link);
+  mysqli_close($link);
 ?>
