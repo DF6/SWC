@@ -226,6 +226,12 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
               .success(function(data) {
                 uq.teamPlayers = [];
                 uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
+                angular.forEach(uq.teamPlayers, function(value,key){
+                  if(value.id == player)
+                  {
+                    uq.teamPlayers.splice(key,1);
+                  }
+                });
                 Materialize.toast(uq.getPlayerById(player).name + ' ahora es libre', 5000, 'rounded');
               })
               .error(function(error) {
@@ -337,10 +343,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
       {
         $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, offerTeam: offerTeam, signinType: "T", market: MARKET_EDITION})
           .success(function(data) {
-            /*if(uq.playersOffered.length!=0)
+            if(uq.playersOffered.length!=0)
             {
-              uq.offerPlayer(data.signinID);
-            }*/
+              uq.offerPlayer(parseInt(data.signinID), 0);
+            }
             Materialize.toast('Oferta de cesión realizada', 5000, 'rounded');
             uq.redirEditar('marketresume');
           })
@@ -351,10 +357,10 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
       }else{
         $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, amount: uq.offerRange, offerTeam: offerTeam, signinType: "F", market: MARKET_EDITION})
           .success(function(data) {
-            /*if(uq.playersOffered.length!=0)
+            if(uq.playersOffered.length!=0)
             {
-              uq.offerPlayer(data.signinID);
-            }*/
+              uq.offerPlayer(parseInt(data.signinID), 0);
+            }
             Materialize.toast('Oferta realizada', 5000, 'rounded');
             uq.redirEditar('marketresume');
           })
@@ -370,6 +376,22 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     }
   }
 
+  uq.offerPlayer = function(signin, cont)
+  {
+    if(cont<uq.playersOffered.length)
+    {
+      $http.post("SWCDataRequesting.php", { type: "ofeJug", signin: signin, player: uq.playersOffered[cont].id, offerTeam: uq.user.teamID, originTeam: uq.getPlayerById(uq.getSigninById(signin).player).teamID})
+          .success(function(data) {
+            cont++;
+            uq.offerPlayer(signin, cont);
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido ofrecer el jugador', 5000, 'rounded');
+          });
+    }
+  }
+
   uq.acceptOffer = function(signin)
   {
     if(confirm("Aceptar. ¿Seguro?"))
@@ -377,6 +399,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
       var offer = uq.getSigninById(signin);
       $http.post("SWCDataRequesting.php", { type: "aceOfe", player: offer.player, amount: offer.amount, newTeam: offer.buyerTeam, oldTeam: uq.getPlayerById(offer.player).teamID, id: signin})
           .success(function(data) {
+            uq.changePlayersOffered(signin);
             if(offer.type=='T')
             { 
               Materialize.toast(uq.getPlayerById(offer.player).name + ' ha sido cedido a ' + uq.getTeamById(offer.buyerTeam).name, 5000, 'rounded');
@@ -388,6 +411,34 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
           .error(function(error) {
             console.log(error);
             Materialize.toast('No se ha podido realizar el acuerdo', 5000, 'rounded');
+          });
+    }
+  }
+
+  uq.changePlayersOffered = function(signin)
+  {
+    var playersToChange = [];
+    angular.forEach(uq.playerChangeSignins, function(value, index){
+        if(value.signinID == signin)
+        {
+            playersToChange.push(value);
+        }
+    });
+    uq.transferOfferedPlayer(playersToChange, 0);
+  }
+
+  uq.transferOfferedPlayer = function(playersToChange, cont)
+  {
+    if(cont<playersToChange.length)
+    {
+      $http.post("SWCDataRequesting.php", { type: "traJug", player: playersToChange.player, newTeam: playersToChange.newTeam})
+          .success(function(data) {
+            cont++;
+            uq.transferOfferedPlayer(playersToChange, cont);
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido transferir el jugador', 5000, 'rounded');
           });
     }
   }

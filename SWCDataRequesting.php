@@ -95,6 +95,12 @@
        case "pujSub":
           raiseAuction($link, $params);
             break;
+       case "ofeJug":
+          offerPlayer($link, $params);
+            break;
+       case "traJug":
+          transferPlayerOffered($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -178,8 +184,20 @@
       $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->offerTeam.",".$params->amount.", 'F', ".$params->market.", false)";
     }
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
+    $data['signinID'] = mysqli_insert_id($con);
     $data['success'] = true;
     $data['message'] = "Oferta realizada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function offerPlayer($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO player_change_signins (signin_id,player,origin_team,new_team) values (".$params->signin.",".$params->player.", ".$params->originTeam.", ".$params->offerTeam.")";
+    $resultado=mysqli_query($con, $query) or die("Error insertando jugador de cambio");
+    $data['success'] = true;
+    $data['message'] = "Jugador ofertado";
     echo json_encode($data);
     exit;
   }
@@ -208,6 +226,17 @@
     $resultado=mysqli_query($con, $query) or die("Error rechazando oferta");
     $data['success'] = true;
     $data['message'] = "Oferta rechazada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function transferPlayerOffered($con, $params)
+  {
+    $data = array();
+    $query="UPDATE players SET team_id=".$params->newTeam." where id=".$params->player."";
+    $resultado=mysqli_query($con, $query) or die("Error transfiriendo cambio");
+    $data['success'] = true;
+    $data['message'] = "Jugador transferido";
     echo json_encode($data);
     exit;
   }
