@@ -56,6 +56,9 @@
         case "CAL":
           obtainCalendar($link);
           break;
+        case "CONSTANTS":
+          obtainConstants($link);
+          break;
         default:
           invalidRequest();
      }
@@ -557,6 +560,27 @@
         $cal[] = array('type'=> $type, 'limitDate'=> $limitDate, 'affectedID'=> $affectedID);
     }
     $data['calendar']=$cal;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainConstants($con)
+  {
+    $data = array();
+    $query="SELECT * from constants";
+    $resultado=mysqli_query($con, $query) or die("Error recuperando constantes");
+  
+    $constants=array();
+    while($row = mysqli_fetch_array($resultado))
+    {
+        $untouchables=$row['untouchables'];
+        $forcedSignins=$row['forced_signins'];
+        $marketEdition=$row['market_edition'];
+        $constants[] = array('untouchables'=> $untouchables, 'forcedSignins'=> $forcedSignins, 'marketEdition'=> $marketEdition);
+    }
+    $data['constants']=$constants;
     $data['success'] = true;
     $data['message'] = "Datos recogidos";
     echo json_encode($data);

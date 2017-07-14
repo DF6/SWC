@@ -33,10 +33,12 @@ appIni.controller("navCtrl", function($location){
         }
     });
 appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
-  const INTOCABLES = 2;
-  const CLAUSULAS = 3;
-  const MARKET_EDITION = 1;
   var uq = this;
+  uq.constants = [];
+  obtainData("CONSTANTS");
+  const INTOCABLES = uq.constants[0].untouchables;
+  const CLAUSULAS = uq.constants[0].forcedSignins;
+  const MARKET_EDITION = uq.constants[0].marketEdition;
   uq.datoViajero = indexFactory.datoViajero;
   uq.user = indexFactory.getUser();
   uq.teamPlayers = [];
@@ -345,7 +347,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
           .success(function(data) {
             if(uq.playersOffered.length!=0)
             {
-              uq.offerPlayer(parseInt(data.signinID), 0);
+              uq.offerPlayer(parseInt(data.signinID), 0, uq.getPlayerById(player).teamID);
             }
             Materialize.toast('Oferta de cesión realizada', 5000, 'rounded');
             uq.redirEditar('marketresume');
@@ -359,7 +361,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
           .success(function(data) {
             if(uq.playersOffered.length!=0)
             {
-              uq.offerPlayer(parseInt(data.signinID), 0);
+              uq.offerPlayer(parseInt(data.signinID), 0, uq.getPlayerById(player).teamID);
             }
             Materialize.toast('Oferta realizada', 5000, 'rounded');
             uq.redirEditar('marketresume');
@@ -376,14 +378,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     }
   }
 
-  uq.offerPlayer = function(signin, cont)
+  uq.offerPlayer = function(signin, cont, playerTeam)
   {
     if(cont<uq.playersOffered.length)
     {
-      $http.post("SWCDataRequesting.php", { type: "ofeJug", signin: signin, player: uq.playersOffered[cont].id, offerTeam: uq.user.teamID, originTeam: uq.getPlayerById(uq.getSigninById(signin).player).teamID})
+      $http.post("SWCDataRequesting.php", { type: "ofeJug", signin: signin, player: uq.playersOffered[cont].id, offerTeam: playerTeam, originTeam: uq.user.teamID})
           .success(function(data) {
             cont++;
-            uq.offerPlayer(signin, cont);
+            uq.offerPlayer(signin, cont, playerTeam);
           })
           .error(function(error) {
             console.log(error);
@@ -868,6 +870,15 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
                       {
                         uq.counters.push({id: uq.calendar[v].affectedID, counter:difference})
                       }
+                    }
+                    break;
+                case "CONSTANTS":
+                    uq.constants = data.constants;
+                    indexFactory.constants = uq.constants;
+                    for (var v = 0; v < uq.constants.length; v++) {
+                      uq.constants[v].untouchables = parseInt(uq.constants[v].untouchables);
+                      uq.constants[v].forcedSignins = parseInt(uq.constants[v].forcedSignins);
+                      uq.constants[v].marketEdition = parseInt(uq.constants[v].marketEdition);
                     }
                     break;
             }
