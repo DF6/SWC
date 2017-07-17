@@ -912,7 +912,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
 });
 appIni.factory("indexFactory", function(){
     var user={id:-1, user: 'axelldf6', pass: 'infinito6', email:'', valid: false, teamName: '', teamID: -1, teamImage: ''};
-    var positions = {"POR","LD","DFC","LI","MCD","MC""MI","MD","MCO""EI","DC","ED"};
+    var positions = [{code: "POR", description: "Portero"},{code: "LD", description: "Lateral Derecho"},{code: "DFC", description: "Defensa Central"},{code: "LI", description: "Lateral Izquierdo"},{code: "MCD", description: "Mediocentro Defensivo"},{code: "MC", description: "Mediocentro"},{code: "MI", description: "Medio Izquierdo"},{code: "MD", description: "Medio Derecho"},{code: "MCO", description: "Mediapunta"},{code: "EI", description: "Extremo Izquierdo"},{code: "DC", description: "Delantero Centro"},{code: "ED", description: "Extremo Derecho"}];
     var interfaz = {
         datoViajero:-1,
         getUser: function(){
