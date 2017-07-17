@@ -578,7 +578,10 @@
         $untouchables=$row['untouchables'];
         $forcedSignins=$row['forced_signins'];
         $marketEdition=$row['market_edition'];
-        $constants[] = array('untouchables'=> $untouchables, 'forcedSignins'=> $forcedSignins, 'marketEdition'=> $marketEdition);
+        $marketOpened=$row['market_opened'];
+        $forcedSigninsOpened=$row['forced_signins_opened'];
+        $intervalActual=$row['interval_actual'];
+        $constants[] = array('untouchables'=> $untouchables, 'forcedSignins'=> $forcedSignins, 'marketEdition'=> $marketEdition, 'marketOpened'=> $marketOpened, 'forcedSigninsOpened'=> $forcedSigninsOpened, 'intervalActual'=> $intervalActual);
     }
     $data['constants']=$constants;
     $data['success'] = true;

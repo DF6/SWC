@@ -17,6 +17,7 @@ appIni.config(function($routeProvider){
             .when("/wildcards", {controller: "appCtrl",controllerAs: "vm",templateUrl: "wildcards.html"})
             .when("/offers", {controller: "appCtrl",controllerAs: "vm",templateUrl: "offers.html"})
             .when("/auctions", {controller: "appCtrl",controllerAs: "vm",templateUrl: "auctions.html"})
+            .when("/newauction", {controller: "appCtrl",controllerAs: "vm",templateUrl: "newauction.html"})
             .when("/europesupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "europesupercup.html"})
             .when("/clubsupercup", {controller: "appCtrl",controllerAs: "vm",templateUrl: "clubsupercup.html"})
             .when("/pending", {controller: "appCtrl",controllerAs: "vm",templateUrl: "pending.html"})
@@ -36,10 +37,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   var uq = this;
   uq.constants = [];
   obtainData("CONSTANTS");
-  const INTOCABLES = uq.constants[0].untouchables;
-  const CLAUSULAS = uq.constants[0].forcedSignins;
-  const MARKET_EDITION = uq.constants[0].marketEdition;
   uq.datoViajero = indexFactory.datoViajero;
+  uq.positions = indexFactory.getPositions();
   uq.user = indexFactory.getUser();
   uq.teamPlayers = [];
   uq.salaryLimit = 0;
@@ -52,6 +51,8 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.showMarket=true;
   uq.counters = [];
   uq.temporary = false;
+  uq.newAuctionObj = {name: "", overallRange: 40, positionSelected: ""};
+  console.log("Market Edition - " + MARKET_EDITION);
   obtainData("T");
   switch($location.path())
   {
@@ -482,6 +483,18 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     return uq.addZero(hours) + ":" + uq.addZero(minutes) + ":" + uq.addZero(seconds.toFixed());
   }
 
+  uq.addAuction = function() {
+      $http.post("SWCDataRequesting.php", { type: "pujSub", id: signin, amount: amount, newTeam: uq.user.teamID})
+          .success(function(data) {
+            Materialize.toast('Puja subida a ' + (uq.getSigninById(signin).amount+amount), 5000, 'rounded');
+            uq.redirEditar('myteam');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se ha podido realizar la puja', 5000, 'rounded');
+          });
+  }
+
   uq.raiseAuction = function(signin, amount) {
     var dd = new Date();
     if(uq.getCounterById(signin)-dd.getTime()<=0)
@@ -498,7 +511,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     }else{
       Materialize.toast('La subasta está fuera de tiempo', 5000, 'rounded');
     }
-    
   }
 
   uq.isPlayerSignedYetOnThisMarket = function(player)
@@ -879,7 +891,16 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
                       uq.constants[v].untouchables = parseInt(uq.constants[v].untouchables);
                       uq.constants[v].forcedSignins = parseInt(uq.constants[v].forcedSignins);
                       uq.constants[v].marketEdition = parseInt(uq.constants[v].marketEdition);
+                      uq.constants[v].marketOpened = parseInt(uq.constants[v].marketOpened);
+                      uq.constants[v].forcedSigninsOpened = parseInt(uq.constants[v].forcedSigninsOpened);
+                      uq.constants[v].intervalActual = parseInt(uq.constants[v].intervalActual);
                     }
+                    const INTOCABLES = uq.constants[0].untouchables;
+                    const CLAUSULAS = uq.constants[0].forcedSignins;
+                    const MARKET_EDITION = uq.constants[0].marketEdition;
+                    const MARKET_OPENED = uq.constants[0].marketOpened;
+                    const FORCED_SIGNINS_OPENED = uq.constants[0].forcedSigninsOpened;
+                    const INTERVAL_ACTUAL = uq.constants[0].intervalActual;
                     break;
             }
           })
@@ -891,6 +912,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
 });
 appIni.factory("indexFactory", function(){
     var user={id:-1, user: 'axelldf6', pass: 'infinito6', email:'', valid: false, teamName: '', teamID: -1, teamImage: ''};
+    var positions = {{code: "POR", description: "Portero"},{code: "LD", description: "Lateral Derecho"},{code: "DFC", description: "Defensa Central"},{code: "LI", description: "Lateral Izquierdo"},{code: "MCD", description: "Mediocentro Defensivo"},{code: "MC", description: "Mediocentro"},{code: "MI", description: "Medio Izquierdo"},{code: "MD", description: "Medio Derecho"},{code: "MCO", description: "Mediapunta"},{code: "EI", description: "Extremo Izquierdo"},{code: "DC", description: "Delantero Centro"},{code: "ED", description: "Extremo Derecho"}};
     var interfaz = {
         datoViajero:-1,
         getUser: function(){
@@ -898,6 +920,9 @@ appIni.factory("indexFactory", function(){
         },
         setUser: function(newUser){
           user = newUser;
+        },
+        getPositions: function(){
+            return positions;
         }
     }
     return interfaz;

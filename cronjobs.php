@@ -86,43 +86,37 @@
     $resultado3=mysqli_query($con, $query3) or die("Error actualizando presupuesto");
   }
 
-  function discardPlayer($con, $params)
+  function openMarket($con, $params)
   {
     $data = array();
-    $query="UPDATE players SET team_id=0, salary=0.1 where id=" . $params->player;
-    $resultado=mysqli_query($con, $query) or die("Error liberando jugador");
-    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.", 0, 0, 'D', ".$params->market.", true)";
-    $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
+    $query="UPDATE constants SET market_opened=1, forced_signins_opened=1";
+    $resultado=mysqli_query($con, $query) or die("Error abriendo mercado");
+    $query2="UPDATE constants SET market_edition=market_edition+1";
+    $resultado2=mysqli_query($con, $query2) or die("Error aumentando mercado");
     $data['success'] = true;
-    $data['message'] = "Jugador liberado";
+    $data['message'] = "Mercado abierto";
     echo json_encode($data);
     exit;
   }
 
-  function saveSalary($con, $params)
+  function closeForcedSigns($con, $params)
   {
     $data = array();
-    $query="UPDATE players SET salary=".$params->salary." where id=".$params->player."";
-    $resultado=mysqli_query($con, $query) or die("Error actualizando salario");
+    $query="UPDATE constants SET forced_signins_opened=0";
+    $resultado=mysqli_query($con, $query) or die("Error cerrando clausulas");
     $data['success'] = true;
-    $data['message'] = "Salario actualizado";
+    $data['message'] = "Clausulas cerradas";
     echo json_encode($data);
     exit;
   }
 
-  function forceSign($con, $params)
+  function closeMarket($con, $params)
   {
     $data = array();
-    $query="UPDATE players SET team_id=".$params->buyerTeam." where id=".$params->player."";
-    $resultado=mysqli_query($con, $query) or die("Error realizando cláusula");
-    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->buyerTeam.",".$params->amount.", 'C', ".$params->market.", true)";
-    $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
-    $query3="UPDATE teams SET budget=budget-" . $params->amount . " where id=". $params->buyerTeam."";
-    $resultado3=mysqli_query($con, $query3) or die("Error actualizando presupuesto1");
-    $query4="UPDATE teams SET budget=budget+" . $params->amount . " where id=". $params->oldTeam."";
-    $resultado4=mysqli_query($con, $query4) or die("Error actualizando presupuesto2");
+    $query="UPDATE constants SET market_opened=0";
+    $resultado=mysqli_query($con, $query) or die("Error cerrando mercado");
     $data['success'] = true;
-    $data['message'] = "Cláusula realizada";
+    $data['message'] = "Mercado cerrado";
     echo json_encode($data);
     exit;
   }
