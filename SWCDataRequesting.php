@@ -104,6 +104,9 @@
        case "traJug":
           transferPlayerOffered($link, $params);
             break;
+       case "nueSub":
+          newAuction($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -253,6 +256,19 @@
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
     $data['message'] = "Jugador contratado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function newAuction($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO players (name,salary,team_id,position) values ('".$params->name."', 0.1, -1, '".$params->position."')";
+    $resultado=mysqli_query($con, $query) or die("Error insertando jugador");
+    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".mysqli_insert_id($con).",".$params->buyerTeam.", ".$params->amount.", 'S', ".$params->market.", false)";
+    $resultado2=mysqli_query($con, $query2) or die("Error insertando subasta");
+    $data['success'] = true;
+    $data['message'] = "Subasta creada";
     echo json_encode($data);
     exit;
   }

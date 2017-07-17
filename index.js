@@ -484,14 +484,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   }
 
   uq.addAuction = function() {
-      $http.post("SWCDataRequesting.php", { type: "pujSub", id: signin, amount: amount, newTeam: uq.user.teamID})
+      $http.post("SWCDataRequesting.php", { type: "nueSub", playerName: uq.newAuctionObj.name, buyerTeam: uq.user.teamID, position: uq.newAuctionObj.positionSelected, amount: amount, market: MARKET_EDITION})
           .success(function(data) {
-            Materialize.toast('Puja subida a ' + (uq.getSigninById(signin).amount+amount), 5000, 'rounded');
-            uq.redirEditar('myteam');
+            Materialize.toast('Comienza la subasta', 5000, 'rounded');
+            uq.redirEditar('auctions');
           })
           .error(function(error) {
             console.log(error);
-            Materialize.toast('No se ha podido realizar la puja', 5000, 'rounded');
+            Materialize.toast('No se ha podido realizar la subasta', 5000, 'rounded');
           });
   }
 
