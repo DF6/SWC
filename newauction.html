@@ -21,7 +21,7 @@
         <label style="color:white;">Equipo</label>
         <select style="color:black;" class="browser-default" ng-model="uq.newAuctionObj.positionSelected">
           <option value="" disabled selected>Elegir posición...</option>
-          <option ng-repeat="te in uq.positions" ng-value="te.code">{{te.description}}</option>
+          <option ng-repeat="te in uq.positions" ng-value="te">{{te}}</option>
         </select>
       </div>
     </div>
