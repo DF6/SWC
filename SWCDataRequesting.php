@@ -2,11 +2,11 @@
 <?php
   define('DEBUG_AUTH', false);
   define("BASE_DIR", "../docs/php/");
-  header('Content-Type: application/json;charset=utf-8');
+  //header('Content-Type: application/json;charset=utf-8');
   ini_set('upload_max_filesize', '10M');
   ini_set('post_max_size', '10M');
   ini_set('max_execution_time', 300);
-  session_start();
+  //session_start();
 	$db_host="localhost";
 	$db_name="id1956157_swc";
 	$db_user="id1956157_swcadmin";

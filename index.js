@@ -52,7 +52,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.counters = [];
   uq.temporary = false;
   uq.newAuctionObj = {name: "", overallRange: 40, positionSelected: ""};
-  console.log("Market Edition - " + MARKET_EDITION);
   obtainData("T");
   switch($location.path())
   {
@@ -646,14 +645,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.getUntouchablesByTeam = function(team)
   {
     var teamPlayers = uq.getPlayersByTeam(team);
-    var intocables = 0;
+    var intoca = 0;
     angular.forEach(teamPlayers, function(value, index){
         if(value.salary==10)
         {
-            intocables++;
+            intoca++;
         }
     });
-    return intocables;
+    return intoca;
   }
 
   uq.getSigninsByMarketEdition = function(market)
