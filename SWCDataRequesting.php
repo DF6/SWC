@@ -267,6 +267,11 @@
     $resultado=mysqli_query($con, $query) or die("Error insertando jugador");
     $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".mysqli_insert_id($con).",".$params->buyerTeam.", ".$params->amount.", 'S', ".$params->market.", false)";
     $resultado2=mysqli_query($con, $query2) or die("Error insertando subasta");
+    $idResult=mysql_insert_id();
+    $fecha_hora_actual = date('Y-m-d H:i:s');
+    $nuevafecha = strtotime ('+12 hour', strtotime($fecha_hora_actual)) ;
+    $query3="INSERT INTO calendar (type, affected_id, limit_date) values ('S',".$idResult.",'".$nuevafecha."')";
+    $resultado3=mysqli_query($con, $query3) or die("Error insertando calendario");
     $data['success'] = true;
     $data['message'] = "Subasta creada";
     echo json_encode($data);
