@@ -52,6 +52,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.counters = [];
   uq.temporary = false;
   uq.newAuctionObj = {name: "", overallRange: 40, positionSelected: ""};
+  uq.execCronJob();
   obtainData("T");
   switch($location.path())
   {
@@ -94,6 +95,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
         }
         uq.mytimeout = $timeout(uq.onTimeout,1000);
         break;
+    case "/newauction":
+        obtainData("P");
+        obtainData("CAL");
     case "/marketresume":        
         obtainData("P");
         obtainData("S");
@@ -224,7 +228,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   {
     if(confirm('¿Seguro?'))
     {
-        $http.post("SWCDataRequesting.php", { type: "disPla", player: player, market: MARKET_EDITION})
+        $http.post("SWCDataRequesting.php", { type: "disPla", player: player, market: uq.constants[0].marketEdition})
               .success(function(data) {
                 uq.teamPlayers = [];
                 uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
@@ -247,7 +251,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   {
     if(confirm('¿Seguro?'))
     {
-        $http.post("SWCDataRequesting.php", { type: "conLib", player: player, team: team, market: MARKET_EDITION})
+        $http.post("SWCDataRequesting.php", { type: "conLib", player: player, team: team, market: uq.constants[0].marketEdition})
               .success(function(data) {
                 Materialize.toast(uq.getPlayerById(player).name + ' contratado', 5000, 'rounded');
                 uq.redirEditar('myteam');
@@ -309,14 +313,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
         forcedCount++;
       }
     });
-    return forcedCount<CLAUSULAS;
+    return forcedCount<uq.constants[0].forcedSignins;
   }
 
   uq.forceSign = function(player, forcerTeam)
   {
     if(uq.canForce(forcerTeam))
     {
-      $http.post("SWCDataRequesting.php", { type: "claJug", oldTeam: uq.getPlayerById(player).teamID, player: player, amount: (uq.getPlayerById(player).salary*10).toFixed(), buyerTeam: forcerTeam, signinType: "C", market: MARKET_EDITION})
+      $http.post("SWCDataRequesting.php", { type: "claJug", oldTeam: uq.getPlayerById(player).teamID, player: player, amount: (uq.getPlayerById(player).salary*10).toFixed(), buyerTeam: forcerTeam, signinType: "C", market: uq.constants[0].marketEdition})
           .success(function(data) {
             Materialize.toast('Cláusula realizada', 5000, 'rounded');
             uq.redirEditar('myteam');
@@ -343,7 +347,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     {
       if(uq.temporary)
       {
-        $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, offerTeam: offerTeam, signinType: "T", market: MARKET_EDITION})
+        $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, offerTeam: offerTeam, signinType: "T", market: uq.constants[0].marketEdition})
           .success(function(data) {
             if(uq.playersOffered.length!=0)
             {
@@ -357,7 +361,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
             Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
           });
       }else{
-        $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, amount: uq.offerRange, offerTeam: offerTeam, signinType: "F", market: MARKET_EDITION})
+        $http.post("SWCDataRequesting.php", { type: "hacOfe", player: player, amount: uq.offerRange, offerTeam: offerTeam, signinType: "F", market: uq.constants[0].marketEdition})
           .success(function(data) {
             if(uq.playersOffered.length!=0)
             {
@@ -483,7 +487,14 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   }
 
   uq.addAuction = function() {
-      $http.post("SWCDataRequesting.php", { type: "nueSub", playerName: uq.newAuctionObj.name, buyerTeam: uq.user.teamID, position: uq.newAuctionObj.positionSelected, amount: amount, market: MARKET_EDITION})
+    var amount=0.1;
+    var average = uq.newAuctionObj.overallRange;
+    if(average<70){ amount=2;
+    }else if(average<76 && average>=70){ amount=3;
+    }else if(average<81 && average>=76){ amount=5;
+    }else if(average<86 && average>=81){ amount=10;
+    }else if(average>85){ amount=15; }
+      $http.post("SWCDataRequesting.php", { type: "nueSub", playerName: uq.newAuctionObj.name, buyerTeam: uq.user.teamID, position: uq.newAuctionObj.positionSelected, amount: amount, market: uq.constants[0].marketEdition})
           .success(function(data) {
             Materialize.toast('Comienza la subasta', 5000, 'rounded');
             uq.redirEditar('auctions');
@@ -515,7 +526,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.isPlayerSignedYetOnThisMarket = function(player)
   {
     var signed = false;
-    angular.forEach(uq.getSigninsByMarketEdition(MARKET_EDITION), function(value,key){
+    angular.forEach(uq.getSigninsByMarketEdition(uq.constants[0].marketEdition), function(value,key){
       if(value.player == player)
       {
         signed = true;
@@ -748,7 +759,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
      }else if(salarios<presupuesto-10){
         uq.salaryLimit=100;
      }
-     if(intoc>=INTOCABLES && uq.salaryLimit==100)
+     if(intoc>=uq.constants[0].untouchables && uq.salaryLimit==100)
      {
         uq.salaryLimit--;
      }
@@ -894,12 +905,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
                       uq.constants[v].forcedSigninsOpened = parseInt(uq.constants[v].forcedSigninsOpened);
                       uq.constants[v].intervalActual = parseInt(uq.constants[v].intervalActual);
                     }
-                    const INTOCABLES = uq.constants[0].untouchables;
-                    const CLAUSULAS = uq.constants[0].forcedSignins;
-                    const MARKET_EDITION = uq.constants[0].marketEdition;
-                    const MARKET_OPENED = uq.constants[0].marketOpened;
-                    const FORCED_SIGNINS_OPENED = uq.constants[0].forcedSigninsOpened;
-                    const INTERVAL_ACTUAL = uq.constants[0].intervalActual;
                     break;
             }
           })

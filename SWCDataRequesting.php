@@ -263,14 +263,16 @@
   function newAuction($con, $params)
   {
     $data = array();
-    $query="INSERT INTO players (name,salary,team_id,position) values ('".$params->name."', 0.1, -1, '".$params->position."')";
+    $query="INSERT INTO players (name,salary,team_id,position) values ('".$params->playerName."', 0.1, -1, '".$params->position."')";
     $resultado=mysqli_query($con, $query) or die("Error insertando jugador");
     $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".mysqli_insert_id($con).",".$params->buyerTeam.", ".$params->amount.", 'S', ".$params->market.", false)";
     $resultado2=mysqli_query($con, $query2) or die("Error insertando subasta");
-    $idResult=mysql_insert_id();
+    $idResult=mysqli_insert_id($con);
     $fecha_hora_actual = date('Y-m-d H:i:s');
-    $nuevafecha = strtotime ('+12 hour', strtotime($fecha_hora_actual)) ;
-    $query3="INSERT INTO calendar (type, affected_id, limit_date) values ('S',".$idResult.",'".$nuevafecha."')";
+    $nuevafecha = strtotime ('+14 hour', strtotime($fecha_hora_actual)) ;
+    $fecha = date_create();
+    date_timestamp_set($fecha, $nuevafecha);
+    $query3="INSERT INTO calendar (type, affected_id, limit_date) values ('S',".$idResult.",'".date_format($fecha, 'Y-m-d H:i:s')."')";
     $resultado3=mysqli_query($con, $query3) or die("Error insertando calendario");
     $data['success'] = true;
     $data['message'] = "Subasta creada";

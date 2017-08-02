@@ -18,6 +18,18 @@
   refreshCalendar($link);
   //closeMatches($link);
 
+  function updateLimitDate($con, $ld)
+  {
+    $time = strtotime($ld);
+    $myFormatForView = date("i", $time);
+    echo $ld . "\n" . $myFormatForView . "\n\n";
+    /*if(%10!=0)
+    {
+
+    }*/
+    return $ld;
+  }
+
   function refreshCalendar($con)
   {
     $data = array();
@@ -27,6 +39,7 @@
     {
       $date = new DateTime();
       $limitDate=new DateTime($row['limit_date']);
+      $limitDate=updateLimitDate($con, $limitDate);
       date_add($date, date_interval_create_from_date_string('2 hours'));
       $interval = date_diff($date, $limitDate);
       if(strcmp($interval->format("%y/%m/%d %h:%i"), "0/0/0 0:0") == 0) {
