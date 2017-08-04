@@ -2,11 +2,9 @@
 <?php
   define('DEBUG_AUTH', false);
   define("BASE_DIR", "../docs/php/");
-  header('Content-Type: application/json;charset=utf-8');
   ini_set('upload_max_filesize', '10M');
   ini_set('post_max_size', '10M');
   ini_set('max_execution_time', 300);
-  session_start();
 	$db_host="localhost";
 	$db_name="id1956157_swc";
 	$db_user="id1956157_swcadmin";
@@ -18,16 +16,18 @@
   refreshCalendar($link);
   //closeMatches($link);
 
-  function updateLimitDate($con, $ld)
+  function updateLimitDate($con, $ld, $type)
   {
-    $time = strtotime($ld);
-    $myFormatForView = date("i", $time);
-    echo $ld . "\n" . $myFormatForView . "\n\n";
-    /*if(%10!=0)
+    $minute = date("i", strtotime($ld));
+    $newDate = new DateTime();
+    date_timestamp_set($newDate, strtotime($ld));
+    if($minute%10!=0)
     {
-
-    }*/
-    return $ld;
+      date_add($newDate, date_interval_create_from_date_string( '-'. $minute%10 .' minutes'));
+      $query="UPDATE calendar SET limit_date='" . date('Y-m-d H:i:s', date_timestamp_get($newDate)) . "' WHERE type='" . $type . "' AND limit_date='" . $ld . "'";
+      $resultado=mysqli_query($con, $query) or die("Error actualizando minutos");
+    }
+    return $newDate;
   }
 
   function refreshCalendar($con)
@@ -38,8 +38,7 @@
     while($row = mysqli_fetch_array($resultado))
     {
       $date = new DateTime();
-      $limitDate=new DateTime($row['limit_date']);
-      $limitDate=updateLimitDate($con, $limitDate);
+      $limitDate=updateLimitDate($con, $row['limit_date'], $row['type']);
       date_add($date, date_interval_create_from_date_string('2 hours'));
       $interval = date_diff($date, $limitDate);
       if(strcmp($interval->format("%y/%m/%d %h:%i"), "0/0/0 0:0") == 0) {
@@ -99,20 +98,18 @@
     $resultado3=mysqli_query($con, $query3) or die("Error actualizando presupuesto");
   }
 
-  function openMarket($con, $params)
+  function openMarket($con)
   {
     $data = array();
-    $query="UPDATE constants SET market_opened=1, forced_signins_opened=1";
+    $query="UPDATE constants SET market_opened=1, forced_signins_opened=1, market_edition=market_edition+1";
     $resultado=mysqli_query($con, $query) or die("Error abriendo mercado");
-    $query2="UPDATE constants SET market_edition=market_edition+1";
-    $resultado2=mysqli_query($con, $query2) or die("Error aumentando mercado");
     $data['success'] = true;
     $data['message'] = "Mercado abierto";
     echo json_encode($data);
     exit;
   }
 
-  function closeForcedSigns($con, $params)
+  function closeForcedSigns($con)
   {
     $data = array();
     $query="UPDATE constants SET forced_signins_opened=0";
@@ -123,7 +120,7 @@
     exit;
   }
 
-  function closeMarket($con, $params)
+  function closeMarket($con)
   {
     $data = array();
     $query="UPDATE constants SET market_opened=0";

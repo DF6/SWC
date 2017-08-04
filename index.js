@@ -52,7 +52,12 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.counters = [];
   uq.temporary = false;
   uq.newAuctionObj = {name: "", overallRange: 40, positionSelected: ""};
-  uq.execCronJob();
+  /*$http.post("cronjobs.php", {})
+              .success(function(data) {})
+              .error(function(error) {
+                console.log(error);
+                Materialize.toast('Mal', 5000, 'rounded');
+              });*/
   obtainData("T");
   switch($location.path())
   {
@@ -118,18 +123,6 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
         obtainData("ST");
         obtainData("PCS");
         break;
-  }
-
-  uq.execCronJob = function()
-  {
-    $http.post("cronjobs.php", {})
-              .success(function(data) {
-                Materialize.toast('Bien', 5000, 'rounded');
-              })
-              .error(function(error) {
-                console.log(error);
-                Materialize.toast('Mal', 5000, 'rounded');
-              });
   }
 
   uq.login = function(){
