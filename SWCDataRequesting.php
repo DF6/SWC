@@ -107,6 +107,9 @@
        case "nueSub":
           newAuction($link, $params);
             break;
+       case "chaSal":
+          changeSalaries($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -287,6 +290,17 @@
     $resultado=mysqli_query($con, $query) or die("Error incrementando puja");
     $data['success'] = true;
     $data['message'] = "Puja incrementada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function changeSalaries($con, $params)
+  {
+    $data = array();
+    $query="UPDATE teams SET budget=budget+". $params->amount ." where id=" . $params->id;
+    $resultado=mysqli_query($con, $query) or die("Error cambiando salarios");
+    $data['success'] = true;
+    $data['message'] = "Salarios decrementados";
     echo json_encode($data);
     exit;
   }

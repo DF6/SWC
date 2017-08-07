@@ -131,10 +131,10 @@
     exit;
   }
 
-  function doOffer($con, $params)
+  function discountSalaries($con)
   {
     $data = array();
-    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".$params->player.",".$params->offerTeam.",".$params->amount.", 'F', ".$params->market.", false)";
+    $query2="UPDATE teams SET budget=budget-(SELECT SUM(salary) FROM players WHERE team_id=teams.id) WHERE players.team_id==teams.id";
     $resultado2=mysqli_query($con, $query2) or die("Error insertando fichaje");
     $data['success'] = true;
     $data['message'] = "Cláusula realizada";

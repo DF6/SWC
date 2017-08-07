@@ -25,7 +25,8 @@ appIni.config(function($routeProvider){
             .when("/resultinput", {controller: "appCtrl",controllerAs: "vm",templateUrl: "resultinput.html"})
             .when("/register", {controller: "appCtrl",controllerAs: "vm",templateUrl: "register.html"})
             .when("/assignteam", {controller: "appCtrl",controllerAs: "vm",templateUrl: "assignteam.html"})
-            .when("/teamrequests", {controller: "appCtrl",controllerAs: "vm",templateUrl: "teamrequests.html"});
+            .when("/teamrequests", {controller: "appCtrl",controllerAs: "vm",templateUrl: "teamrequests.html"})
+            .when("/validatesalaries", {controller: "appCtrl",controllerAs: "vm",templateUrl: "validatesalaries.html"});
 });
 appIni.controller("navCtrl", function($location){
         var map = this;
@@ -516,6 +517,41 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     }
   }
 
+  uq.countSalaries = function(team, positive)
+  {
+    var amount=0;
+    if(positive)
+    {
+      amount = 0+(uq.getTotalSalariesByTeam(team));
+    }else{
+      amount = 0-(uq.getTotalSalariesByTeam(team));
+    }
+    $http.post("SWCDataRequesting.php", { type: "chaSal", id: team, amount: amount})
+          .success(function(data) {
+            Materialize.toast('Reintroducido el importe de salarios de ' + uq.getTeamById(team).name, 5000, 'rounded');
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se han podido reasignar salarios', 5000, 'rounded');
+          });
+  }
+
+  uq.areSalariesValid = function(team)
+  {
+    var playersToValid=uq.getPlayersByTeam(team);
+    angular.forEach(playersToValid, function(value,key){
+      if(value.salary>10 || value.salary==0)
+      {
+        return false;
+      }
+    });
+    if(uq.getTotalSalariesByTeam(team)>100)
+    {
+      return false;
+    }
+    return true;
+  }
+
   uq.isPlayerSignedYetOnThisMarket = function(player)
   {
     var signed = false;
@@ -607,7 +643,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     angular.forEach(teamPlayers, function(value, index){
         salarios += value.salary;
     });
-    return salarios;
+    return salarios.toFixed(1);
   }
 
   uq.getActionsByMatch = function(matchID)
