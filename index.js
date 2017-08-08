@@ -1,4 +1,3 @@
-// offers.html, makeoffer.html, index.js, SWCDataRequesting.php incluir jugadores ofrecidos
 var appIni=angular.module('appIni',['ngRoute']);
 appIni.config(function($routeProvider){
   $routeProvider
@@ -41,6 +40,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   obtainData("CONSTANTS");
   uq.datoViajero = indexFactory.datoViajero;
   uq.positions = indexFactory.getPositions();
+  uq.competitions = indexFactory.getTournaments();
   uq.user = indexFactory.getUser();
   uq.teamPlayers = [];
   uq.salaryLimit = 0;
@@ -49,7 +49,9 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   uq.offerRange = 0;
   uq.teamSelected = '';
   uq.playerSelected = '';
+  uq.tournamentSelected = '';
   uq.playersOffered = [];
+  uq.teamsOnCompetition = [];
   uq.showMarket=true;
   uq.counters = [];
   uq.temporary = false;
@@ -197,6 +199,16 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
   {
     if(number<10){number="0"+number;}
     return number;
+  }
+
+  uq.includeTeamOnTournament = function(team, action)
+  {
+    if(action && uq.teamsOnCompetition.indexOf(team)==-1)
+    {
+      uq.teamsOnCompetition.push(team);
+    }else if(!action && uq.teamsOnCompetition.indexOf(team)!=-1){
+      uq.teamsOnCompetition.splice(uq.teamsOnCompetition.indexOf(team), 1);
+    }
   }
 
   uq.giveTeamToRequester = function(requester)
@@ -537,6 +549,82 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
           });
   }
 
+  uq.generate = function()
+  {
+    if(uq.teamsOnCompetition.length>2)
+    {
+      switch(uq.tournamentSelected)
+      {
+        case "Primera":
+        case "Segunda":
+          var rounds = 0;
+          if(uq.teamsOnCompetition.length%2==0)
+          {
+            rounds = uq.teamsOnCompetition.length-1;
+
+          }else{
+            rounds = uq.teamsOnCompetition.length;
+          }
+          break;
+        case "Copa":
+        case "Europa League":
+        case "Intertoto":
+          var knownBrackets= [2,4,8,16,32];
+          var bracketCount= 0;
+          var base = uq.teamsOnCompetition.length;
+          var closest= _.find(knownBrackets, function(k) { return k>=base; });
+          if(base <= _.last(knownBrackets))
+          {
+            var byes=closest-base;
+          }
+          if(byes>0){base = closest;}
+          var brackets= [],
+            round= 1,
+            baseT= base/2,
+            baseC= base/2,
+            teamMark= 0,
+            nextInc= base/2;
+          for(i=1;i<=(base-1);i++) {
+            var baseR = i/baseT,
+              isBye = false;
+              
+            if(byes>0 && (i%2!=0 || byes>=(baseT-i))) {
+              isBye = true;
+              byes--;
+            }
+            
+            var last = _.map(_.filter(brackets, function(b) { return b.nextGame == i; }), function(b) { return {game:b.bracketNo,teams:b.teamnames}; });
+            
+            brackets.push({
+              lastGames:  round==1 ? null : [last[0].game,last[1].game],
+              nextGame: nextInc+i>base-1?null:nextInc+i,
+              teamnames:  round==1 ? [uq.teamsOnCompetition[teamMark],uq.teamsOnCompetition[teamMark+1]] : [last[0].teams[_.random(1)],last[1].teams[_.random(1)]],
+              bracketNo:  i,
+              roundNo:  round,
+              bye:    isBye
+            });
+            teamMark+=2;
+            if(i%2!=0)  nextInc--;
+            while(baseR>=1) {
+              round++;
+              baseC/= 2;
+              baseT = baseT + baseC;
+              baseR = i/baseT;
+            }
+          }
+          console.log(brackets);
+          break;
+        case "Champions League":
+          break;
+        case "Supercopa Europea":
+        case "Supercopa Clubes":
+          break;
+      }
+    }else{
+      Materialize.toast('No hay mínimo dos equipos en liza', 5000, 'rounded');
+    }
+  }
+
   uq.areSalariesValid = function(team)
   {
     var playersToValid=uq.getPlayersByTeam(team);
@@ -582,6 +670,18 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
     var response = {};
     angular.forEach(uq.teams, function(value, index){
         if(value.id == id)
+        {
+            response = value;
+        }
+    });
+    return response;
+  }
+
+  uq.getManagerOf = function(team)
+  {
+    var response = {};
+    angular.forEach(uq.users, function(value, index){
+        if(value.teamID == team)
         {
             response = value;
         }
@@ -947,6 +1047,7 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
 appIni.factory("indexFactory", function(){
     var user={id:-1, user: 'axelldf6', pass: 'infinito6', email:'', valid: false, teamName: '', teamID: -1, teamImage: ''};
     var positions = [{code: "POR", description: "Portero"},{code: "LD", description: "Lateral Derecho"},{code: "DFC", description: "Defensa Central"},{code: "LI", description: "Lateral Izquierdo"},{code: "MCD", description: "Mediocentro Defensivo"},{code: "MC", description: "Mediocentro"},{code: "MI", description: "Medio Izquierdo"},{code: "MD", description: "Medio Derecho"},{code: "MCO", description: "Mediapunta"},{code: "EI", description: "Extremo Izquierdo"},{code: "DC", description: "Delantero Centro"},{code: "ED", description: "Extremo Derecho"}];
+    var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa de Clubes"];
     var interfaz = {
         datoViajero:-1,
         getUser: function(){
@@ -957,6 +1058,9 @@ appIni.factory("indexFactory", function(){
         },
         getPositions: function(){
             return positions;
+        },
+        getTournaments: function(){
+            return tournaments;
         }
     }
     return interfaz;
