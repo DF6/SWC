@@ -26,6 +26,7 @@ appIni.config(function($routeProvider){
             .when("/register", {controller: "appCtrl",controllerAs: "vm",templateUrl: "register.html"})
             .when("/assignteam", {controller: "appCtrl",controllerAs: "vm",templateUrl: "assignteam.html"})
             .when("/teamrequests", {controller: "appCtrl",controllerAs: "vm",templateUrl: "teamrequests.html"})
+            .when("/generate", {controller: "appCtrl",controllerAs: "vm",templateUrl: "generate.html"})
             .when("/validatesalaries", {controller: "appCtrl",controllerAs: "vm",templateUrl: "validatesalaries.html"});
 });
 appIni.controller("navCtrl", function($location){

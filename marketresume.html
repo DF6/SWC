@@ -1,4 +1,4 @@
-<div class="row intro z-depth-2" ng-controller="appCtrl as uq">
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
   <div class="col s12 m10 offset-m1">
     <div class="row">
       <div class="col m10 offset-m1 s12" style="margin-top:2%;">
@@ -42,7 +42,22 @@
 	          </tr>
 	        </tbody>
 	      </table>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Mercado actual</h1>
       </div>
     </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        No tiene permiso para ver esta página
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+      </div>
   </div>
 </div>
