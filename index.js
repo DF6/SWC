@@ -549,6 +549,30 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
           });
   }
 
+  uq.changeLocalAway = function(array)
+  {
+    var aux=[];
+    for(var i=0;i<array.length;i++)
+    {
+      aux.push([array[i][1], array[i][0]]);
+    }
+    return aux;
+  }
+
+  uq.insertMatches = function(matches, counter)
+  {
+    if(counter<matches.length){
+      $http.post("SWCDataRequesting.php", { type: "insMat", local: , away: amount})
+          .success(function(data) {
+            uq.insertMatches(matches, counter+1);
+          })
+          .error(function(error) {
+            console.log(error);
+            Materialize.toast('No se han podido insertar partidos', 5000, 'rounded');
+          });
+    }
+  }
+
   uq.generate = function()
   {
     if(uq.teamsOnCompetition.length>2)
@@ -558,12 +582,62 @@ appIni.controller("appCtrl",function(indexFactory, $http, $location, $timeout){
         case "Primera":
         case "Segunda":
           var rounds = 0;
+          var matches = [];
+          let counter = uq.teamsOnCompetition.length;
+          while (counter > 0) {
+              let index = Math.floor(Math.random() * counter);
+              counter--;
+              let temp = uq.teamsOnCompetition[counter];
+              uq.teamsOnCompetition[counter] = uq.teamsOnCompetition[index];
+              uq.teamsOnCompetition[index] = temp;
+          }
+          var net = [];
+            id  local   away  tournament  round   local_goals   away_goals  limit_date 
+          for(var i=0;i<uq.teamsOnCompetition.length;i++)
+          {
+            if(i!=uq.teamsOnCompetition.length-1)
+            {
+              net.push([uq.teamsOnCompetition[i], uq.teamsOnCompetition[i+1]]);
+            }else{
+              net.push([uq.teamsOnCompetition[i], -1]);
+            }
+          }
           if(uq.teamsOnCompetition.length%2==0)
           {
-            rounds = uq.teamsOnCompetition.length-1;
-
+            rounds = (uq.teamsOnCompetition.length-1);
+            for(var u=1;u<=rounds;u++)
+            {
+              for(var y=0;y<net.length;y++)
+              {
+                matches.push(net[y]);
+              }
+              var aux=-34;
+              for(var k=0;k<net.length-1;k++)
+              {
+                  /*if(k==0)
+                  {
+                    aux=net[k][1];
+                    net[k][1]=net[k+1][1];
+                  }else if(k==1){
+                    aux2=net[k][0];
+                    net[k][0]=aux;
+                    net[k][1]=net[k+1][1];
+                  }else{
+                    aux=
+                    net[k][0]=aux2;
+                  }*/
+              }
+              uq.changeLocalAway(net);
+            }
+            for(var y=0;y<net.length;y++)
+            {
+              matches.push(net[y]);
+            }
+            var matches2 = uq.changeLocalAway(matches);
+            matches.concat(matches2);
+            uq.insertMatches(matches, 0);
           }else{
-            rounds = uq.teamsOnCompetition.length;
+            rounds = (uq.teamsOnCompetition.length);
           }
           break;
         case "Copa":
