@@ -110,6 +110,9 @@
        case "chaSal":
           changeSalaries($link, $params);
             break;
+       case "insMat":
+          insertMatch($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -301,6 +304,17 @@
     $resultado=mysqli_query($con, $query) or die("Error cambiando salarios");
     $data['success'] = true;
     $data['message'] = "Salarios decrementados";
+    echo json_encode($data);
+    exit;
+  }
+
+  function insertMatch($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO matches (local,away,tournament,round, local_goals, away_goals) values (".$params->local.", ".$params->away.", 1, ".$params->round.", 0, 0)";
+    $resultado=mysqli_query($con, $query) or die("Error insertando partido");
+    $data['success'] = true;
+    $data['message'] = "Partido creado";
     echo json_encode($data);
     exit;
   }
