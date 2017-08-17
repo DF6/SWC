@@ -113,6 +113,9 @@
        case "insMat":
           insertMatch($link, $params);
             break;
+       case "insTou":
+          insertTournament($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -311,10 +314,22 @@
   function insertMatch($con, $params)
   {
     $data = array();
-    $query="INSERT INTO matches (local,away,tournament,round, local_goals, away_goals) values (".$params->local.", ".$params->away.", 1, ".$params->round.", 0, 0)";
+    $query="INSERT INTO matches (local,away,tournament,round) values (".$params->local.", ".$params->away.", ".$params->tournament.", ".$params->round.")";
     $resultado=mysqli_query($con, $query) or die("Error insertando partido");
     $data['success'] = true;
     $data['message'] = "Partido creado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function insertTournament($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO tournaments (name, edition) values ('".$params->name."', ".$params->edition.")";
+    $resultado=mysqli_query($con, $query) or die("Error insertando torneo");
+    $data['id'] = mysqli_insert_id($con);
+    $data['success'] = true;
+    $data['message'] = "Torneo creado";
     echo json_encode($data);
     exit;
   }
@@ -443,7 +458,7 @@
     while($row = mysqli_fetch_array($resultado))
     {
         $id=$row['id'];
-        $local=$row['user'];
+        $local=$row['local'];
         $away=$row['away'];
         $tournament=$row['tournament'];
         $round=$row['round'];

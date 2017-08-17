@@ -1,0 +1,64 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Partidos pendientes</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m12 s12">
+      <table style="color:white;" class="responsive-table">
+          <thead>
+            <tr>
+              <th>Torneo</th>
+              <th>Local</th>
+              <th>Visitante</th>
+              <th>Jornada</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <!-- && uq.isInPlayTime(ma.id)-->
+          <tbody>
+            <tr ng-repeat="ma in uq.matches | orderBy: ['tournament','round']" ng-if="(ma.local==uq.user.teamID || ma.away==uq.user.teamID) && ma.localGoals==-1 && ma.awayGoals==-1">
+              <td>{{uq.getTournamentById(ma.tournament).name}}</td>
+              <td>{{uq.getTeamById(ma.local).name}}</td>
+              <td>{{uq.getTeamById(ma.away).name}}</td>
+              <td>{{ma.round}}</td>
+              <td><button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('resultinput')" style="font-size:100%;background-color:#f9a825;">Introducir</button></td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Partidos pendientes</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    No tiene permiso para ver esta página
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

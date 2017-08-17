@@ -67,29 +67,6 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         case "/":
             obtainData("U");
             break;
-        case "/teamrequests":
-            obtainData("U");
-            obtainData("RT");
-            break;
-        case "/myteam":
-            obtainData("U");
-            obtainData("P");
-            break;
-        case "/otherteams":
-            obtainData("U");
-            obtainData("P");
-            break;
-        case "/salary":
-            obtainData("P");
-            break;
-        case "/makeoffer":
-            obtainData("P");
-            break;
-        case "/offers":
-            obtainData("P");
-            obtainData("S");
-            obtainData("PCS");
-            break;
         case "/auctions":
             obtainData("P");
             obtainData("S");
@@ -103,14 +80,53 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             }
             uq.mytimeout = $timeout(uq.onTimeout, 1000);
             break;
-        case "/newauction":
+        case "/generate":
+            obtainData("TO");
+            obtainData("U");
+            break;
+        case "/makeoffer":
             obtainData("P");
-            obtainData("CAL");
+            break;
         case "/marketresume":
             obtainData("P");
             obtainData("S");
             obtainData("PCS");
             break;
+        case "/myteam":
+            obtainData("U");
+            obtainData("P");
+            break;
+        case "/newauction":
+            obtainData("P");
+            obtainData("CAL");
+            break;
+        case "/offers":
+            obtainData("P");
+            obtainData("S");
+            obtainData("PCS");
+            break;
+        case "/otherteams":
+            obtainData("U");
+            obtainData("P");
+            break;
+        case "/pending":
+            obtainData("M");
+            break;
+        case "/register":
+            obtainData("U");
+            break;
+        case "/salary":
+            obtainData("P");
+            break;
+        case "/teamrequests":
+            obtainData("U");
+            obtainData("RT");
+            break;
+        case "/validatesalaries":
+            obtainData("U");
+            obtainData("P");
+            obtainData("S");
+            obtainData("PCS");
         case "/wildcards":
             obtainData("P");
             obtainData("S");
@@ -148,6 +164,15 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             indexFactory.setUser(uq.user);
         }
         return uq.user.valido;
+    }
+
+    uq.logoff = function() {
+        uq.user.id = -1;
+        uq.user.email = '';
+        uq.user.valid = false;
+        uq.user.teamID = -1;
+        uq.user.teamName = '';
+        indexFactory.setUser(uq.user);
     }
 
     uq.register = function() {
@@ -511,197 +536,163 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         return aux;
     }
 
-    uq.insertMatches = function(matches, counter, round)
-    {
-      if(counter<matches.length){
-        $http.post("SWCDataRequesting.php", { type: "insMat", local: matches[counter][0], away: matches[counter][1], round: round})
-            .success(function(data) {
-              uq.insertMatches(matches, counter+1, round);
-            })
-            .error(function(error) {
-              console.log(error);
-              Materialize.toast('No se han podido insertar partidos', 5000, 'rounded');
-            });
-      }
+    uq.insertMatches = function(matches, counter, round, tournament) {
+        if (counter < matches.length) {
+            if (matches[counter][0] != -1 && matches[counter][1] != -1) {
+
+                $http.post("SWCDataRequesting.php", { type: "insMat", local: matches[counter][0], away: matches[counter][1], tournament: tournament, round: round })
+                    .success(function(data) {
+                        uq.insertMatches(matches, counter + 1, round, tournament);
+                    })
+                    .error(function(error) {
+                        console.log(error);
+                        Materialize.toast('No se han podido insertar partidos', 5000, 'rounded');
+                    });
+            } else {
+                uq.insertMatches(matches, counter + 1, round, tournament);
+            }
+        }
     }
 
-    /*uq.prueba = function() {
-        var net = [
-            [1, 12],
-            [2, 11],
-            [3, 10],
-            [4, 9],
-            [5, 8],
-            [6, 7]
-        ];
-        var matches = [];
-        rounds = (net.length * 2 - 1);
-        for (var y = 0; y < net.length; y++) {
-            matches.push(net[y]);
+    uq.getNewEditionOf = function(tournament) {
+        var edition = -1;
+        for (var i = 0; i < uq.tournaments.length; i++) {
+            if (uq.tournaments[i].name == tournament) {
+                edition = uq.tournaments[i].edition + 1;
+            }
         }
-        var newRound = [];
-        for (var u = 1; u <= rounds; u++) {
-            var aux = -34;
-            var aux2 = -34;
-            if (newRound.length != 0) {
-                net = newRound;
-            }
-            for (var k = 0; k < net.length; k++) {
-                if (k == 0) {
-                    aux = net[1][0];
-                    net[1][0] = net[0][1];
-                    net[0][1] = net[1][1];
-                } else if (k == 1 && net.length != 1) {
-                    aux2 = aux;
-                    aux = net[2][0];
-                    net[2][0] = aux2;
-                    net[1][1] = net[2][1];
-                } else if (k == net.length - 1) {
-                    net[k][1] = net[k][0];
-                    net[k][0] = aux;
-                } else {
-                    aux2 = aux;
-                    aux = net[k][0];
-                    net[k][0] = aux2;
-                    net[k][1] = net[k + 1][1];
-                }
-            }
-            console.log(net);
-            newRound = net;
-            console.log(newRound);
-            for (var y = 0; y < net.length; y++) {
-                matches.push(net[y]);
-            }
-            //net = uq.changeLocalAway(net);
+        if (edition == -1) {
+            return 1;
+        } else {
+            return edition;
         }
-        for (var g = 0; g < matches.length; g++) {
-            if (g % net.length == 0) {
-                console.log("Siguiente Jornada\n=====================\n");
-            }
-            console.log(matches[g][0] + " - " + matches[g][1] + "\n");
-        }
-    }*/
+    }
 
     uq.generate = function() {
         if (uq.teamsOnCompetition.length > 2) {
-            switch (uq.tournamentSelected) {
-                case "Primera":
-                case "Segunda":
-                    var rounds = 0;
-                    var matches = [];
-                    let counter = uq.teamsOnCompetition.length;
-                    /*while (counter > 0) {
-                        let index = Math.floor(Math.random() * counter);
-                        counter--;
-                        let temp = uq.teamsOnCompetition[counter];
-                        uq.teamsOnCompetition[counter] = uq.teamsOnCompetition[index];
-                        uq.teamsOnCompetition[index] = temp;
-                    }*/
-                    var net = [];
-                    //  id  local   away  tournament  round   local_goals   away_goals  limit_date 
-                    for (var i = 0; i < uq.teamsOnCompetition.length; i++) {
-                        if (i < uq.teamsOnCompetition.length - 1) {
-                            net.push([uq.teamsOnCompetition[i], uq.teamsOnCompetition[i + 1]]);
-                            i++;
-                        } else {
-                            net.push([uq.teamsOnCompetition[uq.teamsOnCompetition.length-1], -1]);
-                        }
-                    }
-                    if (uq.teamsOnCompetition.length % 2 == 0) {
-                        rounds = (uq.teamsOnCompetition.length - 1);
-                        for (var u = 1; u <= rounds; u++) {
-                            for (var y = 0; y < net.length; y++) {
-                                matches.push(net[y]);
+            $http.post("SWCDataRequesting.php", { type: "insTou", name: uq.tournamentSelected, edition: uq.getNewEditionOf(uq.tournamentSelected) })
+                .success(function(data) {
+                    switch (uq.tournamentSelected) {
+                        case "Primera":
+                        case "Segunda":
+
+                            var rounds = 0;
+                            var matches = [];
+                            let counter = uq.teamsOnCompetition.length;
+                            while (counter > 0) {
+                                let index = Math.floor(Math.random() * counter);
+                                counter--;
+                                let temp = uq.teamsOnCompetition[counter];
+                                uq.teamsOnCompetition[counter] = uq.teamsOnCompetition[index];
+                                uq.teamsOnCompetition[index] = temp;
                             }
-                            var aux = -34;
-                            var aux2 = -34;
-                            var aux3 = -34;
-                            for (var k = 0; k < net.length; k++) {
-                                if (k == 0) {
-                                    aux = net[1][0];
-                                    net[1][0] = net[0][1];
-                                    net[0][1] = net[1][1];
-                                } else if (k == 1 && net.length != 1) {
-                                    aux2 = aux;
-                                    aux = net[2][0];
-                                    net[2][0] = aux2;
-                                    net[1][1] = net[2][1];
-                                } else if (k == net.length - 1) {
-                                    net[k][1] = net[k][0];
-                                    net[k][0] = aux;
+                            var net = [];
+                            //  id  local   away  tournament  round   local_goals   away_goals  limit_date 
+                            for (var i = 0; i < uq.teamsOnCompetition.length; i++) {
+                                if (i < uq.teamsOnCompetition.length - 1) {
+                                    net.push([uq.teamsOnCompetition[i], uq.teamsOnCompetition[i + 1]]);
+                                    i++;
                                 } else {
-                                    aux2 = aux;
-                                    aux = net[k][0];
-                                    net[k][0] = aux2;
-                                    net[k][1] = net[k + 1][1];
+                                    net.push([uq.teamsOnCompetition[uq.teamsOnCompetition.length - 1], -1]);
                                 }
                             }
-                            uq.insertMatches(net, 0, u);
-                            //uq.changeLocalAway(net);
-                        }
-                        for (var y = 0; y < net.length; y++) {
-                            matches.push(net[y]);
-                        }
-                        var matches2 = uq.changeLocalAway(matches);
-                        matches.concat(matches2);
-                        console.log(matches);
-                    } else {
-                        rounds = (uq.teamsOnCompetition.length);
-                    }
-                    break;
-                case "Copa":
-                case "Europa League":
-                case "Intertoto":
-                    var knownBrackets = [2, 4, 8, 16, 32];
-                    var bracketCount = 0;
-                    var base = uq.teamsOnCompetition.length;
-                    var closest = _.find(knownBrackets, function(k) { return k >= base; });
-                    if (base <= _.last(knownBrackets)) {
-                        var byes = closest - base;
-                    }
-                    if (byes > 0) { base = closest; }
-                    var brackets = [],
-                        round = 1,
-                        baseT = base / 2,
-                        baseC = base / 2,
-                        teamMark = 0,
-                        nextInc = base / 2;
-                    for (i = 1; i <= (base - 1); i++) {
-                        var baseR = i / baseT,
-                            isBye = false;
+                            if (uq.teamsOnCompetition.length % 2 != 0) {
+                                uq.teamsOnCompetition.push(-1);
+                            }
+                            rounds = (uq.teamsOnCompetition.length - 1);
+                            for (var u = 1; u <= rounds; u++) {
+                                var aux = -34;
+                                var aux2 = -34;
+                                for (var k = 0; k < net.length; k++) {
+                                    if (k == 0) {
+                                        aux = net[1][0];
+                                        net[1][0] = net[0][1];
+                                        net[0][1] = net[1][1];
+                                    } else if (k == 1 && net.length != 2) {
+                                        aux2 = aux;
+                                        aux = net[2][0];
+                                        net[2][0] = aux2;
+                                        net[1][1] = net[2][1];
+                                    } else if (k == 1 && net.length == 2) {
+                                        net[1][1] = aux;
+                                    } else if (k == net.length - 1) {
+                                        net[k][1] = net[k][0];
+                                        net[k][0] = aux;
+                                    } else {
+                                        aux2 = aux;
+                                        aux = net[k][0];
+                                        net[k][0] = aux2;
+                                        net[k][1] = net[k + 1][1];
+                                    }
+                                }
+                                if (net.length >= 4) {
+                                    aux = net[2][0];
+                                    net[2][0] = net[3][0];
+                                    net[3][0] = aux;
+                                }
+                                net = uq.changeLocalAway(net);
+                                uq.insertMatches(net, 0, u, data.id);
+                                uq.insertMatches(uq.changeLocalAway(net), 0, u + rounds, data.id);
+                            }
+                            break;
+                        case "Copa":
+                        case "Europa League":
+                        case "Intertoto":
+                            var knownBrackets = [2, 4, 8, 16, 32];
+                            var bracketCount = 0;
+                            var base = uq.teamsOnCompetition.length;
+                            var closest = _.find(knownBrackets, function(k) { return k >= base; });
+                            if (base <= _.last(knownBrackets)) {
+                                var byes = closest - base;
+                            }
+                            if (byes > 0) { base = closest; }
+                            var brackets = [],
+                                round = 1,
+                                baseT = base / 2,
+                                baseC = base / 2,
+                                teamMark = 0,
+                                nextInc = base / 2;
+                            for (i = 1; i <= (base - 1); i++) {
+                                var baseR = i / baseT,
+                                    isBye = false;
 
-                        if (byes > 0 && (i % 2 != 0 || byes >= (baseT - i))) {
-                            isBye = true;
-                            byes--;
-                        }
+                                if (byes > 0 && (i % 2 != 0 || byes >= (baseT - i))) {
+                                    isBye = true;
+                                    byes--;
+                                }
 
-                        var last = _.map(_.filter(brackets, function(b) { return b.nextGame == i; }), function(b) { return { game: b.bracketNo, teams: b.teamnames }; });
+                                var last = _.map(_.filter(brackets, function(b) { return b.nextGame == i; }), function(b) { return { game: b.bracketNo, teams: b.teamnames }; });
 
-                        brackets.push({
-                            lastGames: round == 1 ? null : [last[0].game, last[1].game],
-                            nextGame: nextInc + i > base - 1 ? null : nextInc + i,
-                            teamnames: round == 1 ? [uq.teamsOnCompetition[teamMark], uq.teamsOnCompetition[teamMark + 1]] : [last[0].teams[_.random(1)], last[1].teams[_.random(1)]],
-                            bracketNo: i,
-                            roundNo: round,
-                            bye: isBye
-                        });
-                        teamMark += 2;
-                        if (i % 2 != 0) nextInc--;
-                        while (baseR >= 1) {
-                            round++;
-                            baseC /= 2;
-                            baseT = baseT + baseC;
-                            baseR = i / baseT;
-                        }
+                                brackets.push({
+                                    lastGames: round == 1 ? null : [last[0].game, last[1].game],
+                                    nextGame: nextInc + i > base - 1 ? null : nextInc + i,
+                                    teamnames: round == 1 ? [uq.teamsOnCompetition[teamMark], uq.teamsOnCompetition[teamMark + 1]] : [last[0].teams[_.random(1)], last[1].teams[_.random(1)]],
+                                    bracketNo: i,
+                                    roundNo: round,
+                                    bye: isBye
+                                });
+                                teamMark += 2;
+                                if (i % 2 != 0) nextInc--;
+                                while (baseR >= 1) {
+                                    round++;
+                                    baseC /= 2;
+                                    baseT = baseT + baseC;
+                                    baseR = i / baseT;
+                                }
+                            }
+                            console.log(brackets);
+                            break;
+                        case "Champions League":
+                            break;
+                        case "Supercopa Europea":
+                        case "Supercopa Clubes":
+                            break;
                     }
-                    console.log(brackets);
-                    break;
-                case "Champions League":
-                    break;
-                case "Supercopa Europea":
-                case "Supercopa Clubes":
-                    break;
-            }
+                })
+                .error(function(error) {
+                    console.log(error);
+                    Materialize.toast('No se ha podido generar el torneo', 5000, 'rounded');
+                });
         } else {
             Materialize.toast('No hay mínimo dos equipos en liza', 5000, 'rounded');
         }
@@ -783,6 +774,16 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     uq.getSigninById = function(id) {
         var response = {};
         angular.forEach(uq.signins, function(value, index) {
+            if (value.id == id) {
+                response = value;
+            }
+        });
+        return response;
+    }
+
+    uq.getTournamentById = function(id) {
+        var response = {};
+        angular.forEach(uq.tournaments, function(value, index) {
             if (value.id == id) {
                 response = value;
             }
@@ -985,6 +986,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             uq.matches[v].awayGoals = parseInt(uq.matches[v].awayGoals);
                             uq.matches[v].tournament = parseInt(uq.matches[v].tournament);
                             uq.matches[v].round = parseInt(uq.matches[v].round);
+                            uq.matches[v].limitDate = new Date(uq.matches[v].limitDate);
                         }
                         break;
                     case "A":
@@ -1081,7 +1083,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     }
 });
 appIni.factory("indexFactory", function() {
-    var user = { id: -1, user: 'admin', pass: 'swc2017', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
+    var user = { id: -1, user: 'axelldf6', pass: 'infinito6', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
     var positions = [{ code: "POR", description: "Portero" }, { code: "LD", description: "Lateral Derecho" }, { code: "DFC", description: "Defensa Central" }, { code: "LI", description: "Lateral Izquierdo" }, { code: "MCD", description: "Mediocentro Defensivo" }, { code: "MC", description: "Mediocentro" }, { code: "MI", description: "Medio Izquierdo" }, { code: "MD", description: "Medio Derecho" }, { code: "MCO", description: "Mediapunta" }, { code: "EI", description: "Extremo Izquierdo" }, { code: "DC", description: "Delantero Centro" }, { code: "ED", description: "Extremo Derecho" }];
     var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa de Clubes"];
     var interfaz = {

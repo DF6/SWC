@@ -48,6 +48,8 @@
             <div class="form-group">
               <img ng-src="{{uq.getTeamById(uq.user.teamID).teamImage}}" style="width:30%;height:20%;" />
             </div>
+            <br/>
+            <a class="waves-effect waves-light btn" ng-click="uq.logoff()" style="background-color:#f9a825">Desconectar</a>
           </div>
         </div>
         <div class="row">
@@ -94,12 +96,12 @@
           <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('marketresume')" style="font-size:100%;background-color:#f9a825">Mercado</button>
       </div>
     </div>
-    <!--<div class="row">
+    <div class="row">
       <div class="col s10" style="height:4%">
-          <button class="col s12 waves-effect waves-light btn" href="#/pending" style="font-size:100%;background-color:#f9a825">Partidos pendientes</button>
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('pending')" style="font-size:100%;background-color:#f9a825">Partidos pendientes</button>
       </div>
     </div>
-    <div class="row">
+    <!--<div class="row">
       <div class="col s10" style="height:4%">
           <button class="col s12 waves-effect waves-light btn" href="#/premier" style="font-size:100%;background-color:#f9a825">Liga</button>
       </div>
@@ -144,11 +146,13 @@
   <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('teamrequests')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Solicitudes</button>
   <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('validatesalaries')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Salarios</button>
   <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('generate')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Generador</button>
+  <button class="col s12 waves-effect waves-light btn" ng-click="uq.logoff()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Desconectar</button>
   </div>
   <div class="col s12 m10 offset-m1" style="margin-bottom:2%"; ng-show="uq.user.valid && uq.user.teamID==0 && uq.user.user!='admin'">
     <h2>Sin equipo asignado</h2>
     Tu usuario no tiene equipo asignado 
     <button class="col s12 waves-effect waves-light btn" ng-click="uq.requestTeam()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Solicitar</button>
+    <button class="col s12 waves-effect waves-light btn" ng-click="uq.logoff()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Desconectar</button>
   </div>
 </div>
 <!--
