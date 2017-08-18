@@ -25,8 +25,14 @@
               <td>{{uq.getTournamentById(ma.tournament).name}}</td>
               <td>{{uq.getTeamById(ma.local).name}}</td>
               <td>{{uq.getTeamById(ma.away).name}}</td>
-              <td>{{ma.round}}</td>
-              <td><button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('resultinput')" style="font-size:100%;background-color:#f9a825;">Introducir</button></td>
+              <td ng-if="uq.getTournamentById(ma.tournament).name=='Primera' || uq.getTournamentById(ma.tournament).name=='Segunda'">{{ma.round}}</td>
+              <td ng-if="uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==1">Fase de grupos</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==1) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==2) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==1)">Octavos</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==2) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==3) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==2)">Cuartos</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==3) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==4) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==3) || (uq.getTournamentById(ma.tournament).name=='Intertoto' && ma.round==1)">Semifinales</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==4) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==5) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==4) || (uq.getTournamentById(ma.tournament).name=='Intertoto' && ma.round==2)">Tercer y Cuarto Puesto</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==5) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==6) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==5) || (uq.getTournamentById(ma.tournament).name=='Intertoto' && ma.round==3) || uq.getTournamentById(ma.tournament).name=='Supercopa Europa' || uq.getTournamentById(ma.tournament).name=='Supercopa Clubes'">Final</td>
+              <td><button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('resultinput', ma.id)" style="font-size:100%;background-color:#f9a825;">Introducir</button></td>
             </tr>
           </tbody>
         </table>

@@ -555,7 +555,7 @@
         $id=$row['id'];
         $name=utf8_decode($row['name']);
         $edition=$row['edition'];
-        $tournaments[] = array('name'=> $name, 'edition'=> $edition);
+        $tournaments[] = array('id'=>$id, 'name'=> $name, 'edition'=> $edition);
     }
     $data['tournaments']=$tournaments;
     $data['success'] = true;

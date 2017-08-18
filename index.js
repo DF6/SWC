@@ -110,10 +110,19 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("P");
             break;
         case "/pending":
+            obtainData("TO");
             obtainData("M");
             break;
         case "/register":
             obtainData("U");
+            break;
+        case "/resultinput":
+            obtainData("P");
+            obtainData("M");
+            obtainData("U");
+            obtainData("A");
+            obtainData("ST");
+            obtainData("TO");
             break;
         case "/salary":
             obtainData("P");
@@ -127,6 +136,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("P");
             obtainData("S");
             obtainData("PCS");
+            break;
         case "/wildcards":
             obtainData("P");
             obtainData("S");
@@ -1084,8 +1094,9 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 });
 appIni.factory("indexFactory", function() {
     var user = { id: -1, user: 'axelldf6', pass: 'infinito6', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
+    //var user = { id: -1, user: 'admin', pass: 'swc2017', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
     var positions = [{ code: "POR", description: "Portero" }, { code: "LD", description: "Lateral Derecho" }, { code: "DFC", description: "Defensa Central" }, { code: "LI", description: "Lateral Izquierdo" }, { code: "MCD", description: "Mediocentro Defensivo" }, { code: "MC", description: "Mediocentro" }, { code: "MI", description: "Medio Izquierdo" }, { code: "MD", description: "Medio Derecho" }, { code: "MCO", description: "Mediapunta" }, { code: "EI", description: "Extremo Izquierdo" }, { code: "DC", description: "Delantero Centro" }, { code: "ED", description: "Extremo Derecho" }];
-    var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa de Clubes"];
+    var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa Clubes"];
     var interfaz = {
         datoViajero: -1,
         getUser: function() {
