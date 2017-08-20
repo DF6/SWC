@@ -9,8 +9,8 @@
   //session_start();
 	$db_host="localhost";
 	$db_name="id1956157_swc";
-	$db_user="id1956157_swcadmin";
-	$db_pass="swc2017swc2017";
+	$db_user="root";//"id1956157_swcadmin";
+	$db_pass="";//"swc2017swc2017";
 
 	$link=mysqli_connect($db_host, $db_user, $db_pass) or die ("Error conectando a la base de datos - " . mysql_error());
 	mysqli_select_db($link, $db_name) or die("Error seleccionando la base de datos.");
@@ -414,9 +414,10 @@
     {
         $id=$row['id'];
         $name=utf8_decode($row['name']);
+		$shortName=utf8_decode($row['short_name']);
         $budget=$row['budget'];
         $teamImage=$row['image_route'];
-        $teams[] = array('id'=> $id, 'name'=> $name, 'budget'=> $budget, 'teamImage'=> $teamImage);
+        $teams[] = array('id'=> $id, 'name'=> $name, 'shortName'=> $shortName, 'budget'=> $budget, 'teamImage'=> $teamImage);
     }
     $data['teams']=$teams;
     $data['success'] = true;

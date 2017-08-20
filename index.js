@@ -55,6 +55,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     uq.showMarket = true;
     uq.counters = [];
     uq.temporary = false;
+	uq.resultInput={local:{type:'L', result:0, actions:[]},away:{type:'A', result:0, actions:[]}};
     uq.newAuctionObj = { name: "", overallRange: 40, positionSelected: "" };
     /*$http.post("cronjobs.php", {})
                 .success(function(data) {})
@@ -123,6 +124,11 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("A");
             obtainData("ST");
             obtainData("TO");
+			uq.onTimeout = function() {
+				uq.resultInput.local.players=uq.getPlayersByTeam(uq.getMatchById(uq.datoViajero).local);
+				uq.resultInput.away.players=uq.getPlayersByTeam(uq.getMatchById(uq.datoViajero).away);
+            }
+            uq.mytimeout = $timeout(uq.onTimeout, 1000);
             break;
         case "/salary":
             obtainData("P");
@@ -707,6 +713,95 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             Materialize.toast('No hay mínimo dos equipos en liza', 5000, 'rounded');
         }
     }
+	
+	uq.addAction = function(team, type)
+	{
+		var newAction = {type: type, player:{}};
+		if(team.type=='L')
+		{
+			switch(type)
+			{
+				case 'G':
+					newAction.player = parseInt(uq.resultInput.local.goals);
+					uq.resultInput.local.goals='';
+					break;
+				case 'A':
+					newAction.player = parseInt(uq.resultInput.local.assists);
+					uq.resultInput.local.assists='';
+					break;
+				case 'Y':
+					newAction.player = parseInt(uq.resultInput.local.yellowCards);
+					uq.resultInput.local.yellowCards='';
+					break;
+				case 'R':
+					newAction.player = parseInt(uq.resultInput.local.redCards);
+					uq.resultInput.local.redCards='';
+					break;
+				case 'I':
+					newAction.player = parseInt(uq.resultInput.local.injuries);
+					uq.resultInput.local.injuries='';
+					break;
+				case 'M':
+					newAction.player = parseInt(uq.resultInput.local.mvp);
+					uq.resultInput.local.mvp='';
+					break;
+			}
+			uq.resultInput.local.actions.push(newAction);
+		}else if(team.type=='A')
+		{
+			switch(type)
+			{
+				case 'G':
+					newAction.player = parseInt(uq.resultInput.away.goals);
+					uq.resultInput.away.goals='';
+					break;
+				case 'A':
+					newAction.player = parseInt(uq.resultInput.away.assists);
+					uq.resultInput.away.assists='';
+					break;
+				case 'Y':
+					newAction.player = parseInt(uq.resultInput.away.yellowCards);
+					uq.resultInput.away.yellowCards='';
+					break;
+				case 'R':
+					newAction.player = parseInt(uq.resultInput.away.redCards);
+					uq.resultInput.away.redCards='';
+					break;
+				case 'I':
+					newAction.player = parseInt(uq.resultInput.away.injuries);
+					uq.resultInput.away.injuries='';
+					break;
+				case 'M':
+					newAction.player = parseInt(uq.resultInput.away.mvp);
+					uq.resultInput.away.mvp='';
+					break;
+			}
+			uq.resultInput.away.actions.push(newAction);
+		}
+	}
+	
+	uq.removeAction = function (action, type)
+	{
+		if(type=='L')
+		{
+			for(var i=0;i<uq.resultInput.local.actions.length;i++)
+			{
+				if(uq.resultInput.local.actions[i].type==action.type && uq.resultInput.local.actions[i].player==action.player)
+				{
+					uq.resultInput.local.actions.splice(i, 1);
+				}
+			}
+		}else if(type=='A'){
+			for(var i=0;i<uq.resultInput.away.actions.length;i++)
+			{
+				if(uq.resultInput.away.actions[i].type==action.type && uq.resultInput.away.actions[i].player==action.player)
+				{
+					uq.resultInput.away.actions.splice(i, 1);
+
+				}
+			}
+		}
+	}
 
     uq.areSalariesValid = function(team) {
         var playersToValid = uq.getPlayersByTeam(team);
