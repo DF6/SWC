@@ -813,7 +813,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         {
             Materialize.toast('Hay más asistencias que goleadores', 5000, 'rounded');
         }
-        $http.post("SWCDataRequesting.php", { type: "setRes", matchID: action.matchID, local_Goals: uq.resultInput.local.result, awayGoals: uq.resultInput.away.result.player  })
+        $http.post("SWCDataRequesting.php", { type: "setRes", matchID: action.matchID, localGoals: uq.resultInput.local.result, awayGoals: uq.resultInput.away.result.player  })
                     .success(function(data) {
                         var actionsToPush = [];
                         angular.forEach(uq.resultInput.local.actions, function(value, key){
@@ -833,7 +833,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     uq.insertAction = function(actions, counter)
     {
         if (counter < actions.length){
-        $http.post("SWCDataRequesting.php", { type: "insAct", matchID: uq.datoViajero, type: action[counter].type, player: action[counter].player })
+            $http.post("SWCDataRequesting.php", { type: "insAct", matchID: uq.datoViajero, type: action[counter].type, player: action[counter].player })
                     .success(function(data) {
                         uq.insertAction(actions, counter + 1);
                     })
@@ -841,7 +841,23 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         console.log(error);
                         Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
                     });
-                }
+        }else{
+                tournament_id   team    round   points  won     draw    lost    goals_for   goals_against 
+            $http.post("SWCDataRequesting.php", { type: "updSta", tournamentID:uq.getMatchById(uq.datoViajero).tournament, team: uq.getMatchById(uq.datoViajero).local, points: localPoints, won: localWon,  draw: localDraw, lost: localLost, goalsFor: uq.resultInput.local.result, goalsAgainst: uq.resultInput.away.result})
+                    .success(function(data) {
+                        $http.post("SWCDataRequesting.php", { type: "updSta", tournamentID:uq.getMatchById(uq.datoViajero).tournament, team: uq.getMatchById(uq.datoViajero).away, points: awayPoints, won: awayWon,  draw: awayDraw, lost: awayLost, goalsFor: uq.resultInput.away.result, goalsAgainst: uq.resultInput.local.result})
+                            .success(function(data) {
+                            })
+                            .error(function(error) {
+                                console.log(error);
+                                Materialize.toast('No se ha podido actualizar la clasificación', 5000, 'rounded');
+                            });
+                    })
+                    .error(function(error) {
+                        console.log(error);
+                        Materialize.toast('No se ha podido actualizar la clasificación', 5000, 'rounded');
+                    });
+        }
     }
 
     uq.areSalariesValid = function(team) {

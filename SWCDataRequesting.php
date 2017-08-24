@@ -116,6 +116,15 @@
        case "insTou":
           insertTournament($link, $params);
             break;
+       case "setRes":
+          setMatchResult($link, $params);
+            break;
+       case "insAct":
+          insertAction($link, $params);
+            break;
+       case "updSta":
+          updateStandings($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -330,6 +339,39 @@
     $data['id'] = mysqli_insert_id($con);
     $data['success'] = true;
     $data['message'] = "Torneo creado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function insertAction($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO actions (match_id, type, player) values (".$params->matchID.", '".$params->type."', ".$params->player.")";
+    $resultado=mysqli_query($con, $query) or die("Error insertando accion");
+    $data['success'] = true;
+    $data['message'] = "Accion insertada";
+    echo json_encode($data);
+    exit;
+  }
+
+  function setMatchResult($con, $params)
+  {
+    $data = array();
+    $query="UPDATE matches SET local_goals=". $params->localGoals .", away_goals=".$params->awayGoals." where id=" . $params->matchID;
+    $resultado=mysqli_query($con, $query) or die("Error introduciendo resultado");
+    $data['success'] = true;
+    $data['message'] = "Resultado introducido";
+    echo json_encode($data);
+    exit;
+  }
+
+  function updateStanding($con, $params)
+  {
+    $data = array();
+    $query="UPDATE standings SET points=points+". $params->points .", won=won+".$params->won.", draw=draw+".$params->draw.", lost=lost+".$params->lost.", goals_for=goals_for+".$params->goalsFor.", goals_against=goals_against+".$params->goalsAgainst." where tournament_id=" . $params->tournamentID ." and team=".$params->team;
+    $resultado=mysqli_query($con, $query) or die("Error actualizando tabla");
+    $data['success'] = true;
+    $data['message'] = "Tabla actualizando";
     echo json_encode($data);
     exit;
   }
