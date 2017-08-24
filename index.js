@@ -803,6 +803,47 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 		}
 	}
 
+    uq.resolveMatch = function()
+    {
+        if((uq.resultInput.local.mvp.length + uq.resultInput.away.mvp.length) > 1)
+        {
+            Materialize.toast('No puede haber más de un MVP', 5000, 'rounded');
+        }
+        if((uq.resultInput.local.assists.length > uq.resultInput.local.goals.length) || (uq.resultInput.away.assists.length > uq.resultInput.away.goals.length))
+        {
+            Materialize.toast('Hay más asistencias que goleadores', 5000, 'rounded');
+        }
+        $http.post("SWCDataRequesting.php", { type: "setRes", matchID: action.matchID, local_Goals: uq.resultInput.local.result, awayGoals: uq.resultInput.away.result.player  })
+                    .success(function(data) {
+                        var actionsToPush = [];
+                        angular.forEach(uq.resultInput.local.actions, function(value, key){
+                            actionsToPush.push(value);
+                        });
+                        angular.forEach(uq.resultInput.away.actions, function(value, key){
+                            actionsToPush.push(value);
+                        });
+                        uq.insertAction(actionsToPush, 0);
+                    })
+                    .error(function(error) {
+                        console.log(error);
+                        Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
+                    });
+    }
+
+    uq.insertAction = function(actions, counter)
+    {
+        if (counter < actions.length){
+        $http.post("SWCDataRequesting.php", { type: "insAct", matchID: uq.datoViajero, type: action[counter].type, player: action[counter].player })
+                    .success(function(data) {
+                        uq.insertAction(actions, counter + 1);
+                    })
+                    .error(function(error) {
+                        console.log(error);
+                        Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
+                    });
+                }
+    }
+
     uq.areSalariesValid = function(team) {
         var playersToValid = uq.getPlayersByTeam(team);
         angular.forEach(playersToValid, function(value, key) {
