@@ -120,9 +120,6 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         case "/resultinput":
             obtainData("P");
             obtainData("M");
-            obtainData("U");
-            obtainData("A");
-            obtainData("ST");
             obtainData("TO");
 			uq.onTimeout = function() {
 				uq.resultInput.local.players=uq.getPlayersByTeam(uq.getMatchById(uq.datoViajero).local);
@@ -724,6 +721,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 				case 'G':
 					newAction.player = parseInt(uq.resultInput.local.goals);
 					uq.resultInput.local.goals='';
+                    uq.resultInput.local.result++;
 					break;
 				case 'A':
 					newAction.player = parseInt(uq.resultInput.local.assists);
@@ -754,6 +752,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 				case 'G':
 					newAction.player = parseInt(uq.resultInput.away.goals);
 					uq.resultInput.away.goals='';
+                    uq.resultInput.away.result++;
 					break;
 				case 'A':
 					newAction.player = parseInt(uq.resultInput.away.assists);
@@ -788,6 +787,10 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 			{
 				if(uq.resultInput.local.actions[i].type==action.type && uq.resultInput.local.actions[i].player==action.player)
 				{
+                    if(action.type == 'G')
+                    {
+                        uq.resultInput.local.result--;
+                    }
 					uq.resultInput.local.actions.splice(i, 1);
 				}
 			}
@@ -796,6 +799,10 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 			{
 				if(uq.resultInput.away.actions[i].type==action.type && uq.resultInput.away.actions[i].player==action.player)
 				{
+                    if(action.type == 'G')
+                    {
+                        uq.resultInput.away.result--;
+                    }
 					uq.resultInput.away.actions.splice(i, 1);
 
 				}
@@ -805,15 +812,47 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 
     uq.resolveMatch = function()
     {
-        if((uq.resultInput.local.mvp.length + uq.resultInput.away.mvp.length) > 1)
+        var canResolve = true;
+        var goa = 0;
+        var assi = 0;
+        var mv = 0;
+        angular.forEach(uq.resultInput.local.actions, function(value, key){
+            if(value.type == 'A'){
+                assi++;
+            }else if(value.type == 'M'){
+                mv++;
+            }else if(value.type == 'G'){
+                goa++;
+            }
+        });
+        if(goa < assi)
+        {
+            Materialize.toast('Hay más asistencias que goleadores', 5000, 'rounded');
+            canResolve = false;
+        }
+        goa = 0;
+        assi = 0;
+        angular.forEach(uq.resultInput.away.actions, function(value, key){
+            if(value.type == 'A'){
+                assi++;
+            }else if(value.type == 'M'){
+                mv++;
+            }else if(value.type == 'G'){
+                goa++;
+            }
+        });
+        if(goa < assi)
+        {
+            Materialize.toast('Hay más asistencias que goleadores', 5000, 'rounded');
+            canResolve = false;
+        }
+        if(mv > 1)
         {
             Materialize.toast('No puede haber más de un MVP', 5000, 'rounded');
         }
-        if((uq.resultInput.local.assists.length > uq.resultInput.local.goals.length) || (uq.resultInput.away.assists.length > uq.resultInput.away.goals.length))
+        if(canResolve)
         {
-            Materialize.toast('Hay más asistencias que goleadores', 5000, 'rounded');
-        }
-        $http.post("SWCDataRequesting.php", { type: "setRes", matchID: action.matchID, localGoals: uq.resultInput.local.result, awayGoals: uq.resultInput.away.result.player  })
+            $http.post("SWCDataRequesting.php", { type: "setRes", matchID: uq.datoViajero, localGoals: uq.resultInput.local.result, awayGoals: uq.resultInput.away.result  })
                     .success(function(data) {
                         var actionsToPush = [];
                         angular.forEach(uq.resultInput.local.actions, function(value, key){
@@ -828,12 +867,14 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         console.log(error);
                         Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
                     });
+        }
+        
     }
 
     uq.insertAction = function(actions, counter)
     {
         if (counter < actions.length){
-            $http.post("SWCDataRequesting.php", { type: "insAct", matchID: uq.datoViajero, type: action[counter].type, player: action[counter].player })
+            $http.post("SWCDataRequesting.php", { type: "insAct", matchID: uq.datoViajero, type: actions[counter].type, player: actions[counter].player })
                     .success(function(data) {
                         uq.insertAction(actions, counter + 1);
                     })
@@ -842,11 +883,11 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
                     });
         }else{
-                tournament_id   team    round   points  won     draw    lost    goals_for   goals_against 
             $http.post("SWCDataRequesting.php", { type: "updSta", tournamentID:uq.getMatchById(uq.datoViajero).tournament, team: uq.getMatchById(uq.datoViajero).local, points: localPoints, won: localWon,  draw: localDraw, lost: localLost, goalsFor: uq.resultInput.local.result, goalsAgainst: uq.resultInput.away.result})
                     .success(function(data) {
                         $http.post("SWCDataRequesting.php", { type: "updSta", tournamentID:uq.getMatchById(uq.datoViajero).tournament, team: uq.getMatchById(uq.datoViajero).away, points: awayPoints, won: awayWon,  draw: awayDraw, lost: awayLost, goalsFor: uq.resultInput.away.result, goalsAgainst: uq.resultInput.local.result})
                             .success(function(data) {
+                                uq.redirEditar('pending');
                             })
                             .error(function(error) {
                                 console.log(error);
