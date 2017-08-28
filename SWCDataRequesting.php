@@ -365,7 +365,7 @@
     exit;
   }
 
-  function updateStanding($con, $params)
+  function updateStandings($con, $params)
   {
     $data = array();
     $query="UPDATE standings SET points=points+". $params->points .", won=won+".$params->won.", draw=draw+".$params->draw.", lost=lost+".$params->lost.", goals_for=goals_for+".$params->goalsFor.", goals_against=goals_against+".$params->goalsAgainst." where tournament_id=" . $params->tournamentID ." and team=".$params->team;

@@ -173,13 +173,16 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             uq.user.user = '';
             uq.user.pass = '';
             Materialize.toast('Usuario o contraseña inválida', 5000, 'rounded');
+            uq.log('Intento de login no válido');
         } else {
             indexFactory.setUser(uq.user);
+            uq.log('Sesión iniciada');
         }
         return uq.user.valido;
     }
 
     uq.logoff = function() {
+        uq.log('Desconectado');
         uq.user.id = -1;
         uq.user.email = '';
         uq.user.valid = false;
@@ -199,11 +202,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             obtainData("U");
                             Materialize.toast(uq.user.user + ', has sido registrado', 5000, 'rounded');
                             location.href = "#/";
+                            uq.log('Registro exitoso para ' + uq.user.email);
                             uq.login();
                         })
                         .error(function(error) {
                             console.log(error);
                             Materialize.toast('No se ha podido registrar el usuario', 5000, 'rounded');
+                            uq.log('Error de registro para ' + uq.user.email);
                         });
                 } else {
                     Materialize.toast('El ' + response + ' ya existe', 5000, 'rounded');
@@ -246,10 +251,12 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     uq.teamRequests = [];
                     obtainData("RT");
                     Materialize.toast(uq.getTeamById(chosenTeam).name + ' asignado a ' + uq.getUserById(requester).user, 5000, 'rounded');
+                    uq.log(uq.getTeamById(chosenTeam).name + ' (ID '+ chosenTeam +') asignado a '+ uq.getUserById(requester).user +' (ID' + requester + ')');
                 })
                 .error(function(error) {
                     console.log(error);
                     Materialize.toast('No se ha podido asignar el equipo', 5000, 'rounded');
+                    uq.log('No se ha podido asignar el equipo');
                 });
         } else {
             Materialize.toast('No hay equipos para asignar', 5000, 'rounded');
@@ -268,10 +275,12 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         }
                     });
                     Materialize.toast(uq.getPlayerById(player).name + ' ahora es libre', 5000, 'rounded');
+                    uq.log(uq.getPlayerById(player).name + '(ID '+ player +') liberado');
                 })
                 .error(function(error) {
                     console.log(error);
                     Materialize.toast('No se ha podido descartar el jugador', 5000, 'rounded');
+                    uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error de liberacion');
                 });
         }
     }
@@ -281,11 +290,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             $http.post("SWCDataRequesting.php", { type: "conLib", player: player, team: team, market: uq.constants[0].marketEdition })
                 .success(function(data) {
                     Materialize.toast(uq.getPlayerById(player).name + ' contratado', 5000, 'rounded');
+                    uq.log(uq.getPlayerById(player).name + '(ID '+ player +') contratado como descarte para '+ uq.getTeamById(team).name + '(ID '+team+')');
                     uq.redirEditar('myteam');
                 })
                 .error(function(error) {
                     console.log(error);
                     Materialize.toast('No se ha podido contratar el jugador', 5000, 'rounded');
+                    uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error de contratacion como descarte para '+ uq.getTeamById(team).name + '(ID '+team+')');
                 });
         }
     }
@@ -849,6 +860,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         if(mv > 1)
         {
             Materialize.toast('No puede haber más de un MVP', 5000, 'rounded');
+            canResolve = false;
         }
         if(canResolve)
         {
@@ -883,6 +895,28 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
                     });
         }else{
+            var localPoints = 0;
+            var awayPoints = 0;
+            var localWon = 0;
+            var localDraw = 0;
+            var localLost = 0;
+            var awayWon = 0;
+            var awayDraw = 0;
+            var awayLost = 0;
+            if(uq.resultInput.local.result>uq.resultInput.away.result) {
+                localPoints = 3;
+                localWon = 1;
+                awayLost = 1;
+            }else if(uq.resultInput.local.result<uq.resultInput.away.result){
+                awayPoints = 3;
+                localLost = 1;
+                awayWon = 1;
+            }else{
+                localPoints = 1;
+                awayPoints = 1;
+                localDraw = 1;
+                awayDraw = 1;
+            }
             $http.post("SWCDataRequesting.php", { type: "updSta", tournamentID:uq.getMatchById(uq.datoViajero).tournament, team: uq.getMatchById(uq.datoViajero).local, points: localPoints, won: localWon,  draw: localDraw, lost: localLost, goalsFor: uq.resultInput.local.result, goalsAgainst: uq.resultInput.away.result})
                     .success(function(data) {
                         $http.post("SWCDataRequesting.php", { type: "updSta", tournamentID:uq.getMatchById(uq.datoViajero).tournament, team: uq.getMatchById(uq.datoViajero).away, points: awayPoints, won: awayWon,  draw: awayDraw, lost: awayLost, goalsFor: uq.resultInput.away.result, goalsAgainst: uq.resultInput.local.result})
@@ -899,6 +933,16 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         Materialize.toast('No se ha podido actualizar la clasificación', 5000, 'rounded');
                     });
         }
+    }
+
+    uq.log = function(message) {
+        $http.post("SWCDataRequesting.php", { type: "log", user: uq.user.id, message: message})
+                            .success(function(data) {
+                                console.log(message);
+                            })
+                            .error(function(error) {
+                                console.log(error);
+                            });
     }
 
     uq.areSalariesValid = function(team) {
