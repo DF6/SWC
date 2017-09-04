@@ -17,7 +17,7 @@
       <label class="col m1 s1 right" style="font-size:400%;color:white;"><b>{{uq.resultInput.local.result}}</b></label>
 	</div>
 	<div class="row" style="min-height: 5%">
-		<div class="chip" style="cursor:pointer;margin:1%;" class="col s3 m3" ng-repeat="ac in uq.resultInput.local.actions" ng-click="uq.removeAction(ac, 'L')">
+		<div class="chip" style="cursor:pointer;margin:1%;" class="col s3 m3" ng-repeat="ac in uq.getMatchActions(uq.getActionsByMatch(uq.datoViajero), uq.getTeamById(uq.getMatchById(uq.datoViajero).local).id)">
 			<img ng-if="ac.type=='G'" src="actionImages/goal.png" alt="Gol">
 			<img ng-if="ac.type=='A'" src="actionImages/assist.png" alt="Asistencia">
 			<img ng-if="ac.type=='Y'" src="actionImages/yellowCard.png" alt="Amarilla">
@@ -27,36 +27,6 @@
 			<span>{{uq.getPlayerById(ac.player).name}}</span>
 		</div>
 	</div>
-      <label style="color:white;">Goles</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'G')" class="browser-default" ng-model="uq.resultInput.local.goals">
-          <option value="" disabled selected>Elegir goleador...</option>
-          <option ng-repeat="te in uq.resultInput.local.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Asistencias</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'A')" class="browser-default" ng-model="uq.resultInput.local.assists">
-          <option value="" disabled selected>Elegir asistente...</option>
-          <option ng-repeat="te in uq.resultInput.local.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Amarillas</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'Y')" class="browser-default" ng-model="uq.resultInput.local.yellowCards">
-          <option value="" disabled selected>Elegir sancionado...</option>
-          <option ng-repeat="te in uq.resultInput.local.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Rojas</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'R')" class="browser-default" ng-model="uq.resultInput.local.redCards">
-          <option value="" disabled selected>Elegir sancionado...</option>
-          <option ng-repeat="te in uq.resultInput.local.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Lesiones</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'I')" class="browser-default" ng-model="uq.resultInput.local.injuries">
-          <option value="" disabled selected>Elegir lesionado...</option>
-          <option ng-repeat="te in uq.resultInput.local.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">MVP</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'M')" class="browser-default" ng-model="uq.resultInput.local.mvp">
-          <option value="" disabled selected>Elegir MVP...</option>
-          <option ng-repeat="te in uq.resultInput.local.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
     </div>
     <div class="col m6 s12">
       <div class="row">
@@ -64,7 +34,7 @@
 		  <label class="col m10 s10 right" style="margin-right:3%;text-align:right;font-size:400%;color:white;"><b>{{uq.getTeamById(uq.getMatchById(uq.datoViajero).away).shortName}}</b></label>
 	  </div>
     <div class="row" style="min-height: 5%">
-  		<div class="chip" style="cursor:pointer;margin:1%;" ng-repeat="ac in uq.resultInput.away.actions" ng-click="uq.removeAction(ac, 'A')">
+  		<div class="chip" style="cursor:pointer;margin:1%;" ng-repeat="ac in uq.getMatchActions(uq.getActionsByMatch(uq.datoViajero), uq.getTeamById(uq.getMatchById(uq.datoViajero).away).id)">
   			<img ng-if="ac.type=='G'" src="actionImages/goal.png" alt="Gol">
   			<img ng-if="ac.type=='A'" src="actionImages/assist.png" alt="Asistencia">
   			<img ng-if="ac.type=='Y'" src="actionImages/yellowCard.png" alt="Amarilla">
@@ -74,43 +44,12 @@
   			<span>{{uq.getPlayerById(ac.player).name}}</span>
   		</div>
       </div>
-      <label style="color:white;">Goles</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'G')" class="browser-default" ng-model="uq.resultInput.away.goals">
-          <option value="" disabled selected>Elegir goleador...</option>
-          <option ng-repeat="te in uq.resultInput.away.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Asistencias</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'A')" class="browser-default" ng-model="uq.resultInput.away.assists">
-          <option value="" disabled selected>Elegir asistente...</option>
-          <option ng-repeat="te in uq.resultInput.away.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Amarillas</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'Y')" class="browser-default" ng-model="uq.resultInput.away.yellowCards">
-          <option value="" disabled selected>Elegir sancionado...</option>
-          <option ng-repeat="te in uq.resultInput.away.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Rojas</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'R')" class="browser-default" ng-model="uq.resultInput.away.redCards">
-          <option value="" disabled selected>Elegir sancionado...</option>
-          <option ng-repeat="te in uq.resultInput.away.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">Lesiones</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'I')" class="browser-default" ng-model="uq.resultInput.away.injuries">
-          <option value="" disabled selected>Elegir lesionado...</option>
-          <option ng-repeat="te in uq.resultInput.away.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
-        <label style="color:white;">MVP</label>
-        <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'M')" class="browser-default" ng-model="uq.resultInput.away.mvp">
-          <option value="" disabled selected>Elegir MVP...</option>
-          <option ng-repeat="te in uq.resultInput.away.players" ng-value="{{te.id}}">{{te.name}}</option>
-        </select>
     </div>
   </div>
   </div>
   <div class="col s12 m10 offset-m1">
     <div class="row">
       <div class="col m10 offset-m1 s12">
-        <button class="col s12 waves-effect waves-light btn" ng-click="uq.resolveMatch()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Guardar</button>
         <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('pending')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Volver</button>
       </div>
     </div>

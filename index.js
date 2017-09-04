@@ -305,11 +305,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         $http.post("SWCDataRequesting.php", { type: "guaSal", player: player, salary: newSalary })
             .success(function(data) {
                 Materialize.toast('Salario cambiado', 5000, 'rounded');
+                uq.log(uq.getPlayerById(player).name + '(ID '+ player +') salario cambiado a '+ newSalary);
                 uq.redirEditar('myteam');
             })
             .error(function(error) {
                 console.log(error);
-                Materialize.toast('No se ha podido solicitar el equipo', 5000, 'rounded');
+                uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error de cambio de salario');
+                Materialize.toast('No se ha podido cambiar el salario', 5000, 'rounded');
             });
     }
 
@@ -1065,6 +1067,21 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             }
         });
         return matchActions;
+    }
+
+    uq.isPlayerFromThisTeam = function(player, team)
+    {
+        return uq.getPlayerById(player).teamID == team;
+    }
+
+    uq.getMatchActions = function(actions, team){
+        var teamMatchActions = [];
+        angular.forEach(actions, function(value, index) {
+            if (uq.isPlayerFromThisTeam(value.player, team)) {
+                teamMatchActions.push(value);
+            }
+        });
+        return teamMatchActions;
     }
 
     uq.getMatchesByTeam = function(team) {
