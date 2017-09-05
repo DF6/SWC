@@ -93,6 +93,12 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("S");
             obtainData("PCS");
             break;
+        case "/matchlog":
+            obtainData("M");
+            obtainData("A");
+            obtainData("TO");
+            obtainData("P");
+            break;
         case "/myteam":
             obtainData("U");
             obtainData("P");
