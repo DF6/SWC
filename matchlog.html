@@ -14,7 +14,7 @@
     <div class="col m6 s12">
 	<div class="row">
       <label class="col m10 s10 left" style="margin-right:3%;font-size:400%;color:white;"><b>{{uq.getTeamById(uq.getMatchById(uq.datoViajero).local).shortName}}</b></label>
-      <label class="col m1 s1 right" style="font-size:400%;color:white;"><b>{{uq.resultInput.local.result}}</b></label>
+      <label class="col m1 s1 right" style="font-size:400%;color:white;"><b>{{uq.getMatchById(uq.datoViajero).localGoals}}</b></label>
 	</div>
 	<div class="row" style="min-height: 5%">
 		<div class="chip" style="cursor:pointer;margin:1%;" class="col s3 m3" ng-repeat="ac in uq.getMatchActions(uq.getActionsByMatch(uq.datoViajero), uq.getTeamById(uq.getMatchById(uq.datoViajero).local).id)">
@@ -30,11 +30,11 @@
     </div>
     <div class="col m6 s12">
       <div class="row">
-		  <label class="col m1 s1 left" style="font-size:400%;color:white;"><b>{{uq.resultInput.away.result}}</b></label>
+		  <label class="col m1 s1 left" style="font-size:400%;color:white;"><b>{{uq.getMatchById(uq.datoViajero).awayGoals}}</b></label>
 		  <label class="col m10 s10 right" style="margin-right:3%;text-align:right;font-size:400%;color:white;"><b>{{uq.getTeamById(uq.getMatchById(uq.datoViajero).away).shortName}}</b></label>
 	  </div>
     <div class="row" style="min-height: 5%">
-  		<div class="chip" style="cursor:pointer;margin:1%;" ng-repeat="ac in uq.getMatchActions(uq.getActionsByMatch(uq.datoViajero), uq.getTeamById(uq.getMatchById(uq.datoViajero).away).id)">
+  		<div class="chip" style="cursor:pointer;margin:1%;" ng-repeat="ac in uq.getMatchActions(uq.getActionsByMatch(uq.datoViajero), uq.getMatchById(uq.datoViajero).away)">
   			<img ng-if="ac.type=='G'" src="actionImages/goal.png" alt="Gol">
   			<img ng-if="ac.type=='A'" src="actionImages/assist.png" alt="Asistencia">
   			<img ng-if="ac.type=='Y'" src="actionImages/yellowCard.png" alt="Amarilla">
@@ -50,7 +50,7 @@
   <div class="col s12 m10 offset-m1">
     <div class="row">
       <div class="col m10 offset-m1 s12">
-        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('pending')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Volver</button>
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Volver</button>
       </div>
     </div>
   </div>

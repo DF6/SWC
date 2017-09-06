@@ -14,7 +14,7 @@
       </div>
       </div>
         <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
-	      <table style="color:white;" class="responsive-table" ng-show="uq.showMarket">
+	      <table style="color:white;" class="responsive-table">
 	        <thead>
 	          <tr>
 	              <th>POS</th>
@@ -29,10 +29,10 @@
 	          </tr>
 	        </thead>
 	        <tbody>
-	          <tr ng-repeat="pl in uq.standings | orderBy: 'position'" ng-if="pl.tournament==uq.datoViajero">
-	            <td>{{pl.position}}</td>
+	          <tr ng-repeat="pl in uq.standings | orderBy: '-points'" ng-if="pl.tournamentID==uq.datoViajero">
+	            <td>{{$index+1}}</td>
 	            <td>{{uq.getTeamById(pl.team).name}}</td>
-              <td>{{(parseInt(pl.won) + parseInt(pl.draw) + parseInt(pl.lost))}}</td>
+              <td>{{pl.round}}</td>
               <td>{{pl.won}}</td>
               <td>{{pl.draw}}</td>
               <td>{{pl.lost}}</td>
@@ -42,6 +42,29 @@
 	          </tr>
 	        </tbody>
 	      </table>
+        <table style="color:white;" class="responsive-table table-striped">
+          <thead>
+            <tr>
+                <th>Jornada</th>
+                <th>Local</th>
+                <th></th>
+                <th></th>
+                <th>Visitante</th>
+                <th>Fecha límite</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="mat in uq.matches | orderBy: 'round'" ng-if="mat.tournament==uq.datoViajero">
+              <td>{{mat.round}}</td>
+              <td>{{uq.getTeamById(mat.local).name}}</td>
+              <td><b ng-if="mat.localGoals!=-1">{{mat.localGoals}}</b></td>
+              <td><b ng-if="mat.awayGoals!=-1">{{mat.awayGoals}}</b></td>
+              <td style="text-align: right">{{uq.getTeamById(mat.away).name}}</td>
+              <td>{{mat.limitDate}}</td>
+              <td><button ng-if="mat.localGoals!=-1 || mat.awayGoals!=-1" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('matchlog', mat.id)" style="font-size:100%;background-color:#f9a825">Detalle</button></td>
+            </tr>
+          </tbody>
+        </table>
   </div>
 </div>
 <div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">

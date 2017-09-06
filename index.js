@@ -67,6 +67,8 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     switch ($location.path()) {
         case "/":
             obtainData("U");
+            obtainData("ST");
+            obtainData("TO");
             break;
         case "/auctions":
             obtainData("P");
@@ -119,6 +121,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         case "/pending":
             obtainData("TO");
             obtainData("M");
+            break;
+        case "/premier":
+            obtainData("T");
+            obtainData("TO");
+            obtainData("M");
+            obtainData("ST");
+            obtainData("A");
             break;
         case "/register":
             obtainData("U");
@@ -894,7 +903,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     uq.insertAction = function(actions, counter)
     {
         if (counter < actions.length){
-            $http.post("SWCDataRequesting.php", { type: "insAct", matchID: uq.datoViajero, type: actions[counter].type, player: actions[counter].player })
+            $http.post("SWCDataRequesting.php", { type: "insAct", matchID: uq.datoViajero, actionType: actions[counter].type, player: actions[counter].player })
                     .success(function(data) {
                         uq.insertAction(actions, counter + 1);
                     })
@@ -951,6 +960,32 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             .error(function(error) {
                                 console.log(error);
                             });
+    }
+
+    uq.searchTournamentForTeam = function(team)
+    {
+        var ret = [];
+        angular.forEach(uq.standings, function(value, key){
+            if(value.team == uq.user.teamID && (uq.getTournamentById(value.tournamentID).name.indexOf('Primera') || uq.getTournamentById(value.tournamentID).name.indexOf('Segunda')))
+            {
+                ret.push(value.tournamentID);
+            }
+        });
+        var highestEdition = -1;
+        var editHigh = -1;
+        angular.forEach(ret, function(value, key){
+            if(uq.getTournamentById(value).edition > editHigh)
+            {
+                highestEdition = value;
+                editHigh = uq.getTournamentById(highestEdition).edition
+            }
+        })
+        return highestEdition;
+    }
+
+    uq.playedMatches = function(team)
+    {
+        return parseInt(pl.won) + parseInt(pl.draw) + parseInt(pl.lost);
     }
 
     uq.areSalariesValid = function(team) {
@@ -1262,6 +1297,10 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     case "A":
                         uq.actions = data.actions;
                         indexFactory.actions = uq.actions;
+                        for (var v = 0; v < uq.actions.length; v++) {
+                            uq.actions[v].matchID = parseInt(uq.actions[v].matchID);
+                            uq.actions[v].player = parseFloat(uq.actions[v].player);
+                        }
                         break;
                     case "P":
                         uq.players = data.players;
@@ -1309,7 +1348,15 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         uq.standings = data.standings;
                         indexFactory.standings = uq.standings;
                         for (var v = 0; v < uq.standings.length; v++) {
-                            uq.standings[v].id = parseInt(uq.standings[v].id);
+                            uq.standings[v].tournamentID = parseInt(uq.standings[v].tournamentID);
+                            uq.standings[v].round = parseInt(uq.standings[v].round);
+                            uq.standings[v].points = parseInt(uq.standings[v].points);
+                            uq.standings[v].team = parseInt(uq.standings[v].team);
+                            uq.standings[v].won = parseInt(uq.standings[v].won);
+                            uq.standings[v].draw = parseInt(uq.standings[v].won);
+                            uq.standings[v].lost = parseInt(uq.standings[v].won);
+                            uq.standings[v].goalsFor = parseInt(uq.standings[v].won);
+                            uq.standings[v].goalsAgainst = parseInt(uq.standings[v].won);
                         }
                         break;
                     case "RT":

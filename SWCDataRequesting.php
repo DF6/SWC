@@ -346,7 +346,7 @@
   function insertAction($con, $params)
   {
     $data = array();
-    $query="INSERT INTO actions (match_id, type, player) values (".$params->matchID.", '".$params->type."', ".$params->player.")";
+    $query="INSERT INTO actions (match_id, type, player) values (".$params->matchID.", '".$params->actionType."', ".$params->player.")";
     $resultado=mysqli_query($con, $query) or die("Error insertando accion");
     $data['success'] = true;
     $data['message'] = "Accion insertada";
@@ -368,7 +368,7 @@
   function updateStandings($con, $params)
   {
     $data = array();
-    $query="UPDATE standings SET points=points+". $params->points .", won=won+".$params->won.", draw=draw+".$params->draw.", lost=lost+".$params->lost.", goals_for=goals_for+".$params->goalsFor.", goals_against=goals_against+".$params->goalsAgainst." where tournament_id=" . $params->tournamentID ." and team=".$params->team;
+    $query="UPDATE standings SET points=points+". $params->points .", round=round+1, won=won+".$params->won.", draw=draw+".$params->draw.", lost=lost+".$params->lost.", goals_for=goals_for+".$params->goalsFor.", goals_against=goals_against+".$params->goalsAgainst." where tournament_id=" . $params->tournamentID ." and team=".$params->team;
     $resultado=mysqli_query($con, $query) or die("Error actualizando tabla");
     $data['success'] = true;
     $data['message'] = "Tabla actualizando";
