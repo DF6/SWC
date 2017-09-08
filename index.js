@@ -123,11 +123,11 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("M");
             break;
         case "/premier":
+            obtainData("A");
             obtainData("T");
             obtainData("TO");
             obtainData("M");
             obtainData("ST");
-            obtainData("A");
             break;
         case "/register":
             obtainData("U");
@@ -366,11 +366,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         if (uq.canForce(forcerTeam)) {
             $http.post("SWCDataRequesting.php", { type: "claJug", oldTeam: uq.getPlayerById(player).teamID, player: player, amount: (uq.getPlayerById(player).salary * 10).toFixed(), buyerTeam: forcerTeam, signinType: "C", market: uq.constants[0].marketEdition })
                 .success(function(data) {
+                    uq.log(uq.getPlayerById(player).name + '(ID '+ player +') cambia por cláusula de '+uq.getTeamById(uq.getPlayerById(player).teamID).name+' (ID '+uq.getPlayerById(player).teamID+') a '+ uq.getTeamById(forcerTeam).name +' (ID ' + forcerTeam + ')');
                     Materialize.toast('Cláusula realizada', 5000, 'rounded');
                     uq.redirEditar('myteam');
                 })
                 .error(function(error) {
                     console.log(error);
+                    uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error de cláusula a equipo ' + uq.getTeamById(forcerTeam).name + ' (ID ' + forcerTeam + ')');
                     Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
                 });
         } else {
@@ -393,11 +395,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         if (uq.playersOffered.length != 0) {
                             uq.offerPlayer(parseInt(data.signinID), 0, uq.getPlayerById(player).teamID);
                         }
+                        uq.log(uq.getPlayerById(player).name + '(ID '+ player +') oferta cesión de '+uq.getTeamById(uq.getPlayerById(player).teamID).name+' (ID '+uq.getPlayerById(player).teamID+') a '+ uq.getTeamById(offerTeam).name+' (ID '+ offerTeam +')');
                         Materialize.toast('Oferta de cesión realizada', 5000, 'rounded');
                         uq.redirEditar('marketresume');
                     })
                     .error(function(error) {
                         console.log(error);
+                        uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error oferta cesión');
                         Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
                     });
             } else {
@@ -406,11 +410,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         if (uq.playersOffered.length != 0) {
                             uq.offerPlayer(parseInt(data.signinID), 0, uq.getPlayerById(player).teamID);
                         }
+                        uq.log(uq.getPlayerById(player).name + '(ID '+ player +') oferta traspaso de '+ uq.getTeamById(uq.getPlayerById(player).teamID).name+' (ID '+uq.getPlayerById(player).teamID+') a '+ uq.getTeamById(offerTeam).name+' (ID '+ offerTeam +')');
                         Materialize.toast('Oferta realizada', 5000, 'rounded');
                         uq.redirEditar('marketresume');
                     })
                     .error(function(error) {
                         console.log(error);
+                        uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error oferta traspaso');
                         Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
                     });
             }
@@ -426,10 +432,12 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             $http.post("SWCDataRequesting.php", { type: "ofeJug", signin: signin, player: uq.playersOffered[cont].id, offerTeam: playerTeam, originTeam: uq.user.teamID })
                 .success(function(data) {
                     cont++;
+                    uq.log(uq.getPlayerById(uq.playersOffered[cont].id).name + '(ID '+ uq.playersOffered[cont].id +') ofrecimiento por oferta ID ' + signin);
                     uq.offerPlayer(signin, cont, playerTeam);
                 })
                 .error(function(error) {
                     console.log(error);
+                    uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error ofrecimiento a otro equipo');
                     Materialize.toast('No se ha podido ofrecer el jugador', 5000, 'rounded');
                 });
         }
@@ -446,10 +454,12 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     } else {
                         Materialize.toast(uq.getPlayerById(offer.player).name + ' ha sido transferido a ' + uq.getTeamById(offer.buyerTeam).name, 5000, 'rounded');
                     }
+                    uq.log('Oferta aceptada ID ' + signin);
                     uq.redirEditar('marketresume');
                 })
                 .error(function(error) {
                     console.log(error);
+                    uq.log('Error aceptar oferta ID ' + signin);
                     Materialize.toast('No se ha podido realizar el acuerdo', 5000, 'rounded');
                 });
         }
@@ -470,10 +480,12 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             $http.post("SWCDataRequesting.php", { type: "traJug", player: playersToChange.player, newTeam: playersToChange.newTeam })
                 .success(function(data) {
                     cont++;
+                    uq.log('Jugador ofrecido '+ uq.getPlayerById(playersToChange.player).name +' (ID '+ playersToChange.player +') traspasado a ' + uq.getTeamById(playersToChange.newTeam).name + ' (ID ' + playersToChange.newTeam + ')');
                     uq.transferOfferedPlayer(playersToChange, cont);
                 })
                 .error(function(error) {
                     console.log(error);
+                    uq.log('Error transferir jugador ofrecido ID ' + playersToChange.player);
                     Materialize.toast('No se ha podido transferir el jugador', 5000, 'rounded');
                 });
         }
@@ -483,11 +495,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         if (confirm("Rechazar. ¿Seguro?")) {
             $http.post("SWCDataRequesting.php", { type: "recOfe", id: signin })
                 .success(function(data) {
+                    uq.log('Oferta aceptada ID ' + signin);
                     Materialize.toast('Oferta rechazada', 5000, 'rounded');
                     uq.redirEditar('myteam');
                 })
                 .error(function(error) {
                     console.log(error);
+                    uq.log('Error rechazar oferta ID ' + signin);
                     Materialize.toast('No se ha podido rechazar la oferta', 5000, 'rounded');
                 });
         }
@@ -526,11 +540,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         } else if (average > 85) { amount = 15; }
         $http.post("SWCDataRequesting.php", { type: "nueSub", playerName: uq.newAuctionObj.name, buyerTeam: uq.user.teamID, position: uq.newAuctionObj.positionSelected, amount: amount, market: uq.constants[0].marketEdition })
             .success(function(data) {
+                uq.log('Subasta abierta por ' + uq.user.teamID);
                 Materialize.toast('Comienza la subasta', 5000, 'rounded');
                 uq.redirEditar('auctions');
             })
             .error(function(error) {
                 console.log(error);
+                uq.log('Subasta no abierta por ' + uq.newAuctionObj.name);
                 Materialize.toast('No se ha podido realizar la subasta', 5000, 'rounded');
             });
     }
