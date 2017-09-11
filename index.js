@@ -540,7 +540,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         } else if (average > 85) { amount = 15; }
         $http.post("SWCDataRequesting.php", { type: "nueSub", playerName: uq.newAuctionObj.name, buyerTeam: uq.user.teamID, position: uq.newAuctionObj.positionSelected, amount: amount, market: uq.constants[0].marketEdition })
             .success(function(data) {
-                uq.log('Subasta abierta por ' + uq.user.teamID);
+                uq.log('Subasta abierta por ' + uq.getTeamById(uq.user.teamID).name + 'para el jugador: ' + uq.newAuctionObj.name);
                 Materialize.toast('Comienza la subasta', 5000, 'rounded');
                 uq.redirEditar('auctions');
             })
@@ -556,11 +556,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         if (uq.getCounterById(signin) - dd.getTime() <= 0) {
             $http.post("SWCDataRequesting.php", { type: "pujSub", id: signin, amount: amount, newTeam: uq.user.teamID })
                 .success(function(data) {
+                    uq.log('Puja subida a ' + (uq.getSigninById(signin).amount + amount) + ' por ' + uq.getTeamById(uq.user.teamID).name + 'para el jugador: ' + uq.getPlayerById(uq.getSigninById(signin).player).name);
                     Materialize.toast('Puja subida a ' + (uq.getSigninById(signin).amount + amount), 5000, 'rounded');
                     uq.redirEditar('myteam');
                 })
                 .error(function(error) {
                     console.log(error);
+                    uq.log('No se ha podido subir la puja: ' + uq.getTeamById(uq.user.teamID).name + " - " + uq.getPlayerById(uq.getSigninById(signin).player).name);
                     Materialize.toast('No se ha podido realizar la puja', 5000, 'rounded');
                 });
         } else {
@@ -577,10 +579,12 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         }
         $http.post("SWCDataRequesting.php", { type: "chaSal", id: team, amount: amount })
             .success(function(data) {
+                uq.log('Salarios cambiados para ' + uq.getTeamById(team).name + ' (ID ' + team + ')');
                 Materialize.toast('Reintroducido el importe de salarios de ' + uq.getTeamById(team).name, 5000, 'rounded');
             })
             .error(function(error) {
                 console.log(error);
+                uq.log('Error cambio de salarios para ' + uq.getTeamById(team).name + ' (ID ' + team + ')');
                 Materialize.toast('No se han podido reasignar salarios', 5000, 'rounded');
             });
     }
