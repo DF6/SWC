@@ -607,6 +607,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     })
                     .error(function(error) {
                         console.log(error);
+                        uq.log('Error insertando partidos de torneo ' + uq.getTournamentById(tournament).name + ' - Edicion ' + uq.getTournamentById(tournament).edition);
                         Materialize.toast('No se han podido insertar partidos', 5000, 'rounded');
                     });
             } else {
@@ -752,6 +753,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                 })
                 .error(function(error) {
                     console.log(error);
+                    uq.log('Error generacion de torneo');
                     Materialize.toast('No se ha podido generar el torneo', 5000, 'rounded');
                 });
         } else {
@@ -905,6 +907,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     .success(function(data) {
                         var actionsToPush = [];
                         angular.forEach(uq.resultInput.local.actions, function(value, key){
+                            uq.log('Partido resuelto ID ' + uq.datoViajero);
                             actionsToPush.push(value);
                         });
                         angular.forEach(uq.resultInput.away.actions, function(value, key){
@@ -914,6 +917,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     })
                     .error(function(error) {
                         console.log(error);
+                        uq.log('Partido no resuelto ERROR ID ' + uq.datoViajero);
                         Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
                     });
         }
@@ -958,15 +962,18 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     .success(function(data) {
                         $http.post("SWCDataRequesting.php", { type: "updSta", tournamentID:uq.getMatchById(uq.datoViajero).tournament, team: uq.getMatchById(uq.datoViajero).away, points: awayPoints, won: awayWon,  draw: awayDraw, lost: awayLost, goalsFor: uq.resultInput.away.result, goalsAgainst: uq.resultInput.local.result})
                             .success(function(data) {
+                                uq.log('Actualizado clasificacion ' + uq.datoViajero);
                                 uq.redirEditar('pending');
                             })
                             .error(function(error) {
                                 console.log(error);
+                                uq.log('Error actualizar clasificacion ' + uq.datoViajero);
                                 Materialize.toast('No se ha podido actualizar la clasificación', 5000, 'rounded');
                             });
                     })
                     .error(function(error) {
                         console.log(error);
+                        uq.log('Error actualizar clasificacion ' + uq.datoViajero);
                         Materialize.toast('No se ha podido actualizar la clasificación', 5000, 'rounded');
                     });
         }
