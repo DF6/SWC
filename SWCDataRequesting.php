@@ -125,6 +125,9 @@
        case "updSta":
           updateStandings($link, $params);
             break;
+       case "log":
+          insertLog($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -372,6 +375,17 @@
     $resultado=mysqli_query($con, $query) or die("Error actualizando tabla");
     $data['success'] = true;
     $data['message'] = "Tabla actualizando";
+    echo json_encode($data);
+    exit;
+  }
+
+  function insertLog($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO log (user, message) values (".$params->user.", '".$params->message."')";
+    $resultado=mysqli_query($con, $query) or die("Error insertando log");
+    $data['success'] = true;
+    $data['message'] = "Log insertado";
     echo json_encode($data);
     exit;
   }

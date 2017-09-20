@@ -4,29 +4,29 @@
     <div class="row">
     {{uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name}} - Edición {{uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).edition}}<br/>
     <span ng-if="uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Primera' || uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Segunda'">Ronda {{uq.getMatchById(uq.datoViajero).round}}</span>
-    <span ng-if="uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==1">Fase de grupos</span>
-    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==1) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==2) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==1)">Octavos</span>
-    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==2) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==3) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==2)">Cuartos</span>
-    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==3) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==4) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==3) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Intertoto' && uq.getMatchById(uq.datoViajero).round==1)">Semifinales</span>
-    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==4) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==5) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==4) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Intertoto' && uq.getMatchById(uq.datoViajero).round==2)">Tercer y Cuarto Puesto</span>
-    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==5) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==6) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==5) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Intertoto' && uq.getMatchById(uq.datoViajero).round==3) || uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Supercopa Europa' || uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Supercopa Clubes'">Final</span>
+    <span ng-if="uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round<7">Fase de grupos</span>
+    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==1) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && (uq.getMatchById(uq.datoViajero).round==7 || uq.getMatchById(uq.datoViajero).round==8)) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==1)">Octavos</span>
+    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==2) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && (uq.getMatchById(uq.datoViajero).round==9 || uq.getMatchById(uq.datoViajero).round==10)) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==2)">Cuartos</span>
+    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==3) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && (uq.getMatchById(uq.datoViajero).round==11 || uq.getMatchById(uq.datoViajero).round==12)) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==3) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Intertoto' && uq.getMatchById(uq.datoViajero).round==1)">Semifinales</span>
+    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==4) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==13) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==4) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Intertoto' && uq.getMatchById(uq.datoViajero).round==2)">Tercer y Cuarto Puesto</span>
+    <span ng-if="(uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Copa' && uq.getMatchById(uq.datoViajero).round==5) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Champions League' && uq.getMatchById(uq.datoViajero).round==14) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Europa League' && uq.getMatchById(uq.datoViajero).round==5) || (uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Intertoto' && uq.getMatchById(uq.datoViajero).round==3) || uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Supercopa Europa' || uq.getTournamentById(uq.getMatchById(uq.datoViajero).tournament).name=='Supercopa Clubes'">Final</span>
     </div>
     <div class="col m6 s12">
-	<div class="row">
-      <label class="col m10 s10 left" style="margin-right:3%;font-size:400%;color:white;"><b>{{uq.getTeamById(uq.getMatchById(uq.datoViajero).local).shortName}}</b></label>
-      <label class="col m1 s1 right" style="font-size:400%;color:white;"><b>{{uq.getMatchById(uq.datoViajero).localGoals}}</b></label>
-	</div>
-	<div class="row" style="min-height: 5%">
-		<div class="chip" style="cursor:pointer;margin:1%;" class="col s3 m3" ng-repeat="ac in uq.getMatchActions(uq.getActionsByMatch(uq.datoViajero), uq.getTeamById(uq.getMatchById(uq.datoViajero).local).id)">
-			<img ng-if="ac.type=='G'" src="actionImages/goal.png" alt="Gol">
-			<img ng-if="ac.type=='A'" src="actionImages/assist.png" alt="Asistencia">
-			<img ng-if="ac.type=='Y'" src="actionImages/yellowCard.png" alt="Amarilla">
-			<img ng-if="ac.type=='R'" src="actionImages/redCard.png" alt="Roja">
-			<img ng-if="ac.type=='I'" src="actionImages/injury.png" alt="Lesión">
-			<img ng-if="ac.type=='M'" src="actionImages/mvp.png" alt="MVP">
-			<span>{{uq.getPlayerById(ac.player).name}}</span>
-		</div>
-	</div>
+    	<div class="row">
+          <label class="col m10 s10 left" style="margin-right:3%;font-size:400%;color:white;"><b>{{uq.getTeamById(uq.getMatchById(uq.datoViajero).local).shortName}}</b></label>
+          <label class="col m1 s1 right" style="font-size:400%;color:white;"><b>{{uq.getMatchById(uq.datoViajero).localGoals}}</b></label>
+    	</div>
+    	<div class="row" style="min-height: 5%">
+    		<div class="chip" style="cursor:pointer;margin:1%;" class="col s3 m3" ng-repeat="ac in uq.getMatchActions(uq.getActionsByMatch(uq.datoViajero), uq.getTeamById(uq.getMatchById(uq.datoViajero).local).id)">
+    			<img ng-if="ac.type=='G'" src="actionImages/goal.png" alt="Gol">
+    			<img ng-if="ac.type=='A'" src="actionImages/assist.png" alt="Asistencia">
+    			<img ng-if="ac.type=='Y'" src="actionImages/yellowCard.png" alt="Amarilla">
+    			<img ng-if="ac.type=='R'" src="actionImages/redCard.png" alt="Roja">
+    			<img ng-if="ac.type=='I'" src="actionImages/injury.png" alt="Lesión">
+    			<img ng-if="ac.type=='M'" src="actionImages/mvp.png" alt="MVP">
+    			<span>{{uq.getPlayerById(ac.player).name}}</span>
+    		</div>
+    	</div>
     </div>
     <div class="col m6 s12">
       <div class="row">

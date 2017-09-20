@@ -745,9 +745,11 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             console.log(brackets);
                             break;
                         case "Champions League":
+                            
                             break;
                         case "Supercopa Europea":
                         case "Supercopa Clubes":
+                            uq.insertMatches([[uq.teamsOnCompetition[0], uq.teamsOnCompetition[1]]], 0, 1, data.id);
                             break;
                     }
                 })
@@ -996,6 +998,27 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             if(value.team == uq.user.teamID && (uq.getTournamentById(value.tournamentID).name.indexOf('Primera') || uq.getTournamentById(value.tournamentID).name.indexOf('Segunda')))
             {
                 ret.push(value.tournamentID);
+            }
+        });
+        var highestEdition = -1;
+        var editHigh = -1;
+        angular.forEach(ret, function(value, key){
+            if(uq.getTournamentById(value).edition > editHigh)
+            {
+                highestEdition = value;
+                editHigh = uq.getTournamentById(highestEdition).edition
+            }
+        })
+        return highestEdition;
+    }
+
+    uq.searchCupForTeam = function(team, cup)
+    {
+        var ret = [];
+        angular.forEach(uq.matches, function(value, key){
+            if((value.local == uq.user.teamID || value.away == uq.user.teamID) && uq.getTournamentById(value.tournament).name.indexOf(cup))
+            {
+                ret.push(value.tournament);
             }
         });
         var highestEdition = -1;
@@ -1427,8 +1450,8 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     }
 });
 appIni.factory("indexFactory", function() {
-    var user = { id: -1, user: 'axelldf6', pass: 'infinito6', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
-    //var user = { id: -1, user: 'admin', pass: 'swc2017', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
+    //var user = { id: -1, user: 'axelldf6', pass: 'infinito6', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
+    var user = { id: -1, user: 'admin', pass: 'swc2017', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
     var positions = [{ code: "POR", description: "Portero" }, { code: "LD", description: "Lateral Derecho" }, { code: "DFC", description: "Defensa Central" }, { code: "LI", description: "Lateral Izquierdo" }, { code: "MCD", description: "Mediocentro Defensivo" }, { code: "MC", description: "Mediocentro" }, { code: "MI", description: "Medio Izquierdo" }, { code: "MD", description: "Medio Derecho" }, { code: "MCO", description: "Mediapunta" }, { code: "EI", description: "Extremo Izquierdo" }, { code: "DC", description: "Delantero Centro" }, { code: "ED", description: "Extremo Derecho" }];
     var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa Clubes"];
     var interfaz = {
