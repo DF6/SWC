@@ -1029,8 +1029,37 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                 highestEdition = value;
                 editHigh = uq.getTournamentById(highestEdition).edition
             }
-        })
+        });
         return highestEdition;
+    }
+
+    uq.areThisTeamOut = function(team, tournament) // 0 = Playing, 1 = Out of this tournament, 2 = Not even in this tournament
+    {
+        var lastEdition = uq.searchCupForTeam(team, uq.getTournamentById(tournament).name);
+        if (uq.getTournamentById(lastEdition).edition<uq.getTournamentById(tournament).edition)
+        {
+            return 2;
+        }else if(uq.getTournamentById(lastEdition).edition==uq.getTournamentById(tournament).edition){
+           var matches = uq.getMatchesByTournament(tournament);
+           var myLastRound = -1;
+           var lastRound = -1;
+           angular.forEach(uq.matches, function(value, key){
+            if(value.local==team || value.away==team)
+            {
+                myLastRound = value.round;
+            }else{
+                lastRound = value.round;
+            }
+           });
+           if(myLastRound >= lastRound)
+           {
+            return 0;
+           }else{
+            return 1;
+           }
+        }else{
+            return 0;
+        }
     }
 
     uq.playedMatches = function(team)
