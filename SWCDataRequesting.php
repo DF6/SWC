@@ -59,6 +59,9 @@
         case "CONSTANTS":
           obtainConstants($link);
           break;
+        case "ORDER":
+          obtainTeamOrder($link);
+          break;
         default:
           invalidRequest();
      }
@@ -689,6 +692,26 @@
     exit;
   }
 
+  function obtainTeamOrder($con)
+  {
+    $data = array();
+    $query="SELECT * from team_order";
+    $resultado=mysqli_query($con, $query) or die("Error recuperando orden");
+  
+    $teamOrder=array();
+    while($row = mysqli_fetch_array($resultado))
+    {
+        $user=$row['user'];
+        $position=$row['position'];
+        $teamOrder[] = array('user'=> $user, 'position'=> $position);
+    }
+    $data['teamOrder']=$teamOrder;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
   function obtainConstants($con)
   {
     $data = array();
@@ -704,7 +727,8 @@
         $marketOpened=$row['market_opened'];
         $forcedSigninsOpened=$row['forced_signins_opened'];
         $intervalActual=$row['interval_actual'];
-        $constants[] = array('untouchables'=> $untouchables, 'forcedSignins'=> $forcedSignins, 'marketEdition'=> $marketEdition, 'marketOpened'=> $marketOpened, 'forcedSigninsOpened'=> $forcedSigninsOpened, 'intervalActual'=> $intervalActual);
+        $actualPosition=$row['actual_position'];
+        $constants[] = array('untouchables'=> $untouchables, 'forcedSignins'=> $forcedSignins, 'marketEdition'=> $marketEdition, 'marketOpened'=> $marketOpened, 'forcedSigninsOpened'=> $forcedSigninsOpened, 'intervalActual'=> $intervalActual, 'actualPosition'=> $actualPosition);
     }
     $data['constants']=$constants;
     $data['success'] = true;

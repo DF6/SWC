@@ -26,6 +26,8 @@ appIni.config(function($routeProvider) {
         .when("/assignteam", { controller: "appCtrl", controllerAs: "vm", templateUrl: "assignteam.html" })
         .when("/teamrequests", { controller: "appCtrl", controllerAs: "vm", templateUrl: "teamrequests.html" })
         .when("/generate", { controller: "appCtrl", controllerAs: "vm", templateUrl: "generate.html" })
+        .when("/createorder", { controller: "appCtrl", controllerAs: "vm", templateUrl: "createorder.html" })
+        .when("/setmyteam", { controller: "appCtrl", controllerAs: "vm", templateUrl: "setmyteam.html" })
         .when("/validatesalaries", { controller: "appCtrl", controllerAs: "vm", templateUrl: "validatesalaries.html" });
 });
 appIni.controller("navCtrl", function($location) {
@@ -1468,6 +1470,15 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             uq.constants[v].marketOpened = parseInt(uq.constants[v].marketOpened);
                             uq.constants[v].forcedSigninsOpened = parseInt(uq.constants[v].forcedSigninsOpened);
                             uq.constants[v].intervalActual = parseInt(uq.constants[v].intervalActual);
+                            uq.constants[v].actualPosition = parseInt(uq.constans[v].actualPosition);
+                        }
+                        break;
+                    case "ORDER":
+                        uq.teamOrder = data.teamOrder;
+                        indexFactory.teamOrder = uq.teamOrder;
+                        for (var v = 0; v < uq.teamOrder.length; v++) {
+                            uq.teamOrder[v].user = parseInt(uq.teamOrder[v].user);
+                            uq.teamOrder[v].position = parseInt(uq.teamOrder[v].position);
                         }
                         break;
                 }
