@@ -128,6 +128,15 @@
        case "updSta":
           updateStandings($link, $params);
             break;
+       case "genOrd":
+          createOrder($link, $params);
+          break;
+       case "actPos":
+          setActualPosition($link, $params);
+          break;
+        case "setOrd":
+          setNewOrder($link, $params);
+          break;
        case "log":
           insertLog($link, $params);
             break;
@@ -149,6 +158,16 @@
     echo json_encode($data);
     exit;
   }
+function setNewOrder($con, $params)
+{
+  $data = array();
+    $query="UPDATE team_order SET team='" . $params->team . "'' where user=" . $params->user;
+    $resultado=mysqli_query($con, $query) or die("Error asignando equipo");
+    $data['success'] = true;
+    $data['message'] = "Equipo otorgado";
+    echo json_encode($data);
+    exit;
+}
 
   function giveTeamToRequester($con, $params)
   {
@@ -389,6 +408,28 @@
     $resultado=mysqli_query($con, $query) or die("Error insertando log");
     $data['success'] = true;
     $data['message'] = "Log insertado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function createOrder($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO team_order (user, position) values (".$params->user.", ".$params->position.")";
+    $resultado=mysqli_query($con, $query) or die("Error insertando orden");
+    $data['success'] = true;
+    $data['message'] = "Orden insertado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function setActualPosition($con, $params)
+  {
+    $data = array();
+    $query="UPDATE constants SET actual_position=". $params->actualPosition;
+    $resultado=mysqli_query($con, $query) or die("Error actualizando posicion de orden");
+    $data['success'] = true;
+    $data['message'] = "Constante actualizada";
     echo json_encode($data);
     exit;
   }
@@ -703,7 +744,8 @@
     {
         $user=$row['user'];
         $position=$row['position'];
-        $teamOrder[] = array('user'=> $user, 'position'=> $position);
+        $team=utf8_decode($row['team']);
+        $teamOrder[] = array('user'=> $user, 'position'=> $position, 'team'=> $team);
     }
     $data['teamOrder']=$teamOrder;
     $data['success'] = true;

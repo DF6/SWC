@@ -85,6 +85,18 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             }
             uq.mytimeout = $timeout(uq.onTimeout, 1000);
             break;
+        case "/createorder":
+            obtainData("U");
+            obtainData("ORDER");
+            obtainData("RT");
+            break;
+        case "/europesupercup":
+            obtainData("M");
+            obtainData("TO");
+            obtainData("T");
+            obtainData("A");
+            obtainData("P");
+            break;
         case "/generate":
             obtainData("TO");
             obtainData("U");
@@ -130,6 +142,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("TO");
             obtainData("M");
             obtainData("ST");
+            obtainData("P");
             break;
         case "/register":
             obtainData("U");
@@ -146,6 +159,10 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             break;
         case "/salary":
             obtainData("P");
+            break;
+        case "/setmyteam":
+            obtainData("U");
+            obtainData("ORDER");
             break;
         case "/teamrequests":
             obtainData("U");
@@ -765,6 +782,60 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         }
     }
 	
+    uq.generateOrder = function(cont)
+    {
+        if(uq.teamsOnCompetition.length!=0)
+        {
+            var ran = uq.teamsOnCompetition.splice(Math.floor(Math.random()*uq.teamsOnCompetition.length), 1);
+            $http.post("SWCDataRequesting.php", { type: "genOrd", user: ran[0], position: cont })
+                    .success(function(data) {
+                        uq.generateOrder(cont+1);
+                    })
+                    .error(function(error) {
+                        console.log(error);
+                        Materialize.toast('No se ha podido generar el orden', 5000, 'rounded');
+                    });
+        }else{
+            uq.setActualPosition(1);
+            uq.redirEditar('');
+        }
+    }
+
+    uq.setMyTeam = function()
+    {
+        if(uq.newTeam != '')
+        {
+            $http.post("SWCDataRequesting.php", { type: "setOrd", user: uq.user.teamID, team: uq.newTeam })
+                .success(function(data) {
+                    uq.teamRequests = [];
+                    obtainData("RT");
+                    uq.setActualPosition(uq.constants.actualPosition+1);
+                    uq.redirEditar('');
+                })
+                .error(function(error) {
+                    console.log(error);
+                    Materialize.toast('No se ha podido asignar el equipo', 5000, 'rounded');
+                    uq.log('No se ha podido asignar el equipo');
+                });
+        }else{
+            Materialize.toast('Rellena el campo', 5000, 'rounded');
+        }
+    }
+
+    uq.setActualPosition = function(position)
+    {
+        while(uq.teamsOnCompetition.length!=0)
+        {
+            $http.post("SWCDataRequesting.php", { type: "actPos", position: position })
+                    .success(function(data) {
+                    })
+                    .error(function(error) {
+                        console.log(error);
+                        Materialize.toast('No se ha podido actualizar la posicion', 5000, 'rounded');
+                    });
+        }
+    }
+
 	uq.addAction = function(team, type)
 	{
 		var newAction = {type: type, player:{}};
@@ -1196,6 +1267,16 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         return uq.getPlayerById(player).teamID == team;
     }
 
+    uq.isInOrder = function()
+    {
+        angular.forEach(uq.teamOrder, function(value,index){
+            if(value.user==uq.user.teamID) {
+                return true;
+            }
+        });
+        return false;
+    }
+
     uq.getMatchActions = function(actions, team){
         var teamMatchActions = [];
         angular.forEach(actions, function(value, index) {
@@ -1281,6 +1362,10 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                 console.log(error);
                 Materialize.toast('No se ha podido solicitar el equipo', 5000, 'rounded');
             });
+    }
+
+    uq.isNotBusy = function(team){
+        return setAvailableTeams().indexOf(team)==-1;
     }
 
     function setAvailableTeams() {
@@ -1470,7 +1555,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             uq.constants[v].marketOpened = parseInt(uq.constants[v].marketOpened);
                             uq.constants[v].forcedSigninsOpened = parseInt(uq.constants[v].forcedSigninsOpened);
                             uq.constants[v].intervalActual = parseInt(uq.constants[v].intervalActual);
-                            uq.constants[v].actualPosition = parseInt(uq.constans[v].actualPosition);
+                            uq.constants[v].actualPosition = parseInt(uq.constants[v].actualPosition);
                         }
                         break;
                     case "ORDER":
@@ -1491,7 +1576,8 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 });
 appIni.factory("indexFactory", function() {
     //var user = { id: -1, user: 'axelldf6', pass: 'infinito6', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
-    var user = { id: -1, user: 'admin', pass: 'swc2017', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
+    //var user = { id: -1, user: 'admin', pass: 'swc2017', email: '', valid: false, teamName: '', teamID: -1, teamImage: '' };
+    var user = { id: -1, user: '', pass: '', email: '', valid: false, teamName: '', teamID: -1, teamImage: ''};
     var positions = [{ code: "POR", description: "Portero" }, { code: "LD", description: "Lateral Derecho" }, { code: "DFC", description: "Defensa Central" }, { code: "LI", description: "Lateral Izquierdo" }, { code: "MCD", description: "Mediocentro Defensivo" }, { code: "MC", description: "Mediocentro" }, { code: "MI", description: "Medio Izquierdo" }, { code: "MD", description: "Medio Derecho" }, { code: "MCO", description: "Mediapunta" }, { code: "EI", description: "Extremo Izquierdo" }, { code: "DC", description: "Delantero Centro" }, { code: "ED", description: "Extremo Derecho" }];
     var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa Clubes"];
     var interfaz = {

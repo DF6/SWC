@@ -24,10 +24,10 @@
   <div class="col s12 m10 offset-m1">
     <div class="row">
       <h2>Usuarios excluidos</h2>
-      <div class="col m4 s12" ng-repeat="tp in uq.teams" ng-show="uq.teamsOnCompetition.indexOf(tp.id)==-1 && tp.teamID==0 && tp.user!='admin'">
+      <div class="col m4 s12" ng-repeat="tp in uq.users" ng-show="uq.teamsOnCompetition.indexOf(tp.id)==-1 && tp.teamID==0 && tp.user!='admin'">
         <div class="card" style="background-color:#3498db">
           <div class="card-content white-text">
-           <h5 style="color:white;">{{tp.name}}</h5>
+           <h5 style="color:white;">{{tp.user}}</h5>
           </div>
           <div class="card-action">
             <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f44336;margin-bottom: 2%" ng-click="uq.includeTeamOnTournament(tp.id,true)">Incluir</button>
@@ -39,7 +39,7 @@
   <div class="col s12 m10 offset-m1">
     <div class="row">
       <div class="col m10 offset-m1 s12">
-        <button class="col s12 waves-effect waves-light btn" ng-click="uq.generateOrder()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Generar orden</button>
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.generateOrder(1)" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Generar orden</button>
         <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Volver</button>
       </div>
     </div>
