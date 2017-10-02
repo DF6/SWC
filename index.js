@@ -65,6 +65,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                   console.log(error);
                   Materialize.toast('Mal', 5000, 'rounded');
                 });*/
+    //insertNewPlayer(indexFactory.getNewPlayers());
     obtainData("T");
     switch ($location.path()) {
         case "/":
@@ -367,6 +368,21 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         }
         if (uq.playersOffered.length == 0) {
             $('#collectPlayers').attr('ng-show', 'false');
+        }
+    }
+
+    function insertNewPlayer(newPlayers) {
+        if(newPlayers.length!=0)
+        {
+            var niuPla = newPlayers.shift();
+            $http.post("SWCDataRequesting.php", { type: "newPla", name: niuPla.name, teamID: niuPla.teamID, position: niuPla.position })
+                .success(function(data) {
+                    insertNewPlayer(newPlayers);
+                })
+                .error(function(error) {
+                    console.log(error);
+                    Materialize.toast('No se ha podido realizar el nuevo jugador', 5000, 'rounded');
+                });
         }
     }
 
@@ -1580,6 +1596,7 @@ appIni.factory("indexFactory", function() {
     var user = { id: -1, user: '', pass: '', email: '', valid: false, teamName: '', teamID: -1, teamImage: ''};
     var positions = [{ code: "POR", description: "Portero" }, { code: "LD", description: "Lateral Derecho" }, { code: "DFC", description: "Defensa Central" }, { code: "LI", description: "Lateral Izquierdo" }, { code: "MCD", description: "Mediocentro Defensivo" }, { code: "MC", description: "Mediocentro" }, { code: "MI", description: "Medio Izquierdo" }, { code: "MD", description: "Medio Derecho" }, { code: "MCO", description: "Mediapunta" }, { code: "EI", description: "Extremo Izquierdo" }, { code: "DC", description: "Delantero Centro" }, { code: "ED", description: "Extremo Derecho" }];
     var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa Clubes"];
+    var newPlayers = [];
     var interfaz = {
         datoViajero: -1,
         getUser: function() {
@@ -1593,6 +1610,9 @@ appIni.factory("indexFactory", function() {
         },
         getTournaments: function() {
             return tournaments;
+        },
+        getNewPlayers: function() {
+            return newPlayers;
         }
     }
     return interfaz;

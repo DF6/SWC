@@ -140,6 +140,9 @@
        case "log":
           insertLog($link, $params);
             break;
+       case "newPla":
+          insertNewPlayer($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -158,16 +161,17 @@
     echo json_encode($data);
     exit;
   }
-function setNewOrder($con, $params)
-{
-  $data = array();
-    $query="UPDATE team_order SET team='" . $params->team . "'' where user=" . $params->user;
-    $resultado=mysqli_query($con, $query) or die("Error asignando equipo");
-    $data['success'] = true;
-    $data['message'] = "Equipo otorgado";
-    echo json_encode($data);
-    exit;
-}
+
+  function setNewOrder($con, $params)
+  {
+    $data = array();
+      $query="UPDATE team_order SET team='" . $params->team . "'' where user=" . $params->user;
+      $resultado=mysqli_query($con, $query) or die("Error asignando equipo");
+      $data['success'] = true;
+      $data['message'] = "Equipo otorgado";
+      echo json_encode($data);
+      exit;
+  }
 
   function giveTeamToRequester($con, $params)
   {
@@ -286,6 +290,19 @@ function setNewOrder($con, $params)
     $resultado=mysqli_query($con, $query) or die("Error transfiriendo cambio");
     $data['success'] = true;
     $data['message'] = "Jugador transferido";
+    echo json_encode($data);
+    exit;
+  }
+
+  function insertNewPlayer($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO players (name,salary,team_id,position) values ('".$params->name."', 0.1, '".$params->teamID."', '".$params->position."')";
+    $resultado=mysqli_query($con, $query) or die("Error insertando jugador");
+    $query2="INSERT INTO signins (player,buyer_team,amount,type,market,accepted) values (".mysqli_insert_id($con).",".$params->teamID.", 0, 'C', 0, true)";
+    $resultado2=mysqli_query($con, $query2) or die("Error insertando signin");
+    $data['success'] = true;
+    $data['message'] = "Jugador creado";
     echo json_encode($data);
     exit;
   }
