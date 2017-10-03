@@ -25,7 +25,7 @@
 	          </tr>
 	        </thead>
 	        <tbody>
-	          <tr ng-repeat="pl in uq.signins" ng-if="pl.accepted==1">
+	          <tr ng-repeat="pl in uq.signins" ng-if="pl.market==1 && pl.accepted==1">
 	            <td>{{uq.getPlayerById(pl.player).name}}</td>
 	            <td ng-if="pl.type=='C'">Cláusula</td>
               <td ng-if="pl.type=='W'">Contratación libre</td>

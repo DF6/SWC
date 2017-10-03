@@ -17,7 +17,7 @@
          Salario - {{tp.salary}}
         </div>
         <div class="card-action">
-          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.redirEditarConDatos('salary', tp.id)">Sueldo</button>
+          <button class="col s12 m6 waves-effect waves-light btn-small" ng-disabled="true" style="font-size:100%;background-color:grey;margin-bottom: 2%" ng-click="uq.redirEditarConDatos('salary', tp.id)">Sueldo</button>
           <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.discardPlayer(tp.id)">Despedir</button>
         </div>
       </div>

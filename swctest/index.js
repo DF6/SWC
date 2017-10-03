@@ -278,6 +278,27 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             uq.teamsOnCompetition.splice(uq.teamsOnCompetition.indexOf(team), 1);
         }
     }
+	
+	uq.haveYouThreeForced = function(team)
+	{
+		var signs = uq.getSigninsByMarketEdition(1);
+		var contForces = 0;
+		var contForced = 0;
+		angular.forEach(uq.signins, function(value, key){
+			if(value.buyerTeam == uq.teamSelected)
+			{
+				contForced++;
+			}else if(value.buyerTeam == uq.user.teamID){
+				contForces++;
+			}
+		});
+		if(contForced >=3 || contForces >=3)
+		{
+			return true;
+		}else{
+			return false;
+		}
+	}
 
     uq.giveTeamToRequester = function(requester) {
         if (setAvailableTeams().length != 0) {
@@ -388,14 +409,22 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     }
 
     uq.canForce = function() {
-        var actualSignins = uq.getSigninsByMarketEdition();
+        var actualSignins = uq.getSigninsByMarketEdition(1);
         var forcedCount = 0;
+		var itForced = 0;
         angular.forEach(actualSignins, function(value, key) {
-            if (value.transferType == "C") {
+            if (value.transferType == "C" && value.buyerTeam == uq.user.teamID) {
                 forcedCount++;
+            }else if (value.transferType == "C" && value.buyerTeam == uq.teamSelected) {
+                itForced++;
             }
         });
-        return forcedCount < uq.constants[0].forcedSignins;
+        if(forcedCount < 3 && itForced < 3)
+		{
+			return true;
+		}else{
+			return false;
+		}
     }
 
     uq.forceSign = function(player, forcerTeam) {
@@ -412,7 +441,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
                 });
         } else {
-            Materialize.toast('No te quedan cláusulas', 5000, 'rounded');
+            Materialize.toast('Sin cláusulas', 5000, 'rounded');
         }
     }
 
