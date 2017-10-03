@@ -61,8 +61,8 @@
               <td>{{uq.getTeamById(mat.local).name}}</td>
               <td><b ng-if="mat.localGoals!=-1">{{mat.localGoals}}</b></td>
               <td><b ng-if="mat.awayGoals!=-1">{{mat.awayGoals}}</b></td>
-              <td style="text-align: right">{{uq.getTeamById(mat.away).name}}</td>
-              <td>{{mat.limitDate}}</td>
+              <td style="text-align:right;">{{uq.getTeamById(mat.away).name}}</td>
+              <td>{{mat.limitDate | date: 'dd/MM/yyyy hh:mm'}}</td>
               <td><button ng-if="mat.localGoals!=-1 || mat.awayGoals!=-1" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('matchlog', mat.id)" style="font-size:100%;background-color:#f9a825">Detalle</button></td>
             </tr>
           </tbody>

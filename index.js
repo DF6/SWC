@@ -66,6 +66,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                   Materialize.toast('Mal', 5000, 'rounded');
                 });*/
     //insertNewPlayer(indexFactory.getNewPlayers());
+    //insertNewMatches();
     obtainData("T");
     switch ($location.path()) {
         case "/":
@@ -630,6 +631,21 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             aux.push([array[i][1], array[i][0]]);
         }
         return aux;
+    }
+
+    function insertNewMatches(){
+        var newMatches = indexFactory.getNewMatches();
+        var cont = 1;
+        while(newMatches.length!=0)
+        {
+            var newRound = newMatches.shift();
+            if(cont%2==0)
+            {
+                newRound = changeLocalAway(newRound);
+            }
+            insertMatches(newRound, 0, cont, 1);
+            cont++;
+        }
     }
 
     uq.insertMatches = function(matches, counter, round, tournament) {
@@ -1597,6 +1613,7 @@ appIni.factory("indexFactory", function() {
     var positions = [{ code: "POR", description: "Portero" }, { code: "LD", description: "Lateral Derecho" }, { code: "DFC", description: "Defensa Central" }, { code: "LI", description: "Lateral Izquierdo" }, { code: "MCD", description: "Mediocentro Defensivo" }, { code: "MC", description: "Mediocentro" }, { code: "MI", description: "Medio Izquierdo" }, { code: "MD", description: "Medio Derecho" }, { code: "MCO", description: "Mediapunta" }, { code: "EI", description: "Extremo Izquierdo" }, { code: "DC", description: "Delantero Centro" }, { code: "ED", description: "Extremo Derecho" }];
     var tournaments = ["Primera", "Segunda", "Copa", "Champions League", "Europa League", "Intertoto", "Supercopa Europea", "Supercopa Clubes"];
     var newPlayers = [];
+    var newMatches = [];
     var interfaz = {
         datoViajero: -1,
         getUser: function() {
@@ -1613,6 +1630,9 @@ appIni.factory("indexFactory", function() {
         },
         getNewPlayers: function() {
             return newPlayers;
+        },
+        getNewMatches: function() {
+            return newMatches;
         }
     }
     return interfaz;
