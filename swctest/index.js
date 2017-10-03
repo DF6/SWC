@@ -606,6 +606,14 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         }
     }
 
+    uq.equalSalaries = function(team)
+    {
+        var playersOfTheTeam = uq.getPlayersByTeam(team);
+        angular.forEach(playersOfTheTeam, function(value, key){
+            uq.saveSalary(value.id, (100/playersOfTheTeam.length).toFixed(1));
+        });
+    }
+
     uq.countSalaries = function(team, positive) {
         var amount = 0;
         if (positive) {

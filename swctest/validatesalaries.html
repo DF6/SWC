@@ -20,6 +20,7 @@
 	              <th>Equipo</th>
 	              <th>Salarios</th>
 	              <th>Válido</th>
+                <th>Sanción</th>
                 <th>Deshacer</th>
                 <th>Descontar</th>
 	          </tr>
@@ -30,6 +31,7 @@
 	            <td>{{uq.getTotalSalariesByTeam(te.id)}}M€</td>
               <td ng-if="uq.areSalariesValid(te.id)"><b style="color:green">SI</b></td>
               <td ng-if="!uq.areSalariesValid(te.id)"><b style="color:red">NO</b></td>
+              <td><button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.equalSalaries(te.id, true)" style="font-size:100%;background-color:#f9a825">Sanción</button></td>
               <td><button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.countSalaries(te.id, true)" style="font-size:100%;background-color:#f9a825">Deshacer</button></td>
               <td><button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.countSalaries(te.id, false)" style="font-size:100%;background-color:#f9a825">Descontar</button></td>
 	          </tr>
