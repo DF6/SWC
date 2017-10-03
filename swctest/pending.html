@@ -1,0 +1,70 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Partidos pendientes</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m12 s12">
+      <table style="color:white;" class="responsive-table">
+          <thead>
+            <tr>
+              <th>Torneo</th>
+              <th>Local</th>
+              <th>Visitante</th>
+              <th>Jornada</th>
+              <th>Resultado</th>
+            </tr>
+          </thead>
+          <!-- && uq.isInPlayTime(ma.id)-->
+          <tbody>
+            <tr ng-repeat="ma in uq.matches | orderBy: ['tournament','round']" ng-if="(ma.local==uq.user.teamID || ma.away==uq.user.teamID) && ma.localGoals==-1 && ma.awayGoals==-1">
+              <td>{{uq.getTournamentById(ma.tournament).name}}</td>
+              <td>{{uq.getTeamById(ma.local).name}}</td>
+              <td>{{uq.getTeamById(ma.away).name}}</td>
+              <td ng-if="uq.getTournamentById(ma.tournament).name=='Primera' || uq.getTournamentById(ma.tournament).name=='Segunda'">{{ma.round}}</td>
+              <td ng-if="uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==1">Fase de grupos</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==1) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==2) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==1)">Octavos</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==2) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==3) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==2)">Cuartos</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==3) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==4) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==3) || (uq.getTournamentById(ma.tournament).name=='Intertoto' && ma.round==1)">Semifinales</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==4) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==5) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==4) || (uq.getTournamentById(ma.tournament).name=='Intertoto' && ma.round==2)">Tercer y Cuarto Puesto</td>
+              <td ng-if="(uq.getTournamentById(ma.tournament).name=='Copa' && ma.round==5) || (uq.getTournamentById(ma.tournament).name=='Champions League' && ma.round==6) || (uq.getTournamentById(ma.tournament).name=='Europa League' && ma.round==5) || (uq.getTournamentById(ma.tournament).name=='Intertoto' && ma.round==3) || uq.getTournamentById(ma.tournament).name=='Supercopa Europa' || uq.getTournamentById(ma.tournament).name=='Supercopa Clubes'">Final</td>
+              <td><button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('resultinput', ma.id)" style="font-size:100%;background-color:#f9a825;">Introducir</button></td>
+            </tr>
+          </tbody>
+        </table>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Partidos pendientes</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    No tiene permiso para ver esta página
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

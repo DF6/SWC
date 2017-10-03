@@ -1,0 +1,58 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Subastas</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <button class="col s12 m4 offset-m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.redirEditar('newauction')">NUEVA SUBASTA</button>
+    </div>
+    <div class="row">
+    <div class="col m4 s12" ng-repeat="tp in uq.signins" ng-if="tp.accepted==0 && tp.type=='S'">
+      <div class="card" style="background-color:#3498db">
+        <div class="card-content white-text">
+         <h5 style="color:white;">{{uq.getPlayerById(tp.player).name}} - {{uq.getPlayerById(tp.player).position}}</h5>
+         Subasta actual - <b>{{tp.amount}}M€</b> realizada por <b>{{uq.getTeamById(tp.buyerTeam).name}}</b><br/>
+         Tiempo restante - {{tp.limitDate}}
+        </div>
+        <div class="card-action">
+          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,0.5)">+0.5M€</button>
+          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,1)">+1M€</button>
+          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,5)">+5M€</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Subastas</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      No tiene permiso para ver esta página
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

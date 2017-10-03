@@ -1,0 +1,65 @@
+<html>
+  <head>
+
+    <title>SWC 2018</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="materialize/css/materialize.min.css"/>
+    <link rel="stylesheet" href="custom.css"/>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,900' rel='stylesheet' type='text/css'>
+
+  </head>
+  <body ng-app="appIni">
+
+    <nav class="z-depth-1 fixed">
+      <div class="nav-wrapper">
+        <a href="#/" class="brand-logo">SWC</a>
+        <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+          <li><a href="#/">Menú principal</a></li>
+          <li><a href="#/register">Registrarse</a></li>
+        </ul>
+        <ul class="side-nav" id="mobile-demo">
+          <li><a href="#/">Menú principal</a></li>
+          <li><a href="#/register">Registrarse</a></li>
+        </ul>
+      </div>
+    </nav>
+
+    <div ng-view></div>
+
+    <footer class="page-footer" style="background-color:#3498db">
+       <div class="container">
+         <div class="row">
+           <div class="col l6 s12">
+             <h5 class="white-text">SWC Web 0.5</h5>
+             <p class="grey-text text-lighten-4" id="estu">Creado por Axel Alonso</p>
+            </div>
+            <div class="col l4 offset-l2 s12">
+             <h5 class="white-text">Enlaces de inter&eacute;s</h5>
+              <ul>
+                <li><a class="grey-text text-lighten-3" href="http://www.spanishworldcupliga.foroactivo.com">Foro SWC 2016-17</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="footer-copyright">
+          <div class="container">
+          © 2017 Axel Alonso
+        </div>
+      </div>
+    </footer>
+
+
+    <script src="angular.js"></script>
+    <script src="index.js"></script>
+    <script src="angular-route.js"></script>
+    <script src="jquery-3.2.1.js"></script>
+    <script src="underscore-min.js"></script>
+    <script src="materialize/js/materialize.min.js"></script>
+    <script src="angular-timer-master/angular-timer-master/dist/angular-timer.min.js"></script>
+    <script>$(".button-collapse").sideNav();</script>
+
+  </body>
+</html>

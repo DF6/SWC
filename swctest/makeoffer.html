@@ -1,0 +1,76 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+	    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+	      <h1>Oferta por {{uq.getPlayerById(uq.datoViajero).name}}</h1>
+	    </div>
+  	</div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+  	<div class="row">
+  		<div class="col s12 m10 offset-m1">
+  			<form action="#">
+	        <p class="range-field">
+	          <input ng-disabled="uq.temporary" type="range" id="offerrange" min="0" max="100" ng-model="uq.offerRange" step="0.5"/>
+	        </p>
+	        <h2>OFERTA - <span ng-show="!uq.temporary">{{uq.offerRange}}M€</span><span ng-if="uq.temporary">CESIÓN</span></h2>
+	        <h2>Presupuesto restante - {{(uq.getTeamById(uq.user.teamID).budget-uq.offerRange).toFixed(1)}}</h2>
+          <div class="switch">
+            <label>
+              <input type="checkbox" ng-model="uq.temporary">
+              <span class="lever"></span>
+              <b style="color:white;">Cesión</b>
+            </label>
+          </div>
+      </form>
+  		</div>
+  	</div>
+    <div class="row">
+      <div class="col s12 m4 offset-m4">
+        <label style="color:white;">Jugador</label>
+			  <select style="color:black;" ng-change="uq.putPlayerInOffer()" class="browser-default" ng-model="uq.playerSelected">
+			    <option value="" disabled selected>Elegir jugadores...</option>
+			    <option ng-repeat="te in uq.teamPlayers | orderBy: salary" ng-value="te.id">{{te.name}}</option>
+			  </select>
+      </div>
+    </div>
+    <div class="row">
+	    <div class="col s12 m10 offset-m1">
+			  <div class="collection" id="collectPlayers">
+			    <a class="collection-item" ng-repeat="of in uq.playersOffered"><span class="badge" ng-click="uq.quitPlayerFromOffer(of.id)"><b>X</b></span><b style="color:#2196f3;">{{of.name}}</b></a>
+			  </div>
+	    </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+      	<button class="col m5 s12 waves-effect waves-light btn" ng-click="uq.setOffer(uq.datoViajero, uq.user.teamID)" style="font-size:100%;background-color:#f9a825;margin:1%">Hacer oferta</button>
+        <button class="col m5 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('otherteams')" style="font-size:100%;background-color:#f9a825;margin:1%;">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Oferta</h1>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        No tiene permiso para ver esta página
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col m5 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('otherteams')" style="font-size:100%;background-color:#f9a825;margin:1%;">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

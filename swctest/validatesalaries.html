@@ -1,0 +1,56 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Validación de salarios</h1>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        <!--<button class="col m3 s12 waves-effect waves-light btn" ng-click="uq.showMarket=true" style="font-size:100%;background-color:#f9a825">Todos</button>
+        <button class="col m3 s12 waves-effect waves-light btn" ng-click="uq.showMarket=false" style="font-size:100%;background-color:#f9a825">Mi equipo</button>-->
+      </div>
+      </div>
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+	      <table style="color:white;" class="responsive-table">
+	        <thead>
+	          <tr>
+	              <th>Equipo</th>
+	              <th>Salarios</th>
+	              <th>Válido</th>
+                <th>Deshacer</th>
+                <th>Descontar</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="te in uq.teams">
+	            <td>{{te.name}}</td>
+	            <td>{{uq.getTotalSalariesByTeam(te.id)}}M€</td>
+              <td ng-if="uq.areSalariesValid(te.id)"><b style="color:green">SI</b></td>
+              <td ng-if="!uq.areSalariesValid(te.id)"><b style="color:red">NO</b></td>
+              <td><button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.countSalaries(te.id, true)" style="font-size:100%;background-color:#f9a825">Deshacer</button></td>
+              <td><button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.countSalaries(te.id, false)" style="font-size:100%;background-color:#f9a825">Descontar</button></td>
+	          </tr>
+	        </tbody>
+	      </table>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Validación de salarios</h1>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        No tienes permiso para ver esta página
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

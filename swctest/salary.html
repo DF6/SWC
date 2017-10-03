@@ -1,0 +1,55 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Salario de {{uq.getPlayerById(uq.datoViajero).name}}</h1>
+      Presupuesto actual - <span ng-if="uq.getTeamById(uq.user.teamID).budget>=0">{{uq.getTeamById(uq.user.teamID).budget}}</span><span ng-if="uq.getTeamById(uq.user.teamID).budget<0" style="color:red;">{{uq.getTeamById(uq.user.teamID).budget}}</span><br/>
+      Presupuesto actual de salarios - <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)==100">{{(uq.getTotalSalariesByTeam(uq.user.teamID)+(uq.salaryRange)).toFixed(1)}}</span>
+      <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)!=100">{{(uq.getTotalSalariesByTeam(uq.user.teamID)+(uq.salaryRange)-uq.getPlayerById(uq.datoViajero).salary).toFixed(1)}}</span><br/>
+      Dinero restante para salarios - <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)==100">{{(100-uq.getTotalSalariesByTeam(uq.user.teamID)-(uq.salaryRange)).toFixed(1)}}</span>
+      <span ng-show="uq.getTotalSalariesByTeam(uq.user.teamID)!=100">{{(100-uq.getTotalSalariesByTeam(uq.user.teamID)-(uq.salaryRange)+uq.getPlayerById(uq.datoViajero).salary).toFixed(1)}}<br/>
+      Intocables actuales - {{uq.getUntouchablesByTeam(uq.user.teamID)}} - <span style="color:red" ng-if="uq.getUntouchablesByTeam(uq.user.teamID)==2">¡MÁXIMO!</span>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <form action="#">
+        <p class="range-field">
+          <input type="range" id="salaryrange" min="0" max="10" ng-model="uq.salaryRange" step="0.1"/>
+        </p>
+      </form>
+      Salario - {{uq.salaryRange}}<br/>
+      Cláusula - {{uq.salaryRange*10}}
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+      <button class="col m4 offset-m1 s12 waves-effect waves-light btn" ng-disabled="uq.salaryRange==0" ng-click="uq.saveSalary(uq.datoViajero, uq.salaryRange)" style="font-size:100%;background-color:#f9a825">Guardar</button>
+        <button class="col m4 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('myteam')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Salarios</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      No tiene permiso para ver esta página
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col m4 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('myteam')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

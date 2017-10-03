@@ -1,0 +1,233 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq">
+  <div class="col s12 m2" style="color:#2196f3">
+    uQuest
+  </div>
+  <div class="col s12 m4" id="portada" ng-show="!uq.user.valid">
+    <div class="row">
+      <div>
+        <span style="font-size:100%">Spanish World Cup Liga<br/>FIFA 18</span>
+        <!--<button ng-if="uq.user.user=='admin'" class="col s12 waves-effect waves-light btn" ng-click="uq.execCronJob()" style="font-size:100%;background-color:#f9a825">CronJob</button>-->
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <label for="user" style="color:white; font-size:30%">Usuario</label>
+              <input type="text" ng-model="uq.user.user" class="form-control" id="user"/>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <label for="pass" style="color:white; font-size:30%">Contraseña</label>
+              <input type="password" ng-model="uq.user.pass" class="form-control" id="pass"/>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <a class="waves-effect waves-light btn" ng-click="uq.login()" style="background-color:#f9a825">Iniciar sesión</a>
+            <a class="waves-effect waves-light btn" ng-click="uq.redirEditar('register')" style="background-color:#f9a825">Registrarse</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m4" id="portadalogin" ng-show="uq.user.valid && uq.user.teamID>0">
+    <div class="row">
+      <div>
+        <span style="font-size:100%">Spanish World Cup Liga<br/>FIFA 18</span>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <span style="font-size:50%"><b>{{uq.user.user.toUpperCase()}} - {{uq.getTeamById(uq.user.teamID).name}}</b></span>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <img ng-src="{{uq.getTeamById(uq.user.teamID).teamImage}}" style="width:30%;height:20%;" />
+            </div>
+            <br/>
+            <a class="waves-effect waves-light btn" ng-click="uq.logoff()" style="background-color:#f9a825">Desconectar</a>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col s12">
+            <div class="form-group">
+              <span style="font-size:50%"><b>Presupuesto - 
+              <span ng-if="uq.getTeamById(uq.user.teamID).budget>=0">{{uq.getTeamById(uq.user.teamID).budget}}M€</span>
+              <span style="color:red" ng-if="uq.getTeamById(uq.user.teamID).budget<0">{{uq.getTeamById(uq.user.teamID).budget}}M€</span></b></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m6" ng-show="uq.user.valid && uq.user.teamID>0">
+    <h2>Mi equipo</h2>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('myteam')" style="font-size:100%;background-color:#f9a825">Plantilla</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('otherteams')" style="font-size:100%;background-color:#f9a825">Equipos</button>
+      </div>
+    </div>
+    <!--<div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-show="" ng-click="uq.redirEditar('offers')" style="font-size:100%;background-color:#f9a825">Ofertas</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-show="" ng-click="uq.redirEditar('auctions')" style="font-size:100%;background-color:#f9a825">Subastas</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('wildcards')" style="font-size:100%;background-color:#f9a825">Libres</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-show="" ng-click="uq.redirEditar('marketresume')" style="font-size:100%;background-color:#f9a825">Mercado</button>
+      </div>
+    </div>-->
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('pending')" style="font-size:100%;background-color:#f9a825">Partidos pendientes</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('premier', uq.searchTournamentForTeam(uq.user.teamID))" style="font-size:100%;background-color:#f9a825">Liga</button>
+      </div>
+    </div>
+    <!--<div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('europesupercup', uq.searchCupForTeam(uq.user.teamID, 'Supercopa Clubes'))" ng-if="uq.searchCupForTeam(uq.user.teamID, 'Supercopa Clubes')!=-1" style="font-size:100%;background-color:#f9a825">Supercopa Clubes</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('europesupercup', uq.searchCupForTeam(uq.user.teamID, 'Supercopa Europea'))" ng-if="uq.searchCupForTeam(uq.user.teamID, 'Supercopa Europea')!=-1" style="font-size:100%;background-color:#f9a825">Supercopa Europa</button>
+      </div>
+    </div>-->
+    <!--<div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" href="#/cup" style="font-size:100%;background-color:#f9a825">Copa</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" href="#/champions" style="font-size:100%;background-color:#f9a825">Champions</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" href="#/europaleague" style="font-size:100%;background-color:#f9a825">Europa League</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s10" style="height:4%">
+          <button class="col s12 waves-effect waves-light btn" href="#/intertoto" style="font-size:100%;background-color:#f9a825">Intertoto</button>
+      </div>
+    </div>
+    </div>-->
+  </div>
+  <div class="col s12 m8" ng-show="uq.user.valid && uq.user.user=='admin'">
+  <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('teamrequests')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Solicitudes</button>
+  <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('validatesalaries')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Salarios</button>
+  <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('generate')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Generador</button>
+  <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('createorder')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Sorteo Orden</button>
+  <button class="col s12 waves-effect waves-light btn" ng-click="uq.logoff()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Desconectar</button>
+  </div>
+  <div class="col s12 m10 offset-m1" style="margin-bottom:2%"; ng-show="uq.user.valid && uq.user.teamID==0 && uq.user.user!='admin'">
+    <h2>Sin equipo asignado</h2>
+    Tu usuario no tiene equipo asignado 
+    <button class="col s12 waves-effect waves-light btn" ng-click="uq.requestTeam()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Solicitar</button>
+    <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('setmyteam')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Elegir</button>
+    <button class="col s12 waves-effect waves-light btn" ng-click="uq.logoff()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Desconectar</button>
+  </div>
+</div>
+<!--
+<div class="exp1">
+  <div class="row">
+    <div class="col s6 offset-s3">
+      <h1 style="margin-bottom:0;">Conoce uQuest,</h1><h1 style="margin-top:0;"> una nueva forma de preguntar</h2>
+      Desp&iacute;dete de kilom&eacute;tricas charlas de Whatsapp con tus amigos para decidir la cena o el plan del s&aacute;bado. uQuest se encarga de recoger resultados y hacer m&aacute;s agradable la vida de los dem&aacute;s.<br/>¡R&aacute;pido, crea tu pregunta, esto es uQuest!
+      </div>
+  </div>
+  <div class="row">
+    <div class="col s3" style="margin-left:12.5%;">
+      <img class="responsive-img" src="uQuest/ser01.png"/>
+      <h5>Multiplataforma</h5>
+      uQuest funciona en cualquier dispositivo, basando el n&uacute;cleo de la aplicaci&oacute;n en los motores web m&aacute;s avanzados. Pr&oacute;ximamente ver&aacute;n la luz las respectivas apps para Android e iOS.
+    </div>
+    <div class="col s3">
+      <img class="responsive-img" src="uQuest/ser02.png"/>
+      <h5>Preguntas Increíblemente R&aacute;pidas</h5>
+      Enviar tu uQuest a tus amigos es realmente r&aacute;pido. Posee compatibilidad con tus programas de mensajer&iacute;a favoritos (Whatsapp, Telegram, Twitter...) ¡Preguntar es mucho m&aacute;s f&aacute;cil!
+    </div>
+    <div class="col s3">
+      <img class="responsive-img" src="uQuest/ser03.png"/>
+      <h5>Consigue la respuesta</h5>
+      Podr&aacute;s reunir inmediatamente las respuestas de tus amigos sin molestos desv&iacute;os de tema en tus conversaciones. Controla los votos desde tu smartphone o PC, y consigue respuestas... ¡En cuesti&oacute;n de segundos!
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col s12 center">
+    <a class="waves-effect waves-light btn-large botonu" href="uquest.html" style="background-color:#f9a825">¡Accede a uQuest!</a>
+  </div>
+</div>
+
+<div>
+  <div class="row">
+    <div class="col s4 offset-s4" style="text-align:center;font-size:120%;">
+      <h1>uQuest es para todos</h1>
+      Gracias a nuestra versión web, uQuest funciona en prácticamente cualquier dispositivo*. Además, estamos trabajando duramente para lanzar una aplicación nativa para iOs y Android en el menor tiempo posible. *NdP: Quizá no funcione en tu vieja Dreamcast.
+    </div>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col s12 center">
+    <a class="waves-effect waves-light btn-large botonu" href="uquest.html" style="background-color:#f9a825">Quiero hacer mi uQuest</a>
+  </div>
+</div>
+<div>
+  <div class="equipo" style="font-size:120%;">
+    <div class="row">
+        <div class="col s6 offset-s3">
+        <h1 style="margin-bottom:0;">Palmarés</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s3" style="margin-left:12.5%;">
+        <img class="responsive-img equipo" src="uQuest/pic1.jpg"/>
+        <h5>Liga</h5>
+        PSG<br/>
+        <a href="#/"><i class="material-icons">email</i></a><a href="#/"><i class="material-icons">phone</i></a><a href="#/"><i class="material-icons">web</i></a>
+
+      </div>
+      <div class="col s3">
+        <img class="responsive-img equipo" src="uQuest/pic2.jpg"/>
+        <h5>Champions League</h5>
+        PSG<br/>
+        <a href="#/"><i class="material-icons">email</i></a><a href="#/"><i class="material-icons">phone</i></a><a href="#/"><i class="material-icons">web</i></a>
+      </div>
+      <div class="col s3">
+        <img class="responsive-img equipo" src="uQuest/pic3.jpg"/>
+        <h5>Copa de Clubes</h5>
+        PSG<br/>
+        <a href="#/"><i class="material-icons">email</i></a><a href="#/"><i class="material-icons">phone</i></a><a href="#/"><i class="material-icons">web</i></a>
+      </div>
+    </div>
+  </div>
+</div>
+-->

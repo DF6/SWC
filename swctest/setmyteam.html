@@ -1,0 +1,52 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Elegir equipo</h1>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+        <table style="color:white;" class="responsive-table" ng-show="uq.showMarket">
+	        <thead>
+	          <tr>
+	              <th>Posición</th>
+	              <th>Usuario</th>
+	              <th>Elegir</th>
+	          </tr>
+	        </thead>
+	        <tbody>
+	          <tr ng-repeat="pl in uq.teamOrder | orderBy: position">
+	            <td>{{pl.position}}</td>
+	            <td>{{uq.getUserById(pl.user).user}}</td>
+              <td ng-show="pl.position==uq.constants.actualPosition">
+                <div class="form-group col s12 m12">
+                    <label for="player" style="color:white">Equipo</label>
+                    <input type="text" ng-model="uq.newTeam" class="form-control"/>
+                </div>
+                <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.setMyTeam()" style="font-size:100%;background-color:#f9a825">Volver</button>
+              </td>
+              <td ng-if="uq.getUserById(pl.user).teamID!=0">{{uq.getTeamById(uq.getUserById(pl.user).teamID).name}}</td>
+	          </tr>
+	        </tbody>
+	      </table>
+        <br/>
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Elegir equipo</h1>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        No tiene permiso para ver esta página
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+      </div>
+  </div>
+</div>

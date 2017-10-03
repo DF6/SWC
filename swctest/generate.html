@@ -1,0 +1,79 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.user=='admin'">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Generación de calendario y sorteos</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m4 offset-m4">
+        <label style="color:white;">Competición</label>
+        <select style="color:black;" class="browser-default" ng-model="uq.tournamentSelected">
+          <option value="" disabled selected>Elegir competición...</option>
+          <option ng-repeat="te in uq.competitions" ng-value="te">{{te}}</option>
+        </select>
+      </div>
+    </div>
+    <div class="row">
+    <h2>Equipos incluidos en liza</h2>
+    <div class="col m4 s12" ng-repeat="tp in uq.teams" ng-show="uq.teamsOnCompetition.indexOf(tp.id)!=-1">
+      <div class="card" style="background-color:#3498db">
+        <div class="card-content white-text">
+         <h5 style="color:white;">{{tp.name}}</h5>
+         Manager - {{uq.getManagerOf(tp.id).user}}
+        </div>
+        <div class="card-action">
+          <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#4caf50;margin-bottom: 2%" ng-click="uq.includeTeamOnTournament(tp.id,false)">Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <h2>Equipos excluidos</h2>
+      <div class="col m4 s12" ng-repeat="tp in uq.teams" ng-show="uq.teamsOnCompetition.indexOf(tp.id)==-1">
+        <div class="card" style="background-color:#3498db">
+          <div class="card-content white-text">
+           <h5 style="color:white;">{{tp.name}}</h5>
+           Manager - {{uq.getManagerOf(tp.id).user}}
+          </div>
+          <div class="card-action">
+            <button class="col s12 m6 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f44336;margin-bottom: 2%" ng-click="uq.includeTeamOnTournament(tp.id,true)">Incluir</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.generate()" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Generar calendario</button>
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.user!='admin'">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Generar calendario</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    No tiene permiso para ver esta página
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>

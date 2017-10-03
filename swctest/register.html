@@ -1,0 +1,42 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Registro</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        <div class="form-group col s12 m6">
+          <label for="user" style="color:white">Usuario</label>
+          <input type="text" ng-model="uq.user.user" class="form-control"/>
+        </div>
+        <div class="form-group col s12 m6">
+          <label for="user" style="color:white">Email</label>
+          <input type="text" ng-model="uq.user.email" class="form-control"/>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        <div class="form-group col s12 m6">
+          <label for="user" style="color:white">Contraseña</label>
+          <input type="password" ng-model="uq.user.pass" class="form-control"/>
+        </div>
+        <div class="form-group col s12 m6">
+          <label for="user" style="color:white">Repetir contraseña</label>
+          <input type="password" ng-model="uq.user2" class="form-control"/>
+        </div>
+      </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+      <button class="col m4 offset-m1 s12 waves-effect waves-light btn" ng-disabled="!uq.user.user && !uq.user.pass && !uq.user.email && !uq.user2" ng-click="uq.register()" style="font-size:100%;background-color:#f9a825">Registrar</button>
+        <button class="col m4 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('myteam')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
