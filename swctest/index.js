@@ -28,6 +28,7 @@ appIni.config(function($routeProvider) {
         .when("/generate", { controller: "appCtrl", controllerAs: "vm", templateUrl: "generate.html" })
         .when("/createorder", { controller: "appCtrl", controllerAs: "vm", templateUrl: "createorder.html" })
         .when("/setmyteam", { controller: "appCtrl", controllerAs: "vm", templateUrl: "setmyteam.html" })
+        .when("/sponsors", { controller: "appCtrl", controllerAs: "vm", templateUrl: "sponsors.html" })
         .when("/validatesalaries", { controller: "appCtrl", controllerAs: "vm", templateUrl: "validatesalaries.html" });
 });
 appIni.controller("navCtrl", function($location) {
@@ -91,6 +92,10 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("U");
             obtainData("ORDER");
             obtainData("RT");
+            break;
+        case "/sponsors":
+            obtainData("U");
+            obtainData("SPO");
             break;
         case "/europesupercup":
             obtainData("M");
@@ -279,26 +284,57 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         }
     }
 	
-	uq.haveYouThreeForced = function(team)
+	uq.signSponsor = function(sponsor)
 	{
-		var signs = uq.getSigninsByMarketEdition(1);
-		var contForces = 0;
-		var contForced = 0;
-		angular.forEach(uq.signins, function(value, key){
-			if(value.buyerTeam == uq.teamSelected)
-			{
-				contForced++;
-			}else if(value.buyerTeam == uq.user.teamID){
-				contForces++;
-			}
-		});
-		if(contForced >=3 || contForces >=3)
-		{
-			return true;
-		}else{
-			return false;
-		}
+		if(!uq.hasSponsor(uq.user.teamID))
+        {
+            $http.post("SWCDataRequesting.php", { type: "sigSpo", team: uq.user.teamID, sponsor: sponsor })
+                .success(function(data) {
+                    var move =0;
+                    switch(sponsor){
+                        case 1:
+                            move = 5;
+                            break;
+                        case 2:
+                            move = 10;
+                            break;
+                        case 3:
+                            move = 15;
+                            break;
+                    }
+                    $http.post("SWCDataRequesting.php", { type: "chaSal", id: uq.user.teamID, amount: move })
+                        .success(function(data) {
+                            Materialize.toast('Sponsor elegido', 5000, 'rounded');
+                            uq.log(uq.getTeamById(uq.user.teamID).name + ' elige sponsor: ' + sponsor);
+                            uq.redirEditar('');
+                        })
+                        .error(function(error) {
+                            console.log(error);
+                            Materialize.toast('No se ha podido asignar el sponsor', 5000, 'rounded');
+                            uq.log('No se ha podido asignar el sponsor');
+                        });
+                })
+                .error(function(error) {
+                    console.log(error);
+                    Materialize.toast('No se ha podido asignar el sponsor', 5000, 'rounded');
+                    uq.log('No se ha podido asignar el sponsor');
+                });
+        }else{
+            Materialize.toast('Ya has firmado un sponsor', 5000, 'rounded');
+        }
 	}
+
+    uq.hasSponsor = function(team)
+    {
+        var isHere = false;
+        angular.forEach(uq.sponsors, function(value, key){
+            if(value.team == team)
+            {
+                isHere = true;
+            }
+        });
+        return isHere;
+    }
 
     uq.giveTeamToRequester = function(requester) {
         if (setAvailableTeams().length != 0) {
@@ -560,7 +596,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         if (confirm("Rechazar. ¿Seguro?")) {
             $http.post("SWCDataRequesting.php", { type: "recOfe", id: signin })
                 .success(function(data) {
-                    uq.log('Oferta aceptada ID ' + signin);
+                    uq.log('Oferta rechazada ID ' + signin);
                     Materialize.toast('Oferta rechazada', 5000, 'rounded');
                     uq.redirEditar('myteam');
                 })
@@ -1601,6 +1637,11 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             uq.teamRequests[v].user = parseInt(uq.teamRequests[v].user);
                             uq.teamRequests[v].requestDate = new Date(uq.teamRequests[v].requestDate);
                         }
+                        break;
+                    case "SPO":
+                        uq.sponsors = data.sponsors;
+                        indexFactory.sponsors = uq.sponsors;
+                        break;
                     case "CAL":
                         uq.calendar = data.calendar;
                         indexFactory.calendar = uq.calendar;

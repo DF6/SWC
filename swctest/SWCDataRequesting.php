@@ -7,14 +7,14 @@
   ini_set('post_max_size', '10M');
   ini_set('max_execution_time', 300);
   //session_start();
-	/*$db_host="localhost";
+	$db_host="localhost";
 	$db_name="id1956157_swc";
 	$db_user="id1956157_swcadmin";//"root";//
-	$db_pass="swc2017swc2017";//"";//*/
-  $db_host="localhost";
+	$db_pass="swc2017swc2017";//"";//
+  /*$db_host="localhost";
   $db_name="id1956157_swctest";
   $db_user="id1956157_swctest";//"root";//
-  $db_pass="swc2017";//"";//
+  $db_pass="swc2017";//"";//*/
 
 	$link=mysqli_connect($db_host, $db_user, $db_pass) or die ("Error conectando a la base de datos - " . mysql_error());
 	mysqli_select_db($link, $db_name) or die("Error seleccionando la base de datos.");
@@ -65,6 +65,9 @@
           break;
         case "ORDER":
           obtainTeamOrder($link);
+          break;
+        case "SPO":
+          obtainSponsors($link);
           break;
         default:
           invalidRequest();
@@ -147,6 +150,9 @@
        case "newPla":
           insertNewPlayer($link, $params);
             break;
+       case "sigSpo":
+          signSponsor($link, $params);
+            break;
         default:
           invalidRequest();
     }
@@ -162,6 +168,17 @@
     $resultado=mysqli_query($con, $query) or die("Error solicitando equipo");
     $data['success'] = true;
     $data['message'] = "Equipo solicitado";
+    echo json_encode($data);
+    exit;
+  }
+
+  function signSponsor($con, $params)
+  {
+    $data = array();
+    $query="INSERT INTO sponsors (team, sponsor) values (".$params->team.", ".$params->sponsor.")";
+    $resultado=mysqli_query($con, $query) or die("Error solicitando sponsor");
+    $data['success'] = true;
+    $data['message'] = "Sponsor solicitado";
     echo json_encode($data);
     exit;
   }
@@ -680,6 +697,26 @@
         $tournaments[] = array('id'=>$id, 'name'=> $name, 'edition'=> $edition);
     }
     $data['tournaments']=$tournaments;
+    $data['success'] = true;
+    $data['message'] = "Datos recogidos";
+    echo json_encode($data);
+    exit;
+  }
+
+  function obtainSponsors($con)
+  {
+    $data = array();
+    $query="SELECT * from sponsors";
+    $resultado=mysqli_query($con, $query) or die("Error recuperando sponsors");
+  
+    $sponsors=array();
+    while($row = mysqli_fetch_array($resultado))
+    {
+        $team=$row['team'];
+        $sponsor=$row['sponsor'];
+        $sponsors[] = array('team'=>$team, 'sponsor'=> $sponsor);
+    }
+    $data['sponsors']=$sponsors;
     $data['success'] = true;
     $data['message'] = "Datos recogidos";
     echo json_encode($data);

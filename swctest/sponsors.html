@@ -1,0 +1,81 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Sponsors</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m4 s12">
+        <div class="card" style="background-color:#3498db">
+          <div class="card-content white-text">
+           <h5 style="color:white;">Dinero por firmar - 5M€<br/>
+            Estar entre los 10 primeros- 10M€<br/>
+            Marcar 20+ goles en liga - 6M€<br/>
+            No recibir rojas en liga - 2M€
+          </div>
+          <div class="card-action">
+            <b>RAKUTEN</b>
+            <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.signSponsor(1)">FIRMAR</button>
+          </div>
+        </div>
+        </div><div class="col m4 s12">
+        <div class="card" style="background-color:#3498db">
+          <div class="card-content white-text">
+           <h5 style="color:white;">Dinero por firmar - 10M€<br/>
+          Quedar entre los 6 primeros - 10M€<br/>
+          Marcar 30+ goles y recibir menos de 23 goles (AMBOS) - 18M€<br/>
+          Recibir 2 amarillas o menos - 2M€ 
+          </div>
+          <div class="card-action">
+            <b>MICROSOFT</b>
+            <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.signSponsor(2)">FIRMAR</button>
+          </div>
+        </div>
+</div><div class="col m4 s12">
+        <div class="card" style="background-color:#3498db">
+          <div class="card-content white-text">
+           <h5 style="color:white;">Dinero por firmar - 15M€<br/>
+            Quedar entre los 3 primeros - 15M€<br/>
+            Marcar 40+ goles - 15M€<br/>
+            No recibir amarillas - 3M€<br/>
+          </div>
+          <div class="card-action">
+            <b>WANDA</b>
+            <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.signSponsor(3)">FIRMAR</button>
+          </div>
+        </div>
+      </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+    <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+      <h1>Sponsors</h1>
+    </div>
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      No tiene permiso para ver esta página
+  </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12">
+        <button class="col s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+    </div>
+  </div>
+</div>
