@@ -34,8 +34,8 @@
 	            <td ng-if="pl.salary!=10">{{(pl.salary*10).toFixed()}}</td>
 	            <td ng-if="pl.salary==10">INTOCABLE</td>
 	            <td>
-	            	<button ng-if="pl.salary!=10 && !uq.isPlayerSignedYetOnThisMarket(pl.id)" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.forceSign(pl.id, uq.user.teamID)" style="font-size:100%;background-color:#f9a825">Cláusula</button>
-	            	<button ng-if="!uq.isPlayerSignedYetOnThisMarket(pl.id)" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('makeoffer', pl.id)" style="font-size:100%;background-color:#f9a825">Oferta</button>
+	            	<!--<button ng-if="pl.salary!=10 && !uq.isPlayerSignedYetOnThisMarket(pl.id)" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.forceSign(pl.id, uq.user.teamID)" style="font-size:100%;background-color:#f9a825">Cláusula</button>-->
+	            	<!--<button ng-if="!uq.isPlayerSignedYetOnThisMarket(pl.id)" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('makeoffer', pl.id)" style="font-size:100%;background-color:#f9a825">Oferta</button>-->
 	            </td>
 	          </tr>
 	        </tbody>
