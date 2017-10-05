@@ -657,7 +657,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         if (uq.getCounterById(signin) - dd.getTime() <= 0) {
             $http.post("SWCDataRequesting.php", { type: "pujSub", id: signin, amount: amount, newTeam: uq.user.teamID })
                 .success(function(data) {
-                    uq.log('Puja subida a ' + (uq.getSigninById(signin).amount + amount) + ' por ' + uq.getTeamById(uq.user.teamID).name + 'para el jugador: ' + uq.getPlayerById(uq.getSigninById(signin).player).name);
+                    uq.log('Puja subida a ' + (uq.getSigninById(signin).amount + amount) + ' por ' + uq.getTeamById(uq.user.teamID).name + ' para el jugador: ' + uq.getPlayerById(uq.getSigninById(signin).player).name);
                     Materialize.toast('Puja subida a ' + (uq.getSigninById(signin).amount + amount), 5000, 'rounded');
                     uq.redirEditar('myteam');
                 })
@@ -758,12 +758,14 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         if (uq.teamsOnCompetition.length > 2) {
             $http.post("SWCDataRequesting.php", { type: "insTou", name: uq.tournamentSelected, edition: uq.getNewEditionOf(uq.tournamentSelected) })
                 .success(function(data) {
-                    switch (uq.tournamentSelected) {
-                        case "Primera":
-                        case "Segunda":
-
-                            var rounds = 0;
-                            var matches = [];
+                            var headGroup = [];
+                            if(uq.tournamentSelected=='Champions League')
+                            {
+                                headGroup.push(uq.teamsOnCompetition.shift());
+                                headGroup.push(uq.teamsOnCompetition.shift());
+                                headGroup.push(uq.teamsOnCompetition.shift());
+                                headGroup.push(uq.teamsOnCompetition.shift());
+                            }
                             let counter = uq.teamsOnCompetition.length;
                             while (counter > 0) {
                                 let index = Math.floor(Math.random() * counter);
@@ -772,6 +774,18 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                                 uq.teamsOnCompetition[counter] = uq.teamsOnCompetition[index];
                                 uq.teamsOnCompetition[index] = temp;
                             }
+                            if(uq.tournamentSelected=='Champions League')
+                            {
+                                uq.teamsOnCompetition.unshift(headGroup[0]);
+                                uq.teamsOnCompetition.splice(4, 0, headGroup[1]);
+                                uq.teamsOnCompetition.splice(8, 0, headGroup[2]);
+                                uq.teamsOnCompetition.splice(12, 0, headGroup[3]);
+                            }
+                    switch (uq.tournamentSelected) {
+                        case "Primera":
+                        case "Segunda":
+                            var rounds = 0;
+                            var matches = [];
                             var net = [];
                             //  id  local   away  tournament  round   local_goals   away_goals  limit_date 
                             for (var i = 0; i < uq.teamsOnCompetition.length; i++) {
@@ -852,9 +866,9 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                                 brackets.push({
                                     lastGames: round == 1 ? null : [last[0].game, last[1].game],
                                     nextGame: nextInc + i > base - 1 ? null : nextInc + i,
-                                    teamnames: round == 1 ? [uq.teamsOnCompetition[teamMark], uq.teamsOnCompetition[teamMark + 1]] : [last[0].teams[_.random(1)], last[1].teams[_.random(1)]],
+                                    teamnames: round == 1 ? [uq.teamsOnCompetition[teamMark], uq.teamsOnCompetition[teamMark + 1]] : [0, 0],
                                     bracketNo: i,
-                                    roundNo: round,
+                                    round: round,
                                     bye: isBye
                                 });
                                 teamMark += 2;
@@ -866,7 +880,18 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                                     baseR = i / baseT;
                                 }
                             }
-                            console.log(brackets);
+                            var toEnter = [];
+                            angular.forEach(brackets, function(value,key){
+                                if(value.round==1)
+                                {
+                                    //  id  local   away  tournament  round   local_goals   away_goals  limit_date 
+                                    toEnter.push([value.teamnames[0],value.teamnames[1]]);
+                                    toEnter.push([value.teamnames[1],value.teamnames[0]]);
+                                }else{
+                                    console.log('MATCH '+value.bracketNo+ ': INSERT INTO matches (local,away,tournament,round) values (Game '+value.lastGames[0]+' Winner, Game '+value.lastGames[1]+' Winner, '+data.id+', '+value.round+')');
+                                }
+                            });
+                            uq.insertMatches(toEnter, 0, 1, data.id);
                             break;
                         case "Champions League":
                             
@@ -1157,6 +1182,135 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         Materialize.toast('No se ha podido actualizar la clasificación', 5000, 'rounded');
                     });
         }
+    }
+
+    uq.getStatsByTournament = function(type, tournament)
+    {
+        var matchesToStudy = uq.getMatchesByTournament(tournament);
+        var actionsToStudy = [];
+        var ret = [];
+        angular.forEach(matchesToStudy, function(value, key){
+            var actionsOfTheMatch = uq.getActionsByMatch(value.id);
+            angular.forEach(actionsOfTheMatch, function(value2, key2){
+                if(value2.type==type) {
+                    actionsToStudy.push(value2);
+                }else if(type=='C' && value2.type=='Y' || value2.type=='R')
+                {
+                    actionsToStudy.push(value2);
+                }
+            });
+        });
+        angular.forEach(actionsToStudy, function(value3, key3){
+            var playerExists = false;
+            switch(type)
+            {
+                case 'G':
+                        if(value3.type==type)
+                        {
+                            angular.forEach(ret, function(value4, key4) {
+                                if(value4.player==value3.player)
+                                {
+                                    playerExists=true;
+                                    value4.goals++;
+                                }
+                            });
+                            if(!playerExists){
+                                ret.push({player: value3.player, team: uq.getPlayerById(value3.player).teamID, goals: 1});    
+                            }
+                        }
+                        break;
+                case 'A':
+                        if(value3.type==type)
+                        {
+                            angular.forEach(ret, function(value4, key4) {
+                                if(value4.player==value3.player)
+                                {
+                                    playerExists=true;
+                                    value4.assists++;
+                                }
+                            });
+                            if(!playerExists){
+                                ret.push({player: value3.player, team: uq.getPlayerById(value3.player).teamID, assists: 1});    
+                            }
+                        }
+                        break;
+                case 'M':
+                        if(value3.type==type)
+                        {
+                            angular.forEach(ret, function(value4, key4) {
+                                if(value4.player==value3.player)
+                                {
+                                    playerExists=true;
+                                    value4.mvp++;
+                                }
+                            });
+                            if(!playerExists){
+                                ret.push({player: value3.player, team: uq.getPlayerById(value3.player).teamID, mvp: 1});    
+                            }
+                        }
+                        break;
+                case 'I':
+                        if(value3.type==type)
+                        {
+                            angular.forEach(ret, function(value4, key4) {
+                                if(value4.player==value3.player)
+                                {
+                                    playerExists=true;
+                                    value4.injuries++;
+                                }
+                            });
+                            if(!playerExists){
+                                ret.push({player: value3.player, team: uq.getPlayerById(value3.player).teamID, injuries: 1});    
+                            }
+                        }
+                        break;
+                case 'C':
+                        if(value3.type=='Y' || value3.type=='R')
+                        {
+                            angular.forEach(ret, function(value4, key4) {
+                                if(value4.player==value3.player)
+                                {
+                                    playerExists=true;
+                                    if(value3.type=='Y')
+                                    {
+                                        value4.yellowCards++;
+                                    }else if(value3.type=='R')
+                                    {
+                                        value4.redCards++;
+                                    }
+                                }
+                            });
+                            if(!playerExists){
+                                if(value3.type=='Y')
+                                {
+                                    ret.push({player: value3.player, team: uq.getPlayerById(value3.player).teamID, yellowCards: 1, redCards: 0}); 
+                                }else if(value3.type=='R')
+                                {
+                                    ret.push({player: value3.player, team: uq.getPlayerById(value3.player).teamID, yellowCards: 0, redCards: 1}); 
+                                }
+                            }
+                        }
+                        break;
+            }
+        });
+        if(type=='LGT')
+        {
+            angular.forEach(uq.standings, function(value, key){
+                if(value.tournamentID==tournament)
+                {
+                    ret.push({team: value.team, goals: value.goalsAgainst});
+                }
+            });
+        }else if(type=='MGT')
+        {
+            angular.forEach(uq.standings, function(value, key){
+                if(value.tournamentID==tournament)
+                {
+                    ret.push({team: value.team, goals: value.goalsFor});
+                }
+            });
+        }
+        return ret;
     }
 
     uq.log = function(message) {
@@ -1624,10 +1778,10 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                             uq.standings[v].points = parseInt(uq.standings[v].points);
                             uq.standings[v].team = parseInt(uq.standings[v].team);
                             uq.standings[v].won = parseInt(uq.standings[v].won);
-                            uq.standings[v].draw = parseInt(uq.standings[v].won);
-                            uq.standings[v].lost = parseInt(uq.standings[v].won);
-                            uq.standings[v].goalsFor = parseInt(uq.standings[v].won);
-                            uq.standings[v].goalsAgainst = parseInt(uq.standings[v].won);
+                            uq.standings[v].draw = parseInt(uq.standings[v].draw);
+                            uq.standings[v].lost = parseInt(uq.standings[v].lost);
+                            uq.standings[v].goalsFor = parseInt(uq.standings[v].goalsFor);
+                            uq.standings[v].goalsAgainst = parseInt(uq.standings[v].goalsAgainst);
                         }
                         break;
                     case "RT":

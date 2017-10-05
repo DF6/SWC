@@ -29,7 +29,7 @@
 	          </tr>
 	        </thead>
 	        <tbody>
-	          <tr ng-repeat="pl in uq.standings | orderBy: '-points'" ng-if="pl.tournamentID==uq.datoViajero">
+	          <tr ng-repeat="pl in uq.standings | orderBy: ['-points', '-goalsFor', '-goalsAgainst']" ng-if="pl.tournamentID==uq.datoViajero">
 	            <td>{{$index+1}}</td>
 	            <td>{{uq.getTeamById(pl.team).name}}</td>
               <td>{{pl.round}}</td>
@@ -43,6 +43,7 @@
 	        </tbody>
 	      </table>
         <br/>
+        <div>
         <h3>PARTIDOS</h3>
         <table style="color:white;" class="responsive-table table-striped">
           <thead>
@@ -67,6 +68,126 @@
             </tr>
           </tbody>
         </table>
+        </div>
+        <div>
+          <h3>PICHICHI</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+            <thead>
+              <tr>
+                  <th>Jugador</th>
+                  <th>Equipo</th>
+                  <th>Goles</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="mat in uq.getStatsByTournament('G', uq.datoViajero) | orderBy: '-goals'">
+                <td>{{uq.getPlayerById(mat.player).name}}</td>
+                <td>{{uq.getTeamById(uq.getPlayerById(mat.player).teamID).name}}</td>
+                <td>{{mat.goals}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>ASISTENCIAS</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+            <thead>
+              <tr>
+                  <th>Jugador</th>
+                  <th>Equipo</th>
+                  <th>Asistencias</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="mat in uq.getStatsByTournament('A', uq.datoViajero) | orderBy: '-assists'">
+                <td>{{uq.getPlayerById(mat.player).name}}</td>
+                <td>{{uq.getTeamById(uq.getPlayerById(mat.player).teamID).name}}</td>
+                <td>{{mat.assists}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>MVP</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+            <thead>
+              <tr>
+                  <th>Jugador</th>
+                  <th>Equipo</th>
+                  <th>MVP</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="mat in uq.getStatsByTournament('M', uq.datoViajero) | orderBy: '-mvp'">
+                <td>{{uq.getPlayerById(mat.player).name}}</td>
+                <td>{{uq.getTeamById(uq.getPlayerById(mat.player).teamID).name}}</td>
+                <td>{{mat.mvp}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>TARJETAS</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+            <thead>
+              <tr>
+                  <th>Jugador</th>
+                  <th>Equipo</th>
+                  <th><img src="actionImages/yellowCard.png" style="width:8%"/></th>
+                  <th><img src="actionImages/redCard.png" style="width:8%"/></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="mat in uq.getStatsByTournament('C', uq.datoViajero) | orderBy: ['-yellowCards', '-redCards']">
+                <td>{{uq.getPlayerById(mat.player).name}}</td>
+                <td>{{uq.getTeamById(uq.getPlayerById(mat.player).teamID).name}}</td>
+                <td>{{mat.yellowCards}}</td>
+                <td>{{mat.redCards}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>LESIONES</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+            <thead>
+              <tr>
+                  <th>Jugador</th>
+                  <th>Equipo</th>
+                  <th>Veces lesionado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="mat in uq.getStatsByTournament('I', uq.datoViajero) | orderBy: '-injuries'">
+                <td>{{uq.getPlayerById(mat.player).name}}</td>
+                <td>{{uq.getTeamById(uq.getPlayerById(mat.player).teamID).name}}</td>
+                <td>{{mat.injuries}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>EQUIPO MÁS GOLEADOR</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+            <thead>
+              <tr>
+                  <th>Equipo</th>
+                  <th>Goles a favor</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="mat in uq.getStatsByTournament('MGT', uq.datoViajero) | orderBy: '-goals'" ng-if="$index<6">
+                <td>{{uq.getTeamById(mat.team).name}}</td>
+                <td>{{mat.goals}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <h3>EQUIPO MÁS GOLEADO</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+            <thead>
+              <tr>
+                  <th>Equipo</th>
+                  <th>Goles en contra</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr ng-repeat="mat in uq.getStatsByTournament('LGT', uq.datoViajero) | orderBy: '-goals'" ng-if="$index<6">
+                <td>{{uq.getTeamById(mat.team).name}}</td>
+                <td>{{mat.goals}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
   </div>
 </div>
 <div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
