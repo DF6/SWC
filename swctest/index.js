@@ -72,6 +72,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     switch ($location.path()) {
         case "/":
             obtainData("U");
+            obtainData("M");
             obtainData("ST");
             obtainData("TO");
             break;
@@ -92,6 +93,14 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("U");
             obtainData("ORDER");
             obtainData("RT");
+            break;
+        case "/cup":
+            obtainData("A");
+            obtainData("T");
+            obtainData("TO");
+            obtainData("M");
+            obtainData("P");
+            //setBrackets('cup');
             break;
         case "/sponsors":
             obtainData("U");
@@ -1327,7 +1336,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     {
         var ret = [];
         angular.forEach(uq.standings, function(value, key){
-            if(value.team == uq.user.teamID && (uq.getTournamentById(value.tournamentID).name.indexOf('Primera') || uq.getTournamentById(value.tournamentID).name.indexOf('Segunda')))
+            if(value.team == uq.user.teamID && (uq.getTournamentById(value.tournamentID).name.indexOf('Primera')!=-1 || uq.getTournamentById(value.tournamentID).name.indexOf('Segunda')!=-1))
             {
                 ret.push(value.tournamentID);
             }
@@ -1348,7 +1357,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     {
         var ret = [];
         angular.forEach(uq.matches, function(value, key){
-            if((value.local == uq.user.teamID || value.away == uq.user.teamID) && uq.getTournamentById(value.tournament).name.indexOf(cup))
+            if((value.local == uq.user.teamID || value.away == uq.user.teamID) && uq.getTournamentById(value.tournament).name.indexOf(cup)!=-1)
             {
                 ret.push(value.tournament);
             }
@@ -1626,6 +1635,50 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     uq.isNotBusy = function(team){
         return setAvailableTeams().indexOf(team)==-1;
     }
+
+    /*function setBrackets() {
+        var singleElimination = {
+          "teams": [              // Matchups
+            [,], // First match
+            [,]  // Second match
+          ],
+          "results": [            // List of brackets (single elimination, so only one bracket)
+            [                     // List of rounds in bracket
+              [                   // First round in this bracket
+                [0, 0],           // Team 1 vs Team 2
+                [0, 0]            // Team 3 vs Team 4
+              ],
+              [                   // Second (final) round in single elimination bracket
+                [0, 0],           // Match for first place
+                [0, 0]            // Match for 3rd place
+              ]
+            ]
+          ]
+        }
+        $('.bracket').bracket({
+
+          init: null, // data to initialize
+          save: null, // called whenever bracket is modified
+          userData: null, // custom user data
+          onMatchClick: null, // callback
+          onMatchHover: null, // callback
+          decorator: null, // a function
+          skipSecondaryFinal: false,
+          skipGrandFinalComeback: false,
+          skipConsolationRound: false,
+          dir: 'rl', // "rl" or  "lr",
+          disableToolbar: false,
+          disableTeamEdit: false,
+          teamWidth: '', // number
+          scoreWidth: '', // number
+          roundMargin: '', // number
+          matchMargin: '', // number
+        });
+    }
+
+    function setParticipatingTeams(tournament) {
+
+    }*/
 
     function setAvailableTeams() {
         var availableTeams = [];

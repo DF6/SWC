@@ -21,6 +21,7 @@
         <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'G')" class="browser-default" ng-model="uq.resultInput.local.goals">
           <option value="" disabled selected>Elegir goleador...</option>
           <option ng-repeat="te in uq.resultInput.local.players" ng-value="{{te.id}}">{{te.name}}</option>
+          <option ng-value="0">GOL EN PROPIA PUERTA</option>
         </select>
         <label style="color:white;">Asistencias</label>
         <select style="color:black;" ng-change="uq.addAction(uq.resultInput.local, 'A')" class="browser-default" ng-model="uq.resultInput.local.assists">
@@ -68,6 +69,7 @@
         <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'G')" class="browser-default" ng-model="uq.resultInput.away.goals">
           <option value="" disabled selected>Elegir goleador...</option>
           <option ng-repeat="te in uq.resultInput.away.players" ng-value="{{te.id}}">{{te.name}}</option>
+          <option ng-value="0">GOL EN PROPIA PUERTA</option>
         </select>
         <label style="color:white;">Asistencias</label>
         <select style="color:black;" ng-change="uq.addAction(uq.resultInput.away, 'A')" class="browser-default" ng-model="uq.resultInput.away.assists">
