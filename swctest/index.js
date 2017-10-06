@@ -889,18 +889,20 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                                     baseR = i / baseT;
                                 }
                             }
-                            var toEnter = [];
+                            var toEnterIda = [];
+                            var toEnterVuelta = [];
                             angular.forEach(brackets, function(value,key){
                                 if(value.round==1)
                                 {
                                     //  id  local   away  tournament  round   local_goals   away_goals  limit_date 
-                                    toEnter.push([value.teamnames[0],value.teamnames[1]]);
-                                    toEnter.push([value.teamnames[1],value.teamnames[0]]);
+                                    toEnterIda.push([value.teamnames[0],value.teamnames[1]]);
+                                    toEnterVuelta.push([value.teamnames[1],value.teamnames[0]]);
                                 }else{
                                     console.log('MATCH '+value.bracketNo+ ': INSERT INTO matches (local,away,tournament,round) values (Game '+value.lastGames[0]+' Winner, Game '+value.lastGames[1]+' Winner, '+data.id+', '+value.round+')');
                                 }
                             });
-                            uq.insertMatches(toEnter, 0, 1, data.id);
+                            uq.insertMatches(toEnterIda, 0, 1, data.id);
+                            uq.insertMatches(toEnterVuelta, 0, 2, data.id);
                             break;
                         case "Champions League":
                             
