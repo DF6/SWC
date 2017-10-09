@@ -57,7 +57,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="mat in uq.matches | orderBy: 'round'" ng-if="mat.tournament==uq.datoViajero">
+            <tr ng-repeat="mat in uq.matches | orderBy: 'round'" ng-if="mat.tournament==uq.datoViajero && $index<48">
               <td>{{mat.round}}</td>
               <td>{{uq.getTeamById(mat.local).name}}</td>
               <td><b ng-if="mat.localGoals!=-1">{{mat.localGoals}}</b></td>
@@ -166,7 +166,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="mat in uq.getStatsByTournament('MGT', uq.datoViajero) | orderBy: '-goals'" ng-if="$index<6">
+              <tr ng-repeat="mat in uq.getStatsByTournament('MGT', uq.datoViajero) | orderBy: '-goals'" ng-if="$index<5">
                 <td>{{uq.getTeamById(mat.team).name}}</td>
                 <td>{{mat.goals}}</td>
               </tr>
@@ -181,7 +181,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr ng-repeat="mat in uq.getStatsByTournament('LGT', uq.datoViajero) | orderBy: '-goals'" ng-if="$index<6">
+              <tr ng-repeat="mat in uq.getStatsByTournament('LGT', uq.datoViajero) | orderBy: '-goals'" ng-if="$index<5">
                 <td>{{uq.getTeamById(mat.team).name}}</td>
                 <td>{{mat.goals}}</td>
               </tr>

@@ -58,6 +58,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
     uq.showMarket = true;
     uq.counters = [];
     uq.temporary = false;
+    uq.disableInputButton = false;
 	uq.resultInput={local:{type:'L', result:0, actions:[]},away:{type:'A', result:0, actions:[]}};
     uq.newAuctionObj = { name: "", overallRange: 40, positionSelected: "" };
     /*$http.post("cronjobs.php", {})
@@ -167,11 +168,6 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
             obtainData("P");
             obtainData("M");
             obtainData("TO");
-			uq.onTimeout = function() {
-				uq.resultInput.local.players=uq.getPlayersByTeam(uq.getMatchById(uq.datoViajero).local);
-				uq.resultInput.away.players=uq.getPlayersByTeam(uq.getMatchById(uq.datoViajero).away);
-            }
-            uq.mytimeout = $timeout(uq.onTimeout, 1000);
             break;
         case "/salary":
             obtainData("P");
@@ -899,6 +895,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                                     toEnterVuelta.push([value.teamnames[1],value.teamnames[0]]);
                                 }else{
                                     console.log('MATCH '+value.bracketNo+ ': INSERT INTO matches (local,away,tournament,round) values (Game '+value.lastGames[0]+' Winner, Game '+value.lastGames[1]+' Winner, '+data.id+', '+value.round+')');
+                                    console.log('MATCH '+value.bracketNo+ ': INSERT INTO matches (local,away,tournament,round) values (Game '+value.lastGames[1]+' Winner, Game '+value.lastGames[0]+' Winner, '+data.id+', '+value.round+')');
                                 }
                             });
                             uq.insertMatches(toEnterIda, 0, 1, data.id);
@@ -1082,6 +1079,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         var goa = 0;
         var assi = 0;
         var mv = 0;
+        uq.disableInputButton = true;
         angular.forEach(uq.resultInput.local.actions, function(value, key){
             if(value.type == 'A'){
                 assi++;
@@ -1095,6 +1093,7 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         {
             Materialize.toast('Hay más asistencias que goleadores', 5000, 'rounded');
             canResolve = false;
+            uq.disableInputButton = false;
         }
         goa = 0;
         assi = 0;
@@ -1111,11 +1110,13 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         {
             Materialize.toast('Hay más asistencias que goleadores', 5000, 'rounded');
             canResolve = false;
+            uq.disableInputButton = false;
         }
         if(mv > 1)
         {
             Materialize.toast('No puede haber más de un MVP', 5000, 'rounded');
             canResolve = false;
+            uq.disableInputButton = false;
         }
         if(canResolve)
         {
@@ -1123,18 +1124,19 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     .success(function(data) {
                         var actionsToPush = [];
                         angular.forEach(uq.resultInput.local.actions, function(value, key){
-                            uq.log('Partido resuelto ID ' + uq.datoViajero);
                             actionsToPush.push(value);
                         });
                         angular.forEach(uq.resultInput.away.actions, function(value, key){
                             actionsToPush.push(value);
                         });
+                        uq.log('Partido resuelto ID ' + uq.datoViajero);
                         uq.insertAction(actionsToPush, 0);
                     })
                     .error(function(error) {
                         console.log(error);
                         uq.log('Partido no resuelto ERROR ID ' + uq.datoViajero);
                         Materialize.toast('No se ha podido insertar la acción', 5000, 'rounded');
+                        uq.disableInputButton = false;
                     });
         }
         
@@ -1798,6 +1800,9 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                         } else if ($location.path() == "/makeoffer") {
                             uq.offerLimit = setOfferLimit();
                             uq.teamPlayers = uq.getPlayersByTeam(uq.user.teamID);
+                        } else if($location.path() == "/resultinput") {
+                            uq.resultInput.local.players=uq.getPlayersByTeam(uq.getMatchById(uq.datoViajero).local);
+                            uq.resultInput.away.players=uq.getPlayersByTeam(uq.getMatchById(uq.datoViajero).away);
                         }
                         break;
                     case "S":
