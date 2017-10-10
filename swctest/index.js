@@ -5,7 +5,7 @@ appIni.config(function($routeProvider) {
         .when("/premier", { controller: "appCtrl", controllerAs: "vm", templateUrl: "premier.html" })
         .when("/cup", { controller: "appCtrl", controllerAs: "vm", templateUrl: "cup.html" })
         .when("/champions", { controller: "appCtrl", controllerAs: "vm", templateUrl: "champions.html" })
-        .when("/second", { controller: "appCtrl", controllerAs: "vm", templateUrl: "second.html" })
+        .when("/injuriesandcards", { controller: "appCtrl", controllerAs: "vm", templateUrl: "injuriesandcards.html" })
         .when("/europaleague", { controller: "appCtrl", controllerAs: "vm", templateUrl: "europaleague.html" })
         .when("/intertoto", { controller: "appCtrl", controllerAs: "vm", templateUrl: "intertoto.html" })
         .when("/myteam", { controller: "appCtrl", controllerAs: "vm", templateUrl: "myteam.html" })
@@ -1638,6 +1638,38 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
 
     uq.isNotBusy = function(team){
         return setAvailableTeams().indexOf(team)==-1;
+    }
+
+    uq.getInjuriesAndCardsByTournament = function(tournament)
+    {
+        var ret = [];
+        var yellowCardsCount = [];
+        angular.forEach(uq.actions, function(value, key){
+            if(uq.getMatchById(value.matchID).tournament==tournament)
+            {
+                switch(value.type)
+                {
+                    case 'Y': var isHereNow = false;
+                        angular.forEach(yellowCardsCount, function(value2, key2){
+                            if(value2.player==value.player)
+                            {
+                                value2.yellowCards++;
+                                isHereNow=true;
+                                ret.push({rounds: uq.getMatchById(value.matchID).round + 3, type: 'Y', player: value.player});
+                            }
+                        });
+                        if(!isHereNow) {
+                            yellowCardsCount.push({player: value.player, yellowCards: 1});
+                        }
+                        break;
+                    case 'R': ret.push({rounds: (uq.getMatchById(value.matchID).round + 3) + " y " + (uq.getMatchById(value.matchID).round + 4), type: 'R', player: value.player});
+                            break;
+                    case 'I': ret.push({rounds: uq.getMatchById(value.matchID).round + 3, type: 'I', player: value.player});
+                            break;
+                }
+            }
+        });
+        return ret;
     }
 
     /*function setBrackets() {

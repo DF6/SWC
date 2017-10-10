@@ -187,6 +187,27 @@
               </tr>
             </tbody>
           </table>
+          <h3>SANCIONES</h3>
+          <table style="color:white;" class="responsive-table table-striped">
+          <thead>
+            <tr>
+                <th>Equipo</th>
+                <th>Jugador</th>
+                <th>Ronda</th>
+                <th>Causa</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr ng-repeat="pl in uq.getInjuriesAndCardsByTournament(uq.datoViajero) | orderBy: 'pl.type'">
+              <td>{{uq.getTeamById(uq.getPlayerById(pl.player).teamID).name}}</td>
+              <td>{{uq.getPlayerById(pl.player).name}}</td>
+              <td>{{pl.rounds}}</td>
+              <td ng-if="pl.type=='Y'">AMARILLAS</td>
+              <td ng-if="pl.type=='R'">ROJA</td>
+              <td ng-if="pl.type=='I'">LESIÓN</td>
+            </tr>
+          </tbody>
+        </table>
         </div>
   </div>
 </div>
