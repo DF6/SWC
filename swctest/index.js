@@ -449,27 +449,37 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
         }
     }
 
-    uq.canForce = function() {
+    uq.canForce = function(player, forcerTeam) {
         var actualSignins = uq.getSigninsByMarketEdition(1);
         var forcedCount = 0;
 		var itForced = 0;
         angular.forEach(actualSignins, function(value, key) {
-            if (value.transferType == "C" && value.buyerTeam == uq.user.teamID) {
+            if (value.transferType == "C" && value.buyerTeam == forcerTeam) {
                 forcedCount++;
             }else if (value.transferType == "C" && value.buyerTeam == uq.teamSelected) {
                 itForced++;
             }
         });
-        if(forcedCount < 3 && itForced < 3)
-		{
-			return true;
+        if(forcedCount < 3) {
+            if(itForced < 3) {
+                if(!uq.isPlayerSignedYetOnThisMarket(player)) {
+                    return true;
+                }else{
+                    Materialize.toast('El jugador ya ha sido contratado este mercado', 5000, 'rounded');
+                    return false;
+                }
+            }else{
+                Materialize.toast('El equipo ya ha recibido todas sus cláusulas', 5000, 'rounded');
+                return false;
+            }
 		}else{
+            Materialize.toast('No puedes hacer más cláusulas', 5000, 'rounded');
 			return false;
 		}
     }
 
     uq.forceSign = function(player, forcerTeam) {
-        if (uq.canForce(forcerTeam)) {
+        if (uq.canForce(player, forcerTeam)) {
             $http.post("SWCDataRequesting.php", { type: "claJug", oldTeam: uq.getPlayerById(player).teamID, player: player, amount: (uq.getPlayerById(player).salary * 10).toFixed(), buyerTeam: forcerTeam, signinType: "C", market: uq.constants[0].marketEdition })
                 .success(function(data) {
                     uq.log(uq.getPlayerById(player).name + '(ID '+ player +') cambia por cláusula de '+uq.getTeamById(uq.getPlayerById(player).teamID).name+' (ID '+uq.getPlayerById(player).teamID+') a '+ uq.getTeamById(forcerTeam).name +' (ID ' + forcerTeam + ')');
@@ -481,8 +491,6 @@ appIni.controller("appCtrl", function(indexFactory, $http, $location, $timeout) 
                     uq.log(uq.getPlayerById(player).name + '(ID '+ player +') error de cláusula a equipo ' + uq.getTeamById(forcerTeam).name + ' (ID ' + forcerTeam + ')');
                     Materialize.toast('No se ha podido realizar la cláusula', 5000, 'rounded');
                 });
-        } else {
-            Materialize.toast('Sin cláusulas', 5000, 'rounded');
         }
     }
 
