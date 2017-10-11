@@ -2,7 +2,7 @@
   <div class="col s12 m10 offset-m1">
     <div class="row">
     <div class="col m10 offset-m1 s12" style="margin-top:2%;">
-      <h1>Copa</h1>
+      <h1>Europa League</h1>
     </div>
   </div>
   </div>
@@ -25,14 +25,12 @@
           </thead>
           <tbody>
             <tr ng-repeat="mat in uq.matches | orderBy: 'round'" ng-if="mat.tournament==uq.datoViajero">
-              <td ng-if="mat.round==1">Octavos Ida</td>
-              <td ng-if="mat.round==2">Octavos Vuelta</td>
-              <td ng-if="mat.round==3">Cuartos Ida</td>
-              <td ng-if="mat.round==4">Cuartos Vuelta</td>
-              <td ng-if="mat.round==5">Semis Ida</td>
-              <td ng-if="mat.round==6">Semis Vuelta</td>
-              <td ng-if="mat.round==7">3er y 4o Puesto</td>
-              <td ng-if="mat.round==8">Final</td>
+              <td ng-if="mat.round==1">Cuartos Ida</td>
+              <td ng-if="mat.round==2">Cuartos Vuelta</td>
+              <td ng-if="mat.round==3">Semis Ida</td>
+              <td ng-if="mat.round==4">Semis Vuelta</td>
+              <td ng-if="mat.round==5">3er y 4o Puesto</td>
+              <td ng-if="mat.round==6">Final</td>
               <td>{{uq.getTeamById(mat.local).name}}</td>
               <td><b ng-if="mat.localGoals!=-1">{{mat.localGoals}}</b></td>
               <td><b ng-if="mat.awayGoals!=-1">{{mat.awayGoals}}</b></td>
@@ -57,7 +55,7 @@
   <div class="col s12 m10 offset-m1">
     <div class="row">
     <div class="col m10 offset-m1 s12" style="margin-top:2%;">
-      <h1>Copa</h1>
+      <h1>Europa League</h1>
     </div>
   </div>
   </div>

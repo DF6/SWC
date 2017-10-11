@@ -14,7 +14,7 @@
       </div>
       </div>
         <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
-	      <table style="color:white;" class="responsive-table">
+	      <table style="color:white;">
 	        <thead>
 	          <tr>
 	              <th>POS</th>
@@ -45,7 +45,7 @@
         <br/>
         <div>
         <h3>PARTIDOS</h3>
-        <table style="color:white;" class="responsive-table table-striped">
+        <table style="color:white;" class="table-striped">
           <thead>
             <tr>
                 <th>Jornada</th>
@@ -60,18 +60,26 @@
             <tr ng-repeat="mat in uq.matches | orderBy: 'round'" ng-if="mat.tournament==uq.datoViajero && $index<48">
               <td>{{mat.round}}</td>
               <td>{{uq.getTeamById(mat.local).name}}</td>
-              <td><b ng-if="mat.localGoals!=-1">{{mat.localGoals}}</b></td>
-              <td><b ng-if="mat.awayGoals!=-1">{{mat.awayGoals}}</b></td>
+              <td>
+                <b ng-if="mat.localGoals!=-1 && mat.localGoals!=-2">{{mat.localGoals}}</b>
+                <b ng-if="mat.localGoals==-2">NP</b>
+              </td>
+              <td>
+                <b ng-if="mat.awayGoals!=-1 && mat.awayGoals!=-2">{{mat.awayGoals}}</b>
+                <b ng-if="mat.awayGoals==-2">NP</b>
+              </td>
               <td style="text-align:right;">{{uq.getTeamById(mat.away).name}}</td>
               <td>{{mat.limitDate | date: 'dd/MM/yyyy hh:mm'}}</td>
-              <td><button ng-if="mat.localGoals!=-1 || mat.awayGoals!=-1" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('matchlog', mat.id)" style="font-size:100%;background-color:#f9a825">Detalle</button></td>
+              <td>
+                <button ng-if="(mat.localGoals!=-1 || mat.awayGoals!=-1) && mat.localGoals!=-2 && mat.awayGoals!=-2" class="col m6 s12 waves-effect waves-light btn" ng-click="uq.redirEditarConDatos('matchlog', mat.id)" style="font-size:100%;background-color:#f9a825">Detalle</button>
+              </td>
             </tr>
           </tbody>
         </table>
         </div>
         <div>
           <h3>PICHICHI</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
             <thead>
               <tr>
                   <th>Jugador</th>
@@ -88,7 +96,7 @@
             </tbody>
           </table>
           <h3>ASISTENCIAS</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
             <thead>
               <tr>
                   <th>Jugador</th>
@@ -105,7 +113,7 @@
             </tbody>
           </table>
           <h3>MVP</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
             <thead>
               <tr>
                   <th>Jugador</th>
@@ -122,7 +130,7 @@
             </tbody>
           </table>
           <h3>TARJETAS</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
             <thead>
               <tr>
                   <th>Jugador</th>
@@ -141,7 +149,7 @@
             </tbody>
           </table>
           <h3>LESIONES</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
             <thead>
               <tr>
                   <th>Jugador</th>
@@ -158,7 +166,7 @@
             </tbody>
           </table>
           <h3>EQUIPO MÁS GOLEADOR</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
             <thead>
               <tr>
                   <th>Equipo</th>
@@ -173,7 +181,7 @@
             </tbody>
           </table>
           <h3>EQUIPO MÁS GOLEADO</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
             <thead>
               <tr>
                   <th>Equipo</th>
@@ -188,7 +196,7 @@
             </tbody>
           </table>
           <h3>SANCIONES</h3>
-          <table style="color:white;" class="responsive-table table-striped">
+          <table style="color:white;" class="table-striped">
           <thead>
             <tr>
                 <th>Equipo</th>
