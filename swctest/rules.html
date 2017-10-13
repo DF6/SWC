@@ -1,0 +1,61 @@
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Normas</h1>
+        <h3>Partidos</h3>
+        <p>Los  partidos deberán de ser de 7 minutos cada parte y con la opción de velocidad normal.<br/>
+        Para concretar el día y la hora con vuestro rival, deberéis de hacerlo mediante mensajes privados via web o por Whatsapp. Si al finalizar el plazo de disputa de las jornadas no hay noticias de los jugadores, sus partidos se darán por perdidos en consecuencia.</p>
+        <p>SANCIONES POR SOBREPASAR LA FECHA LÍMITE<br/>
+          Primer partido - 1M€<br/>
+          Segundo partido - 2M€<br/>
+          Tercer partido - 5M€<br/>
+          Cuarto partido - Tres partidos de sanción al mejor jugador<br/>
+          Quinto partido - 10M€<br/>
+          Sexto partido - Tres partidos de sanción a los tres mejores jugadores<br/>
+          Séptimo partido - Bajada del límite de salarios del próximo mercado a 90M€<br/>
+          Octavo partido - Bajada de intocables a 1<br/>
+          Noveno partido - Bajada del límite de salarios del próximo mercado a 70M€<br/>
+          Décimo partido - Bajada de intocables a 0<br/>
+          Todo esto por supuesto queda anulado si el jugador inmediatamente se va de la liga o es expulsado, para no perjudicar al siguiente mánager</p>
+        <h3>SANCIONES DE JUGADORES</h3>
+        <p>Acumulación de DOS AMARILLAS - 1 partido de sanción<br/>
+        TARJETA ROJA - 2 partidos de sanción<br/>
+        Si el jugador acaba con tirita el partido (lesión leve) = 1 Partido sin jugar.<br/>
+        Para ver si el jugador esta lesionado o no, se puede observar al finalizar el partido en los datos el mismo. Es muy importante que ambos managers estén atentos a esto.<br/>
+        Si un jugador, entre la jornada 1 a la 3, se lesiona o es expulsado cumplirá su sanción o recuperación en el periodo de las siguientes jornadas, es decir en este caso jornada 4 a la 6. Por ejemplo si Aquilani fue expulsado con roja directa en la jornada 1, cumplirá sus dos partidos de expulsión en la jornada 4 y 5 respectivamente.<br/>
+        Esto sería en la competición de Liga, si es en copa y sucede un caso similar en el partido de ida, cumplirá su castigo en el partido de vuelta, o si sucede en este último se cumplirá en la siguiente ronda si el equipo consigue superarla.<br/>
+        El no cumplimiento de los periodos de sanción o lesión de un jugador, si se demuestra con pruebas (foto, pantallazo), supondrá una sanción de 10M€ y el partido perdido para dicho equipo infractor.</p>
+        <h3>SANCIONES POR NO JUGAR</h3>
+        <p>2 Rondas de partidos sin jugar será motivo de expulsión inmediata.<br/>
+          Si el usuario tampoco responde vía Whatsapp o a través del foro, ni muestra interés en un periodo de 7 días será motivo de expulsión inmediata.</p>
+        <p>NO PRESENTADOS Y RAGE QUIT
+        Un equipo designado por no presentado y sin causas que lo justifiquen deberá pagar por cada partido en cuestión. VER SANCIONES POR SOBREPASAR LA FECHA LÍMITE
+        <br/>
+        Los RAGE QUIT (salirse del partido por ir perdiendo) serán penalizados con la sanción de su mejor jugador en la siguiente ronda de jornadas, con carácter retroactivo (pasa de una temporada a otra, de Champions a EL si se es eliminado, etc...)</p>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+    </div>
+  </div>
+</div>
+<div class="row intro z-depth-2" ng-controller="appCtrl as uq" ng-show="!uq.user.valid">
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col m10 offset-m1 s12" style="margin-top:2%;">
+        <h1>Normas</h1>
+      </div>
+    </div>
+  </div>
+  <div class="col s12 m10 offset-m1">
+    <div class="row">
+      <div class="col s12 m10 offset-m1">
+        No tiene permiso para ver esta página
+        <button class="col m10 offset-m1 s12 waves-effect waves-light btn" ng-click="uq.redirEditar('')" style="font-size:100%;background-color:#f9a825">Volver</button>
+      </div>
+      </div>
+  </div>
+</div>
