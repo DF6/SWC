@@ -57,7 +57,7 @@
             </tr>
           </thead>
           <tbody>
-            <tr ng-repeat="mat in uq.matches | orderBy: 'round'" ng-if="mat.tournament==uq.datoViajero && $index<48">
+            <tr ng-repeat="mat in uq.matches | orderBy: 'round'" ng-if="mat.tournament==uq.datoViajero && $index<72">
               <td>{{mat.round}}</td>
               <td>{{uq.getTeamById(mat.local).name}}</td>
               <td>

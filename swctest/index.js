@@ -1949,24 +1949,12 @@ appIni.factory("indexFactory", function() {
     var newMatches = [];
     var interfaz = {
         datoViajero: -1,
-        getUser: function() {
-            return user;
-        },
-        setUser: function(newUser) {
-            user = newUser;
-        },
-        getPositions: function() {
-            return positions;
-        },
-        getTournaments: function() {
-            return tournaments;
-        },
-        getNewPlayers: function() {
-            return newPlayers;
-        },
-        getNewMatches: function() {
-            return newMatches;
-        }
+        getUser: function() { return user; },
+        setUser: function(newUser) { user = newUser; },
+        getPositions: function() { return positions; },
+        getTournaments: function() { return tournaments; },
+        getNewPlayers: function() { return newPlayers; },
+        getNewMatches: function() { return newMatches; }
     }
     return interfaz;
 });

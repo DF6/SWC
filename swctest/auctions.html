@@ -19,9 +19,10 @@
          Tiempo restante - {{tp.limitDate}}
         </div>
         <div class="card-action">
-          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,0.5)">+0.5M€</button>
-          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,1)">+1M€</button>
-          <button class="col s12 m4 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,5)">+5M€</button>
+          <input id="persAuction" class="col s12 m3" type="number"/>
+          <button class="col s12 m3 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id, parseInt(document.getElementById('persAuction').value))">PUJAR</button>
+          <button class="col s12 m3 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,0.5)">+0.5M€</button>
+          <button class="col s12 m3 waves-effect waves-light btn-small" style="font-size:100%;background-color:#f9a825;margin-bottom: 2%" ng-click="uq.raiseAuction(tp.id,5)">+5M€</button>
         </div>
       </div>
     </div>
